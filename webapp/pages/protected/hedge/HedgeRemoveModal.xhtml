@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<rich:modalPanel id="removeHedgePanel" autosized="true" width="310">
+	<f:facet name="header">
+		<h:outputText
+			value="#{bundle['_nls.menu.hedge']} &gt; #{bundle['_nls.menu.hedge.remove']}"
+			style="padding-right:15px;" />
+	</f:facet>
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/images/icons/close.gif" styleClass="hidelink"
+				id="hidelink" />
+			<rich:componentControl for="removeHedgePanel" attachTo="hidelink"
+				operation="hide" event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+	<h:form styleClass="noMargin">
+		<div align="center"><h:panelGroup>
+			<h:outputText value="#{bundle['_nls.title.delete_all']}"
+				styleClass="labelGeneric" />
+		</h:panelGroup> <h:panelGrid columns="2">
+
+			<ui:include src="/pages/protected/hedge/HedgeView.xhtml" />
+
+		</h:panelGrid> <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+
+			<a4j:commandButton value="#{bundle['_nls.button.delete']}"
+				styleClass="buttonGeneric"
+				oncomplete="#{rich:component('removeHedgePanel')}.hide();return false;"
+				action="#{hedgeController.removeHedge}"
+				reRender="removeHedgePanel,hedgeTable,errorMsgId" limitToList="true" />
+			<rich:spacer height="5" width="5" />
+			<a4j:region>
+				<a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+					styleClass="buttonGeneric"
+					oncomplete="#{rich:component('removeHedgePanel')}.hide();return false;"
+					limitToList="true" immediate="true" />
+			</a4j:region>
+		</h:panelGrid></div>
+	</h:form>
+
+</rich:modalPanel>
+
+</html>

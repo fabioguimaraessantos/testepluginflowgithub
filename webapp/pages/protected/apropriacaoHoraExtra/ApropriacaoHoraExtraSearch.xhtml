@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:pms="http://pms.cit.com.br"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	    #{bundle['_nls.menu.horas_extras.by.value']} &gt; #{bundle['_nls.menu.horas_extras.by.value.search']}
+    </ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="apropriacaoHoraExtraBean" />
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+
+			<h:panelGrid columns="4">
+
+				<h:outputText
+					value="#{bundle['_nls.apropriacao.hora_extra.pessoa.label']}: "
+					for="codigoLogin" styleClass="labelGeneric"></h:outputText>
+				<a4j:region renderRegionOnly="true" id="codigoLoginRegion">
+					<h:inputText id="codigoLogin" style=" width : 150px;"
+						validator="#{apropriacaoHoraExtraController.validatePessoa}"
+						label="#{bundle['_nls.apropriacao.hora_extra.pessoa.label']}"
+						immediate="true"
+						value="#{apropriacaoHoraExtraController.bean.pessoa.codigoLogin}">
+
+						<rich:suggestionbox for="codigoLogin" var="result"
+							suggestionAction="#{apropriacaoHoraExtraController.autoCompletePessoa}">
+							<h:column>
+								<h:outputText value="#{result.codigoLogin}" />
+							</h:column>
+						</rich:suggestionbox>
+					</h:inputText>
+				</a4j:region>
+
+				<h:outputText
+					value="#{bundle['_nls.apropriacao.hora_extra.data.label']}*: "
+					for="mesInicio" styleClass="labelGeneric" />
+				<h:panelGrid columns="5" cellpadding="0" cellspacing="0">
+					<rich:comboBox id="mesInicio" enableManualInput="false"
+						value="#{apropriacaoHoraExtraController.bean.monthBeg}"
+						label="#{bundle['_nls.mes.label']}"
+						defaultLabel="#{bundle['_nls.mes.label']}"
+						suggestionValues="#{dateBean.monthList}" width="55"
+						required="true">
+					</rich:comboBox>
+
+					<rich:spacer height="5" width="5" />
+					<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+					<rich:spacer height="5" width="5" />
+
+					<rich:comboBox id="anoInicio" enableManualInput="false"
+						value="#{apropriacaoHoraExtraController.bean.yearBeg}"
+						label="#{bundle['_nls.ano.label']}"
+						defaultLabel="#{bundle['_nls.ano.label']}"
+						suggestionValues="#{dateBean.yearList}" width="55" required="true">
+					</rich:comboBox>
+				</h:panelGrid>
+
+				<rich:spacer height="5" />
+				<rich:spacer height="5" />
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+							styleClass="buttonGeneric" limitToList="true"
+							reRender="apropriacaoHoraExtraTable,errorMsgId,apropriacaoHoraExtraPanel"
+							action="#{apropriacaoHoraExtraController.search}" type="submit" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="apropriacaoHoraExtraBean" />
+			<a4j:outputPanel id="apropriacaoHoraExtraPanel">
+				<rich:dataTable
+					value="#{apropriacaoHoraExtraController.bean.resultList}" var="item"
+					rendered="#{!empty apropriacaoHoraExtraController.bean.resultList}"
+					rows="#{systemProperties['research.size.page.result']}"
+					width="100%" id="apropriacaoHoraExtraTable" rowKeyVar="row">
+
+					<rich:column sortBy="#{item.pessoa.codigoLogin}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao.hora_extra.pessoa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.pessoa.codigoLogin}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.dataMes}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao.hora_extra.data.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dataMes}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.moeda.siglaMoeda}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao.hora_extra.moeda.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.moeda.siglaMoeda}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorHoraExtra}"
+						style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao.hora_extra.valor.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.valorHoraExtra}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								maxFractionDigits="2"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.uploadArquivo.nomeArquivo}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao.hora_extra.arquivo.label']}" />
+						</f:facet>
+						<h:commandLink
+							action="#{apropriacaoHoraExtraController.downloadFile}"
+							value="#{item.uploadArquivo.nomeArquivo}">
+							<f:setPropertyActionListener value="#{item}"
+								target="#{apropriacaoHoraExtraController.bean.to}" />
+						</h:commandLink>
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao.hora_extra.action.label']}" />
+						</f:facet>
+						<sec:ifAnyGranted roles="PER.OVERTIME_BY_VALUE:ED">
+							<a4j:commandLink ajaxSingle="true" id="editlink"
+								action="#{apropriacaoHoraExtraController.prepareUpdate}"
+								reRender="apropriacaoHoraExtraTable">
+								<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+								<f:setPropertyActionListener
+									value="#{item.codigoApropriacaoHoraExtra}"
+									target="#{apropriacaoHoraExtraController.bean.currentRowId}" />
+							</a4j:commandLink>
+							<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+						</sec:ifAnyGranted>
+
+						<sec:ifAnyGranted roles="PER.OVERTIME_BY_VALUE:DE">
+							<a4j:commandLink ajaxSingle="true" id="deleteLink"
+								oncomplete="#{rich:component('msgConfirmRemove')}.show()">
+								<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+								<f:setPropertyActionListener
+									value="#{item.codigoApropriacaoHoraExtra}"
+									target="#{apropriacaoHoraExtraController.bean.currentRowId}" />
+							</a4j:commandLink>
+							<rich:toolTip for="deleteLink"
+								value="#{bundle['_nls.hint.delete']}" />
+						</sec:ifAnyGranted>
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{apropriacaoHoraExtraController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+
+		<!-- Modal Confirm Remove -->
+		<rich:modalPanel id="msgConfirmRemove" autosized="true" width="200">
+
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.title.confirmation']}"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="hidelinkMsgConfirmRemove" />
+					<rich:componentControl for="msgConfirmRemove"
+						attachTo="hidelinkMsgConfirmRemove" operation="hide"
+						event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+
+			<h:form>
+				<table width="100%">
+					<thead>
+						<tr>
+							<td colspan="2" align="left"><h:outputText
+									value="#{bundle['_nls.msg.info.apropriacao.hora_extra.confirm.remove']}"
+									styleClass="labelGeneric" /></td>
+						</tr>
+						<tr>
+							<td colspan="2"><rich:spacer height="5" /></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td align="left" colspan="2"><a4j:commandButton
+									value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+									action="#{apropriacaoHoraExtraController.remove}"
+									styleClass="buttonGeneric" reRender="apropriacaoHoraExtraTable" />
+								<rich:spacer height="5" width="10" /> <a4j:commandButton
+									value="#{bundle['_nls.button.cancel']}"
+									styleClass="buttonGeneric"
+									oncomplete="#{rich:component('msgConfirmRemove')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+
+		</rich:modalPanel>
+	</ui:define>
+
+</ui:composition>
+
+</html>

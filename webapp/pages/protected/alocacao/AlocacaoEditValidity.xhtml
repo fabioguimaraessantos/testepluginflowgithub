@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<rich:modalPanel id="editValidityPanel" autosized="true" width="420">
+	<f:facet name="header">
+		<h:outputText
+			value="#{bundle['_nls.menu.alocacao']} &gt; #{bundle['_nls.menu.alocacao.edit.validity']}"
+			style="padding-right:15px;" />
+	</f:facet>
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/images/icons/close.gif" styleClass="hidelink"
+				id="hidelinkEditValidityAlocacao" />
+			<rich:componentControl for="editValidityPanel"
+				attachTo="hidelinkEditValidityAlocacao" operation="hide"
+				event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+	<rich:messages errorClass="msgError" warnClass="msgWarng"
+		infoClass="msgSuccess" layout="table" ajaxRendered="true">
+	</rich:messages>
+	<h:form styleClass="noMargin">
+		<h:panelGrid columns="1">
+
+			<h:panelGroup>
+				<h:outputLabel value="#{bundle['_nls.alocacao.vigencia.label']}*: "
+					styleClass="labelGeneric" />
+
+				<rich:spacer height="5" width="5" />
+
+				<rich:calendar
+					value="#{mapaAlocacaoController.alocacaoBean.to.dataInicio}"
+					locale="#{bundle['_nls.calendar.locale']}" required="true"
+					datePattern="#{bundle['_nls.calendar.pattern']}"
+					showApplyButton="false" cellWidth="24px" cellHeight="22px"
+					style="width:200px"
+					label="#{bundle['_nls.alocacao.data_inicio.label']}" />
+
+				<rich:spacer height="5" width="5" />
+
+				<h:outputLabel
+					value="#{bundle['_nls.alocacao.vigencia.until.label']}*: "
+					styleClass="labelGeneric" />
+
+				<rich:spacer height="5" width="5" />
+
+				<rich:calendar
+					value="#{mapaAlocacaoController.alocacaoBean.to.dataFim}"
+					locale="#{bundle['_nls.calendar.locale']}" required="true"
+					datePattern="#{bundle['_nls.calendar.pattern']}"
+					showApplyButton="false" cellWidth="24px" cellHeight="22px"
+					style="width:200px"
+					label="#{bundle['_nls.alocacao.data_fim.label']}" />
+
+			</h:panelGroup>
+
+			<rich:spacer height="5" width="5" />
+
+			<h:panelGrid columns="4" cellpadding="0" cellspacing="0" width="100%">
+				<h:column>
+					<div align="center"><a4j:commandButton
+						value="#{bundle['_nls.button.save']}" limitToList="true"
+						reRender="editValidityPanel"
+						action="#{mapaAlocacaoController.editValidityAlocacao}"
+						oncomplete="if (#{facesContext.maximumSeverity!=null}) #{rich:component('editValidityPanel')}.show();"
+						styleClass="buttonGeneric" /> <rich:spacer height="5" width="5" />
+					<a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+						styleClass="buttonGeneric" limitToList="true"
+						actionListener="#{messageControlBean.showMessages}"
+						oncomplete="#{rich:component('editValidityPanel')}.hide();return false;" />
+					</div>
+				</h:column>
+			</h:panelGrid>
+
+		</h:panelGrid>
+
+	</h:form>
+
+</rich:modalPanel>
+
+</html>

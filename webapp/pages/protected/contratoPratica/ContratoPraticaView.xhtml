@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.contrato_pratica']} &gt; #{bundle['_nls.menu.contrato_pratica.view']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<a4j:keepAlive beanName="contratoPraticaBean" />
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+
+			<!-- Campos somente leitura do ContratoPratica -->
+			<ui:include
+				src="/pages/protected/contratoPratica/ContratoPraticaHeaderView.xhtml" />
+
+			<rich:spacer height="10" styleClass="noMargin" />
+
+			<a4j:outputPanel id="tabs">
+				<rich:tabPanel id="configureTabPanel" immediate="true"
+					switchType="ajax">
+
+					<sec:ifAnyGranted roles="BUS.CONTRACT_LOB.FISCAL_DEAL:VW">
+						<rich:tab id="tabContratoPratica" name="tabContratoPratica"
+							label="#{bundle['_nls.menu.contrato_pratica']}">
+							<ui:include
+								src="/pages/protected/contratoPratica/ContratoPraticaTabView.xhtml" />
+						</rich:tab>
+					</sec:ifAnyGranted>
+
+					<!-- Tab do Histórico de alterações do Contract Lob (Contrato Pratica) -->
+					<sec:ifAnyGranted roles="BUS.CONTRACT_LOB:VW">
+						<rich:tab id="tabHistory" name="tabHistory"
+							label="#{bundle['_nls.menu.contrato_pratica.history.tab.label']}"
+							action="#{contratoPraticaController.preparePraticaContratoHistory}">
+							<ui:include
+								src="/pages/protected/contratoPratica/ContratoPraticaHistory.xhtml" />
+						</rich:tab>
+					</sec:ifAnyGranted>
+
+					<!-- Tab CONFIGURATION -->
+					<sec:ifAnyGranted roles="BUS.CONTRACT_LOB.FISCAL_DEAL:VW">
+						<rich:tab id="tabConfiguration" name="tabConfiguration"
+								  label="#{bundle['_nls.deal.entity_name']}"
+								  action="#{contratoPraticaController.prepareSelectedDealFiscal}">
+							<ui:include
+									src="/pages/protected/contratoPratica/ContratoPraticaConfigureTab.xhtml" />
+						</rich:tab>
+					</sec:ifAnyGranted>
+
+					<!-- Tab do CONTRATO PRATICA CENTRO LUCRO (PROFIT CENTER) -->
+					<rich:tab id="tabProfitCenter" name="tabProfitCenter"
+							  label="#{bundle['_nls.cpcl.entity_name']}"
+							  action="#{contratoPraticaController.prepareContratoPraticaCentroLucro}">
+						<ui:include
+								src="/pages/protected/contratoPraticaCentroLucro/ContratoPraticaCentroLucroView.xhtml" />
+					</rich:tab>
+
+				</rich:tabPanel>
+
+			</a4j:outputPanel>
+			<sec:ifAnyGranted roles="BUS.CONTRACT_LOB:DE">
+				<h:panelGrid columns="1">
+					<f:facet name="footer">
+						<h:panelGrid columns="4" cellpadding="0" cellspacing="0">
+							<rich:spacer height="30" styleClass="noMargin" />
+							<a4j:commandButton value="#{bundle['_nls.button.back']}"
+								styleClass="buttonGeneric" action="#{contratoPraticaController.prepareSearch}"
+								immediate="true" />
+							<rich:spacer height="5" width="5"
+								rendered="#{contratoPraticaController.bean.isRemove}"
+								styleClass="noMargin" />
+							<a4j:commandButton value="#{bundle['_nls.button.delete']}"
+								styleClass="buttonGeneric"
+								oncomplete="#{rich:component('deleteContratoPraticaPanel')}.show()"
+								rendered="#{contratoPraticaController.bean.isRemove}" />
+
+						</h:panelGrid>
+					</f:facet>
+				</h:panelGrid>
+			</sec:ifAnyGranted>
+		</h:form>
+
+		<ui:include
+			src="/pages/protected/contratoPratica/ContratoPraticaDelete.xhtml" />
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

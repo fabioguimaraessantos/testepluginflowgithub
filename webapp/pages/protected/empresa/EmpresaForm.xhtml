@@ -1,0 +1,207 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+	<h:panelGrid columns="2">
+		<h:outputText value="#{bundle['_nls.empresa.nome_empresa.label']}*:"
+					  for="nomeEmpresa" styleClass="labelGeneric" />
+		<h:inputText id="nomeEmpresa" required="true" size="70" maxlength="99"
+					 label="#{bundle['_nls.empresa.nome_empresa.label']}"
+					 value="#{empresaController.bean.to.nomeEmpresa}">
+			<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+							  maximum="99" />
+		</h:inputText>
+
+		<h:outputText value="#{bundle['_nls.empresa.codigo_mnemonico.label']}*:"
+					  for="codigoMnemonico" styleClass="labelGeneric" />
+		<h:inputText id="codigoMnemonico" required="true" size="20" maxlength="20"
+					 label="#{bundle['_nls.empresa.codigo_mnemonico.label']}"
+					 value="#{empresaController.bean.to.codigoMnemonico}">
+			<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+							  maximum="20" />
+			<rich:jQuery selector="#codigoMnemonico" query="alphanumeric()"
+						 timing="onload" />
+		</h:inputText>
+	</h:panelGrid>
+
+	<h:panelGrid id="panelGridERP" columns="2">
+		<h:outputText value="#{bundle['_nls.empresa.empresa_pai.label']}:"
+					  for="empresaPai" styleClass="labelGeneric" />
+		<h:panelGroup>
+			<rich:toolTip for="empresaPaiInfo">#{bundle['_nls.empresa.empresa_pai.tooltip']}</rich:toolTip>
+			<rich:comboBox id="empresaPai" label="#{bundle['_nls.empresa.empresa_pai.label']}"
+						   value="#{empresaController.bean.empresaPaiSelected}"
+						   suggestionValues="#{empresaController.bean.empresaPaiList}"
+						   directInputSuggestions="true" immediate="true"
+						   valueChangeListener="#{empresaController.handleEmpresaPaiSelected}" style="float: left;">
+				<a4j:support event="onselect" reRender="confirmParentCompanyChange, panelGridERP"
+							 limitToList="true" ajaxSingle="true" />
+				<a4j:support event="onchange" reRender="confirmParentCompanyChange, panelGridERP"
+							 limitToList="true" ajaxSingle="true" />
+			</rich:comboBox>
+			<h:graphicImage id="empresaPaiInfo" value="/images/icons/info.gif" style="border: 0; position: relative; top: 2.25px; left: 7px;" />
+		</h:panelGroup>
+
+		<h:outputText id="outputCodigoOracleTaxpayerCompany"
+					  value="#{bundle['_nls.empresa.codigo_oracle_taxpayer_company.label']}:"
+					  for="codigoOracleTaxpayerCompany" styleClass="labelGeneric"/>
+		<h:panelGroup>
+			<rich:toolTip for="oracleTaxpayerCompanyInfo" value="#{bundle['_nls.empresa.codigo_oracle_taxpayer_company.tooltip.label']}" />
+			<h:inputText id="codigoOracleTaxpayerCompany" size="30" maxlength="30"
+						 label="#{bundle['_nls.empresa.codigo_oracle_taxpayer_company.label']}"
+						 value="#{empresaController.bean.to.codigoTaxpayerCompany}"/>
+			<h:graphicImage id="oracleTaxpayerCompanyInfo" value="/images/icons/info.gif" style="border: 0; position: relative; top: 2.25px; left: 7px;" />
+		</h:panelGroup>
+
+		<h:outputText id="outputCodigoEmpresaERP"
+					  value="#{bundle['_nls.empresa.codigo_empresa_erp.label']}*:"
+					  for="codigoEmpresaERP" styleClass="labelGeneric"
+					  rendered="#{empty empresaController.bean.empresaPaiSelected}" />
+		<h:inputText id="codigoEmpresaERP" required="true" size="30" maxlength="99"
+					 label="#{bundle['_nls.empresa.codigo_empresa_erp.label']}"
+					 value="#{empresaController.bean.to.codigoEmpresaERP}"
+					 rendered="#{empty empresaController.bean.empresaPaiSelected}">
+			<a4j:support event="onchange" limitToList="true" ajaxSingle="true" />
+		</h:inputText>
+		<h:outputText id="outputCodigoErpProjetoPadrao"
+					  value="#{bundle['_nls.empresa.codigo_erp_projeto_padrao.label']}*:"
+					  for="codigoErpProjetoPadrao" styleClass="labelGeneric"
+					  rendered="#{empty empresaController.bean.empresaPaiSelected}" />
+		<h:inputText id="codigoErpProjetoPadrao" required="true" size="30" maxlength="99"
+					 label="#{bundle['_nls.empresa.codigo_erp_projeto_padrao.label']}"
+					 value="#{empresaController.bean.to.codigoErpProjetoPadrao}"
+					 rendered="#{empty empresaController.bean.empresaPaiSelected}">
+			<a4j:support event="onchange" limitToList="true" ajaxSingle="true" />
+		</h:inputText>
+
+		<h:outputText id="outputCodigoErpFilial"
+					  value="#{bundle['_nls.empresa.codigo_erp_filial.label']}*:"
+					  for="codigoErpFilial" styleClass="labelGeneric"
+					  rendered="#{not empty empresaController.bean.empresaPaiSelected}" />
+		<h:inputText id="codigoErpFilial" required="true" size="30" maxlength="99"
+					 label="#{bundle['_nls.empresa.codigo_erp_filial.label']}"
+					 value="#{empresaController.bean.to.codigoErpFilial}"
+					 rendered="#{not empty empresaController.bean.empresaPaiSelected}">
+			<a4j:support event="onchange" limitToList="true" ajaxSingle="true" />
+		</h:inputText>
+		<h:outputText id="outputCodigoErpCcusto"
+					  value="#{bundle['_nls.empresa.codigo_erp_centro_de_custo.label']}*:"
+					  for="codigoErpCcusto" styleClass="labelGeneric"
+					  rendered="#{not empty empresaController.bean.empresaPaiSelected}" />
+		<h:inputText id="codigoErpCcusto" required="true" size="30" maxlength="99"
+					 label="#{bundle['_nls.empresa.codigo_erp_centro_de_custo.label']}"
+					 value="#{empresaController.bean.to.codigoErpCcusto}"
+					 rendered="#{not empty empresaController.bean.empresaPaiSelected}">
+			<a4j:support event="onchange" limitToList="true" ajaxSingle="true" />
+		</h:inputText>
+		<h:outputText id="outputCodigoErpProjIde"
+					  value="#{bundle['_nls.empresa.codigo_erp_projeto_ide.label']}*:"
+					  for="codigoErpProjIde" styleClass="labelGeneric"
+					  rendered="#{not empty empresaController.bean.empresaPaiSelected}" />
+		<h:inputText id="codigoErpProjIde" required="true" size="30" maxlength="99"
+					 label="#{bundle['_nls.empresa.codigo_erp_projeto_ide.label']}"
+					 value="#{empresaController.bean.to.codigoErpProjIde}"
+					 rendered="#{not empty empresaController.bean.empresaPaiSelected}">
+			<a4j:support event="onchange" limitToList="true" ajaxSingle="true" />
+		</h:inputText>
+		<h:outputText id="outputIndicadorExibicaoMsaContrato"
+					  value="#{bundle['_nls.empresa.indicador_exibicao_msa_contrato.label']}*:"
+					  for="indicadorExibicaoMsaContrato" styleClass="labelGeneric"
+					  rendered="#{not empty empresaController.bean.empresaPaiSelected}" />
+		<h:panelGroup rendered="#{not empty empresaController.bean.empresaPaiSelected}">
+			<h:selectBooleanCheckbox id="indicadorExibicaoMsaContrato"
+									 value="#{empresaController.bean.to.indicadorExibicaoMsaContrato}">
+				<a4j:support event="onchange" limitToList="true" ajaxSingle="true" />
+			</h:selectBooleanCheckbox>
+		</h:panelGroup>
+	</h:panelGrid>
+
+	<h:panelGrid columns="2">
+		<h:outputText value="#{bundle['_nls.empresa.codigo_cnpj.label']}*:"
+					  for="cnpj" styleClass="labelGeneric" />
+		<h:inputText id="cnpj" size="30" maxlength="49" required="true"
+					 label="#{bundle['_nls.empresa.codigo_cnpj.label']}"
+					 value="#{empresaController.bean.to.numeroCnpj}">
+			<rich:jQuery selector="#cnpj" query="setMask('cnpj')" timing="immediate" />
+			<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+							  maximum="49" />
+		</h:inputText>
+
+		<h:outputText value="#{bundle['_nls.empresa.texto_cidade.label']}*:"
+					  for="textoCidade" styleClass="labelGeneric" />
+		<h:inputText id="textoCidade" size="30" maxlength="99" required="true"
+					 label="#{bundle['_nls.empresa.texto_cidade.label']}"
+					 value="#{empresaController.bean.to.textoCidade}">
+			<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+							  maximum="99" />
+		</h:inputText>
+
+		<h:outputText value="#{bundle['_nls.empresa.texto_estado.label']}*:"
+					  for="textoEstado" styleClass="labelGeneric" />
+		<h:inputText id="textoEstado" size="30" maxlength="99" required="true"
+					 label="#{bundle['_nls.empresa.texto_estado.label']}"
+					 value="#{empresaController.bean.to.textoEstado}">
+			<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+							  maximum="99" />
+		</h:inputText>
+
+		<h:outputText value="#{bundle['_nls.empresa.texto_pais.label']}*:"
+					  for="textoPais" styleClass="labelGeneric" />
+		<h:inputText id="textoPais" size="30" maxlength="49" required="true"
+					 label="#{bundle['_nls.empresa.texto_pais.label']}"
+					 value="#{empresaController.bean.to.textoPais}">
+			<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+							  maximum="49" />
+		</h:inputText>
+
+		<h:outputText value="#{bundle['_nls.empresa.combo_moeda.label']}*:"
+					  for="comboMoeda" styleClass="labelGeneric"/>
+		<rich:comboBox id="comboMoeda" required="true"
+					   enableManualInput="false" label="#{bundle['_nls.empresa.combo_moeda.label']}"
+					   value="#{empresaController.bean.moedaSelected}"
+					   suggestionValues="#{empresaController.bean.moedaList}"
+					   directInputSuggestions="true">
+		</rich:comboBox>
+
+		<h:outputText value="#{bundle['_nls.empresa.indicador_ativo.label']}*:"
+					  for="indicadorAtivo" styleClass="labelGeneric"
+					  rendered="#{empresaController.bean.isUpdate}" />
+		<rich:comboBox id="indicadorAtivo" required="true"
+					   enableManualInput="false" label="#{bundle['_nls.empresa.indicador_ativo.label']}"
+					   value="#{empresaController.bean.to.indicadorAtivo}"
+					   suggestionValues="#{empresaController.bean.suggestionsListInAtivo}"
+					   directInputSuggestions="true" converter="ActiveInactiveConverter"
+					   rendered="#{empresaController.bean.isUpdate}">
+		</rich:comboBox>
+
+		<h:outputText value="#{bundle['_nls.empresa.valor_taxa_cslrf.percent.label']}*:"
+					  for="valorTaxa" styleClass="labelGeneric" />
+		<h:panelGroup>
+			<h:inputText id="valorTaxa" required="true" size="5" maxlength="10"
+						 label="#{bundle['_nls.empresa.valor_taxa_cslrf.percent.label']}"
+						 value="#{empresaController.bean.to.valorTaxaCslrf}">
+				<f:validateDoubleRange maximum="100" minimum="0" />
+			</h:inputText>
+			<h:outputText value="%" styleClass="labelGeneric" />
+		</h:panelGroup>
+
+		<h:outputText value="#{bundle['_nls.empresa.plano_contabil_moeda.label']}: "
+					  for="planoContabilPorMoeda" styleClass="labelGeneric"   />
+		<h:panelGroup>
+			<h:selectBooleanCheckbox id="planoContabilPorMoeda"
+									 value="#{empresaController.bean.to.indicadorPlanoContabilPorMoeda}" />
+		</h:panelGroup>
+
+		<rich:spacer height="5" />
+		<rich:spacer height="5" />
+	</h:panelGrid>
+
+	<ui:include src="/pages/protected/empresa/empresaEditParentCompanyModal.xhtml" />
+
+</ui:composition>
+
+</html>

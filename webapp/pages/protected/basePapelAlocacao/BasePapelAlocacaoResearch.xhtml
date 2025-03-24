@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:rich="http://richfaces.org/rich"
+	  xmlns:a4j="http://richfaces.org/a4j"
+	  xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	  xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		#{bundle['_nls.menu.base_papel_alocacao']} &gt; #{bundle['_nls.menu.base_papel_alocacao.research']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="600" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="2">
+				<h:outputText value="#{bundle['_nls.base_papel_alocacao.papel_alocacao.label']}: "
+							  styleClass="labelGeneric" />
+				<h:inputText validator="#{xssValidator.validate}"
+							 id="papelAlocacao" maxlength="249" width="200"
+							 label="#{bundle['_nls.papel_alocacao.nome_papel_alocacao.label']}"
+							 value="#{basePapelAlocacaoController.bean.filter.papelAlocacao.nomePapelAlocacao}">
+					<f:validateLength maximum="249" />
+				</h:inputText>
+
+				<h:outputText value="#{bundle['_nls.base_papel_alocacao.empresa.label']}: "
+							  styleClass="labelGeneric" />
+				<a4j:region>
+					<rich:comboBox id="company"
+								   label="#{bundle['_nls.base_papel_alocacao.empresa.label']}"
+								   value="#{basePapelAlocacaoController.bean.nomeEmpresaMatriz}"
+								   suggestionValues="#{basePapelAlocacaoController.bean.empresaList}"
+								   valueChangeListener="#{basePapelAlocacaoController.prepareCidadeBaseCombo}" width="170">
+						<a4j:support event="onselect" reRender="cidadeBase" limitToList="true" />
+						<a4j:support event="onchange" reRender="cidadeBase" limitToList="true" />
+					</rich:comboBox>
+				</a4j:region>
+
+				<h:outputText value="#{bundle['_nls.base_papel_alocacao.site.label']}: "
+							  styleClass="labelGeneric" />
+
+				<a4j:region>
+					<rich:comboBox id="cidadeBase"
+								   label="#{bundle['_nls.base_papel_alocacao.site.label']}"
+								   value="#{basePapelAlocacaoController.bean.to.cidadeBase.nomeCidadeBase}"
+								   suggestionValues="#{basePapelAlocacaoController.bean.cidadeBaseList}" width="110"
+								   validator="#{basePapelAlocacaoController.validateCidadeBase}">
+					</rich:comboBox>
+				</a4j:region>
+
+				<rich:spacer width="5" />
+
+				<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+					<a4j:commandButton value="#{bundle['_nls.button.search']}"
+									   styleClass="buttonGeneric"
+									   reRender="panelSearch, basePapelAlocacaoTable, errorMsgId"
+									   limitToList="true" type="submit"
+									   action="#{basePapelAlocacaoController.findByFilter}" />
+				</h:panelGrid>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="10" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="basePapelAlocacaoBean" />
+			<a4j:outputPanel id="panelSearch">
+				<rich:dataTable value="#{basePapelAlocacaoController.bean.resultList}" var="item"
+								rows="#{systemProperties['research.size.page.result']}"
+								width="100%" id="basePapelAlocacaoTable" rowKeyVar="row"
+								rendered="#{!empty basePapelAlocacaoController.bean.resultList}">
+					<rich:column sortBy="#{item.papelAlocacao.nomePapelAlocacao}" style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.base_papel_alocacao.papel_alocacao.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.papelAlocacao.nomePapelAlocacao}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.nomeEmpresa}" style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.base_papel_alocacao.empresa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.nomeEmpresa}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.cidadeBase.nomeCidadeBase}" style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.base_papel_alocacao.site.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.cidadeBase.nomeCidadeBase}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorTCEVigente}" style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.base_papel_alocacao.tce.label']}" />
+						</f:facet>
+						<h:outputLabel value="#{item.cidadeBase.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.valorTCEVigente}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+											 pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+						<rich:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="#{bundle['_nls.base_papel_alocacao.action.label']}" />
+							</f:facet>
+
+							<sec:ifAnyGranted roles="BOF.RESOURCE_POSITION:VW">
+								<a4j:commandLink ajaxSingle="true" id="viewlink"
+												 action="#{basePapelAlocacaoController.prepareView}"
+												 reRender="clienteTable">
+									<h:graphicImage value="/images/icons/view.png" style="border:0"/>
+									<f:setPropertyActionListener value="#{item}"
+																 target="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.basePapelAlocacao}" />
+									<f:setPropertyActionListener value="#{item.codigoBasePapelAlocacao}"
+																 target="#{basePapelAlocacaoController.bean.currentRowId}" />
+								</a4j:commandLink>
+								<rich:toolTip for="viewlink" value="#{bundle['_nls.hint.view']}"/>
+							</sec:ifAnyGranted>
+
+							<sec:ifAnyGranted roles="BOF.RESOURCE_POSITION:ED">
+								<a4j:commandLink ajaxSingle="true" id="editlink"
+												 action="#{basePapelAlocacaoController.prepareEdit}"
+												 reRender="basePapelAlocacaoTable">
+									<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+									<f:setPropertyActionListener value="#{item}"
+																 target="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.basePapelAlocacao}" />
+									<f:setPropertyActionListener value="#{item.codigoBasePapelAlocacao}"
+																 target="#{basePapelAlocacaoController.bean.currentRowId}" />
+								</a4j:commandLink>
+								<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+							</sec:ifAnyGranted>
+						</rich:column>
+
+
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+										   maxPages="#{systemProperties['research.size.page.maxpages']}"
+										   page="#{basePapelAlocacaoController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

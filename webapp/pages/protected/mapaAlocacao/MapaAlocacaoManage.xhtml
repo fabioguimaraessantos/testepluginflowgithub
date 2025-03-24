@@ -1,0 +1,1057 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.mapa_alocacao']} &gt; #{bundle['_nls.menu.mapa_alocacao.manage']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" styleClass="noMargin" />
+		<h:form id="alocationFormTable" styleClass="noMargin">
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+			<a4j:loadScript src="/js/utils.js" />
+
+			<script type="text/javascript">
+					//Codigo utlizado para setar o tamanho do body da tabela
+					//menos para o IE, porque nao e necessario
+					if (navigator.appName!='Microsoft Internet Explorer') {
+						var obj= document.getElementById("bodyTableMapId");
+						obj.style.height = "#{mapaAlocacaoController.bean.mapaHeightValue}";
+					}
+   				</script>
+
+			<table>
+				<tr>
+					<td><h:panelGrid columns="2">
+							<h:outputLabel
+								value="#{bundle['_nls.mapa_alocacao.titulo.label']}"
+								styleClass="labelGeneric" />
+							<h:outputLabel
+								value="#{mapaAlocacaoController.bean.to.textoTitulo}" />
+
+							<h:outputLabel
+								value="#{bundle['_nls.mapa_alocacao.contrato_pratica.label']}"
+								styleClass="labelGeneric" />
+							<h:outputLabel
+								value="#{mapaAlocacaoController.bean.to.contratoPratica.nomeContratoPratica}" />
+
+							<h:outputLabel
+								value="#{bundle['_nls.mapa_alocacao.indicador_versao.label']}"
+								styleClass="labelGeneric" />
+							<h:outputLabel
+								value="#{mapaAlocacaoController.bean.to.indicadorVersao}"
+								converter="VersionMapaAlocacaoConverter" />
+
+							<h:outputLabel
+								value="#{bundle['_nls.mapa_alocacao.vigencia.label']}: "
+								rendered="#{mapaAlocacaoController.bean.isUpdate}"
+								styleClass="labelGeneric" />
+
+							<h:panelGrid columns="16" cellpadding="0" cellspacing="0"
+								rendered="#{mapaAlocacaoController.bean.isUpdate}">
+
+								<rich:comboBox id="mesInicio" enableManualInput="false"
+									value="#{mapaAlocacaoController.bean.validityMonthBeg}"
+									label="#{bundle['_nls.mapa_alocacao.vigencia.ano_inicio.label']}"
+									defaultLabel="#{bundle['_nls.mapa_alocacao.vigencia.mes.label']}"
+									required="true"
+									suggestionValues="#{mapaAlocacaoController.bean.validityMonthList}"
+									width="55">
+								</rich:comboBox>
+
+								<rich:spacer width="3" styleClass="noMargin" />
+								<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+								<rich:spacer width="3" styleClass="noMargin" />
+
+								<rich:comboBox id="anoInicio" enableManualInput="false"
+									value="#{mapaAlocacaoController.bean.validityYearBeg}"
+									label="#{bundle['_nls.mapa_alocacao.vigencia.ano_fim.label']}"
+									defaultLabel="#{bundle['_nls.mapa_alocacao.vigencia.ano.label']}"
+									required="true"
+									suggestionValues="#{mapaAlocacaoController.bean.validityYearList}"
+									width="55">
+								</rich:comboBox>
+
+								<rich:spacer height="5" width="5" styleClass="noMargin" />
+
+								<h:outputLabel
+									value="#{bundle['_nls.mapa_alocacao.vigencia.until.label']}: "
+									styleClass="labelGeneric" />
+
+								<rich:spacer height="5" width="5" styleClass="noMargin" />
+
+								<rich:comboBox id="mesFim" enableManualInput="false"
+									disabled="#{mapaAlocacaoController.bean.disabledValidityFieldsEnd}"
+									value="#{mapaAlocacaoController.bean.validityMonthEnd}"
+									label="#{bundle['_nls.mapa_alocacao.vigencia.ano_inicio.label']}"
+									defaultLabel="#{bundle['_nls.mapa_alocacao.vigencia.mes.label']}"
+									required="true"
+									suggestionValues="#{mapaAlocacaoController.bean.validityMonthList}"
+									width="55">
+								</rich:comboBox>
+
+								<rich:spacer width="3" styleClass="noMargin" />
+								<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+								<rich:spacer width="3" styleClass="noMargin" />
+
+								<rich:comboBox id="anoFim" enableManualInput="false"
+									disabled="#{mapaAlocacaoController.bean.disabledValidityFieldsEnd}"
+									value="#{mapaAlocacaoController.bean.validityYearEnd}"
+									label="#{bundle['_nls.mapa_alocacao.vigencia.ano_fim.label']}"
+									defaultLabel="#{bundle['_nls.mapa_alocacao.vigencia.ano.label']}"
+									required="true"
+									suggestionValues="#{mapaAlocacaoController.bean.validityYearList}"
+									width="55">
+								</rich:comboBox>
+
+								<rich:spacer width="5" styleClass="noMargin" />
+
+								<a4j:commandLink id="changeDateLink"
+									oncomplete="#{rich:component('cutExtendPeriodPanel')}.show()"
+									styleClass="buttonGeneric">
+									<h:graphicImage value="/images/icons/cut.png" style="border:0" />
+								</a4j:commandLink>
+								<rich:toolTip for="changeDateLink"
+									value="#{bundle['_nls.button.cut_extend_period']}" />
+
+							</h:panelGrid>
+
+							<rich:spacer height="5" styleClass="noMargin" />
+							<rich:spacer height="5" styleClass="noMargin" />
+						</h:panelGrid></td>
+						<td width="90px"></td>
+					<td>
+						<div
+							style="max-height: 150px; overflow: auto; background-color: #FAE6B0">
+							<rich:panel style="background-color: #CFCFCF">
+								<h:panelGrid columns="4">
+
+									<div
+										style="background-color: #C6E2FF; width: 10px; height: 10px;"></div>
+									<h:outputText
+										value="#{bundle['_nls.perfil_vendido.legend.logical_delete']}" />
+
+									<div
+										style="background-color: #FFDAB9; width: 10px; height: 10px;"></div>
+									<h:outputText
+										value="#{bundle['_nls.mapa_alocacao.legenda.celula_vermelha']}"
+										style="padding-right:15px;" />
+
+									<div
+										style="background-color: rgb(255, 255, 210); width: 10px; height: 10px;"></div>
+									<h:outputText
+										value="#{bundle['_nls.mapa_alocacao.legenda.celula_amarela']}"
+										style="padding-right:15px;" />
+
+									<h:outputText value="0.5" style="color: red;"/>
+									<h:outputText
+										value="#{bundle['_nls.mapa_alocacao.legenda.numero_vermelho']}"
+										style="padding-right:15px;" />
+
+									<h:outputText value="0.5" style="color: blue;"/>
+									<h:outputText
+										value="#{bundle['_nls.mapa_alocacao.legenda.numero_azul']}"
+										style="padding-right:15px;" />
+
+								</h:panelGrid>
+
+								<h:panelGroup>
+									<h:outputText
+										value="#{bundle['_nls.menu.mapa_alocacao.alteracao_info']}"
+										style="padding-right:15px;display: block; margin-top: 5px; border-color: black; border-top-style: solid; border-width: 1px; padding-top: 5px;" />
+								</h:panelGroup>
+							</rich:panel>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<h:panelGrid columns="25" cellpadding="0" cellspacing="0">
+				<!-- ****** Botao cancel ****** -->
+				<a4j:commandButton value="#{bundle['_nls.button.back']}"
+					action="#{mapaAlocacaoController.cancelManageMapaAlocacao}"
+					styleClass="buttonGeneric"
+					rendered="#{mapaAlocacaoController.bean.isUpdate}" />
+				<a4j:commandButton value="#{bundle['_nls.button.back']}"
+					action="mapaAlocacao_add" styleClass="buttonGeneric"
+					rendered="#{!mapaAlocacaoController.bean.isUpdate}" />
+				<rich:spacer height="5" width="5" styleClass="noMargin" />
+				<!-- ******************************* -->
+
+				<!-- ****** Botao save ****** -->
+				<a4j:commandButton value="#{bundle['_nls.button.save']}"
+					action="#{mapaAlocacaoController.create}"
+					styleClass="buttonGeneric"
+					rendered="#{!mapaAlocacaoController.bean.isUpdate}" />
+				<rich:spacer height="5" width="5"
+					rendered="#{!mapaAlocacaoController.bean.isUpdate}" />
+
+				<a4j:commandButton value="#{bundle['_nls.button.save']}"
+					action="#{mapaAlocacaoController.prepareManage}"
+					styleClass="buttonGeneric"
+					rendered="#{mapaAlocacaoController.bean.isUpdate}" />
+				<rich:spacer height="5" width="5"
+					rendered="#{mapaAlocacaoController.bean.isUpdate}" />
+				<!-- ************************ -->
+
+				<!-- ****** Botao Save As ****** -->
+				<h:panelGroup rendered="#{mapaAlocacaoController.bean.isUpdate}">
+					<a4j:commandButton value="#{bundle['_nls.button.save_as.draft']}"
+						style=" width : 90px;"
+						action="#{mapaAlocacaoController.saveAsDashboard}"
+						styleClass="buttonGeneric"
+						rendered="#{mapaAlocacaoController.bean.to.indicadorVersao == 'PB'}">
+						<f:setPropertyActionListener value="DF"
+							target="#{mapaAlocacaoController.bean.mapaAlocacaoVersion}" />
+					</a4j:commandButton>
+
+					<a4j:commandButton value="#{bundle['_nls.button.save_as.publish']}"
+						style=" width : 90px;"
+						action="#{mapaAlocacaoController.saveAsDashboard}"
+						styleClass="buttonGeneric"
+						rendered="#{mapaAlocacaoController.bean.to.indicadorVersao == 'DF'}">
+						<f:setPropertyActionListener value="PB"
+							target="#{mapaAlocacaoController.bean.mapaAlocacaoVersion}" />
+					</a4j:commandButton>
+
+				</h:panelGroup>
+				<!-- ************************ -->
+
+				<!-- ****** Botao DashBoard ****** -->
+				<rich:spacer height="5" width="5" />
+				<a4j:commandButton
+					value="#{bundle['_nls.mapa_alocacao.button.dashboard']}"
+					style=" width : 90px;"
+					action="#{mapaAlocacaoController.prepareFinancials}"
+					styleClass="buttonGeneric"
+					rendered="#{mapaAlocacaoController.bean.isUpdate}">
+					<f:setPropertyActionListener value="manageEdit"
+						target="#{mapaAlocacaoController.bean.redirectPage}" />
+
+				</a4j:commandButton>
+				<!-- ******************************* -->
+
+				<!-- ****** Botoes Lock\Unlock do MapaAlocacao ****** -->
+				<h:panelGroup>
+					<rich:spacer height="5" width="5" />
+					<a4j:commandButton ajaxSingle="false"
+						value="#{bundle['_nls.hint.unlock']}"
+						action="#{mapaAlocacaoController.unlockMapaAlocacao}"
+						styleClass="buttonGeneric"
+						rendered="#{mapaAlocacaoController.bean.isUpdate}">
+					</a4j:commandButton>
+				</h:panelGroup>
+				<!-- ************************************************ -->
+
+				<!-- ****** Botoes Follow\Unfollow do MapaAlocacao ****** -->
+				<rich:spacer height="5" width="5" />
+				<a4j:commandButton ajaxSingle="false"
+					value="#{bundle['_nls.hint.follow']}"
+					action="#{mapaAlocacaoController.followMapaAlocacao}"
+					styleClass="buttonGeneric"
+					rendered="#{mapaAlocacaoController.bean.mapFollow[mapaAlocacaoController.bean.to.codigoMapaAlocacao] == null}">
+				</a4j:commandButton>
+				<a4j:commandButton ajaxSingle="false"
+					value="#{bundle['_nls.hint.following']}"
+					action="#{mapaAlocacaoController.unfollowMapaAlocacao}"
+					styleClass="buttonGeneric"
+					rendered="#{mapaAlocacaoController.bean.mapFollow[mapaAlocacaoController.bean.to.codigoMapaAlocacao] != null}"
+					title="#{bundle['_nls.hint.unfollow']}">
+				</a4j:commandButton>
+				<!-- ************************************************ -->
+
+			</h:panelGrid>
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<!-- ****** Botoes Tag ****** -->
+			<rich:panel style="padding:0" headerClass="outpanelHeader"
+				rendered="#{mapaAlocacaoController.bean.isUpdate}">
+				<f:facet name="header"></f:facet>
+
+				<h:panelGrid columns="18" cellpadding="0" cellspacing="0">
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.etiqueta.label']}: "
+						for="etiqueta" styleClass="labelGeneric" />
+
+					<rich:spacer height="5" width="5" />
+
+					<h:inputText id="nomeEtiquetaAdd" size="15" maxlength="20"
+						label="#{bundle['_nls.mapa_alocacao.etiqueta.label']}"
+						value="#{mapaAlocacaoController.bean.nomeEtiquetaAdd}">
+						<f:validateLength
+							minimum="#{systemProperties['form.input.length.minimum']}"
+							maximum="20" />
+
+					</h:inputText>
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandLink ajaxSingle="false" id="addEtiquetalink"
+						action="#{mapaAlocacaoController.addEtiqueta}">
+						<h:graphicImage width="16" height="16"
+							value="/images/icons/add.gif" style="border:0" />
+					</a4j:commandLink>
+					<rich:toolTip for="addEtiquetalink"
+						value="#{bundle['_nls.hint.add']}" />
+
+					<rich:spacer height="5" width="5" />
+
+					<rich:comboBox id="etiqueta"
+						label="#{bundle['_nls.mapa_alocacao.etiqueta.label']}"
+						value="#{mapaAlocacaoController.bean.nomeEtiquetaSelected}"
+						suggestionValues="#{mapaAlocacaoController.bean.etiquetaList}"
+						directInputSuggestions="true" enableManualInput="false">
+					</rich:comboBox>
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandLink ajaxSingle="false" id="filterEtiquetalink"
+						reRender="alocationFormTable"
+						action="#{mapaAlocacaoController.filterEtiqueta}"
+						limitToList="true">
+						<h:graphicImage width="16" height="16"
+							value="/images/icons/filter.gif" style="border:0" />
+					</a4j:commandLink>
+					<rich:toolTip for="filterEtiquetalink"
+						value="#{bundle['_nls.hint.filter']}" />
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandLink ajaxSingle="false" id="deleteEtiquetalink"
+						action="#{mapaAlocacaoController.deleteEtiqueta}">
+						<h:graphicImage width="16" height="16"
+							value="/images/icons/delete.gif" style="border:0" />
+					</a4j:commandLink>
+					<rich:toolTip for="deleteEtiquetalink"
+						value="#{bundle['_nls.hint.delete']}" />
+
+					<rich:spacer height="5" width="10" />
+
+					<a4j:commandButton value="#{bundle['_nls.button.apply']}"
+						action="#{mapaAlocacaoController.applyEtiqueta}"
+						styleClass="buttonGeneric"
+						reRender="alocationFormTable,errorMsgId" limitToList="true" />
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandButton value="#{bundle['_nls.button.unapply']}"
+						action="#{mapaAlocacaoController.unapplyEtiqueta}"
+						styleClass="buttonGeneric"
+						reRender="alocationFormTable,errorMsgId" limitToList="true" />
+				</h:panelGrid>
+			</rich:panel>
+			<!-- ******************************* -->
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<a4j:keepAlive beanName="mapaAlocacaoBean" />
+			<a4j:keepAlive beanName="messageControlBean" />
+
+
+			<!-- ********** Mapa de Alocacao ************** -->
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0" border="0">
+
+				<a4j:outputPanel id="alocacaoTable">
+
+					<rich:jQuery selector="#alocacaoTable" timing="onload"
+						query="numeric('#{bundle['locale.decimal.separator']}')" />
+
+					<div class="scrollTableDiv" style="width: 1005px;">
+
+						<table class="dr-table rich-table scrollTableMap" cellspacing="0"
+							width="100%">
+
+							<thead class="dr-table-thead">
+								<tr class="dr-table-header rich-table-header">
+
+
+									<td class="dr-table-subheadercell rich-table-subheadercell">
+										<input type="checkbox"
+										onclick="javascript: checkUncheckAll(this);" />
+									</td>
+									<td align="center"
+										class="dr-table-subheadercell rich-table-subheadercell"><a4j:commandLink
+											action="#{mapaAlocacaoController.columnSort}"
+											reRender="alocationFormTable" limitToList="true"
+											styleClass="colunmSortLink">
+											<span class="dr-table-sortable-header"> <h:outputText
+													styleClass="labelGeneric"
+													value="#{bundle['_nls.mapa_alocacao.recurso.label']}" /> <h:graphicImage
+													value="/images/icons/column_sort.gif" style="border:0"
+													styleClass="dr-table-header-sort-img rich-sort-icon" />
+											</span>
+											<f:setPropertyActionListener value="1"
+												target="#{mapaAlocacaoController.bean.alocacaoRow.comparableField}" />
+
+										</a4j:commandLink></td>
+									<td align="center"
+										class="dr-table-subheadercell rich-table-subheadercell"><a4j:commandLink
+											action="#{mapaAlocacaoController.columnSort}"
+											reRender="alocationFormTable" limitToList="true"
+											styleClass="colunmSortLink">
+
+											<span class="dr-table-sortable-header"> <h:outputText
+													styleClass="labelGeneric"
+													value="#{bundle['_nls.mapa_alocacao.base.label']}" /> <h:graphicImage
+													value="/images/icons/column_sort.gif" style="border:0"
+													styleClass="dr-table-header-sort-img rich-sort-icon" />
+											</span>
+											<f:setPropertyActionListener value="2"
+												target="#{mapaAlocacaoController.bean.alocacaoRow.comparableField}" />
+										</a4j:commandLink></td>
+									<td align="center"
+										class="dr-table-subheadercell rich-table-subheadercell"><a4j:commandLink
+											action="#{mapaAlocacaoController.columnSort}"
+											reRender="alocationFormTable" limitToList="true"
+											styleClass="colunmSortLink">
+											<span class="dr-table-sortable-header"> <h:outputText
+													styleClass="labelGeneric"
+													value="#{bundle['_nls.mapa_alocacao.perfil_vendido.label']}" />
+												<h:graphicImage value="/images/icons/column_sort.gif"
+													style="border:0"
+													styleClass="dr-table-header-sort-img rich-sort-icon" />
+											</span>
+											<f:setPropertyActionListener value="3"
+												target="#{mapaAlocacaoController.bean.alocacaoRow.comparableField}" />
+										</a4j:commandLink></td>
+									<td align="center"
+										class="dr-table-subheadercell rich-table-subheadercell"><a4j:commandLink
+											action="#{mapaAlocacaoController.columnSort}"
+											reRender="alocationFormTable" limitToList="true"
+											styleClass="colunmSortLink">
+											<span class="dr-table-sortable-header"> <h:outputText
+													styleClass="labelGeneric"
+													value="#{bundle['_nls.mapa_alocacao.estagio.label']}" /> <h:graphicImage
+													value="/images/icons/column_sort.gif" style="border:0"
+													styleClass="dr-table-header-sort-img rich-sort-icon" />
+											</span>
+											<f:setPropertyActionListener value="4"
+												target="#{mapaAlocacaoController.bean.alocacaoRow.comparableField}" />
+										</a4j:commandLink></td>
+									<td class="dr-table-subheadercell rich-table-subheadercell">
+										<h:outputLabel
+											value="#{bundle['_nls.mapa_alocacao.lista_etiqueta.label']}" />
+									</td>
+									<td class="dr-table-subheadercell rich-table-subheadercell">
+										<h:outputLabel
+											value="#{bundle['_nls.mapa_alocacao.valor_ur.label']}" />
+									</td>
+									<td class="dr-table-subheadercell rich-table-subheadercell"
+										width="16"><rich:spacer width="5" /> <h:outputText
+											value="Actions" /> <rich:spacer width="5" /></td>
+
+									<!-- Colunas dos meses -->
+									<a4j:repeat
+										value="#{mapaAlocacaoController.bean.fatorUrMesList}"
+										var="fatorUrMes" rowKeyVar="row">
+										<td class="dr-table-subheadercell rich-table-subheadercell">
+
+											<h:panelGroup rendered="#{row == 0}">
+
+												<rich:contextMenu event="onmouseover" hideDelay="100"
+													attachTo="previousMonth" submitMode="ajax">
+													<rich:menuItem
+														value="#{bundle['_nls.mapa_alocacao.shift.1.month']}"
+														action="#{mapaAlocacaoController.moveWindow}"
+														reRender="errorMsgId,alocationFormTable"
+														limitToList="true">
+
+														<f:setPropertyActionListener value="#{-1}"
+															target="#{mapaAlocacaoController.bean.numberMonthsToMove}" />
+													</rich:menuItem>
+
+													<rich:menuItem
+														value="#{bundle['_nls.mapa_alocacao.shift.3.month']}"
+														action="#{mapaAlocacaoController.moveWindow}"
+														reRender="errorMsgId,alocationFormTable"
+														limitToList="true">
+
+														<f:setPropertyActionListener value="#{-3}"
+															target="#{mapaAlocacaoController.bean.numberMonthsToMove}" />
+													</rich:menuItem>
+
+													<rich:menuItem
+														value="#{bundle['_nls.mapa_alocacao.shift.6.month']}"
+														action="#{mapaAlocacaoController.moveWindow}"
+														reRender="errorMsgId,alocationFormTable"
+														limitToList="true">
+
+														<f:setPropertyActionListener value="#{-6}"
+															target="#{mapaAlocacaoController.bean.numberMonthsToMove}" />
+													</rich:menuItem>
+												</rich:contextMenu>
+
+												<h:graphicImage value="/images/icons/previous.png"
+													id="previousMonth" style="border:0; vertical-align: top;" />
+
+											</h:panelGroup> <h:outputText value="#{fatorUrMes.dataMes}"
+												styleClass="labelGeneric">
+												<f:convertDateTime pattern="MM/yy" />
+											</h:outputText> <h:panelGroup
+												rendered="#{mapaAlocacaoController.bean.validityDateListSize == (row+1) }">
+
+												<h:graphicImage value="/images/icons/next.png"
+													id="nextMonth" style="border:0; vertical-align: top;" />
+
+												<rich:contextMenu event="onmouseover" hideDelay="100"
+													attachTo="nextMonth" submitMode="ajax">
+													<rich:menuItem
+														value="#{bundle['_nls.mapa_alocacao.shift.1.month']}"
+														action="#{mapaAlocacaoController.moveWindow}"
+														reRender="errorMsgId,alocationFormTable"
+														limitToList="true">
+
+														<f:setPropertyActionListener value="#{1}"
+															target="#{mapaAlocacaoController.bean.numberMonthsToMove}" />
+													</rich:menuItem>
+													<rich:menuItem
+														value="#{bundle['_nls.mapa_alocacao.shift.3.month']}"
+														action="#{mapaAlocacaoController.moveWindow}"
+														reRender="errorMsgId,alocationFormTable"
+														limitToList="true">
+
+														<f:setPropertyActionListener value="#{3}"
+															target="#{mapaAlocacaoController.bean.numberMonthsToMove}" />
+													</rich:menuItem>
+													<rich:menuItem
+														value="#{bundle['_nls.mapa_alocacao.shift.6.month']}"
+														action="#{mapaAlocacaoController.moveWindow}"
+														reRender="errorMsgId,alocationFormTable"
+														limitToList="true">
+
+														<f:setPropertyActionListener value="#{6}"
+															target="#{mapaAlocacaoController.bean.numberMonthsToMove}" />
+													</rich:menuItem>
+												</rich:contextMenu>
+
+											</h:panelGroup>
+										</td>
+									</a4j:repeat>
+									<td class="dr-table-subheadercell rich-table-subheadercell"
+										width="5px" />
+
+								</tr>
+
+
+							</thead>
+
+							<tbody id="bodyTableMapId">
+								<tr class="dr-table-subheader rich-table-subheader">
+									<td class="dr-table-headercell rich-table-headercell"
+										colspan="8" style="text-align: right;"><h:outputLabel
+											value="U.R. Factor" /> <h:graphicImage
+											value="/images/icons/arrow_right.png" width="10" height="10"
+											style="border: 0; padding-left: 5px;" /></td>
+									<a4j:region>
+										<a4j:repeat
+											value="#{mapaAlocacaoController.bean.fatorUrMesList}"
+											var="fatorUrMes">
+											<td><h:inputText style="width: 33px;" dir="RTL"
+													value="#{fatorUrMes.percentualFatorUr}">
+													<a4j:support
+														action="#{mapaAlocacaoController.updateFatorUrMes}"
+														ajaxSingle="true" event="onchange" limitToList="true">
+														<f:setPropertyActionListener value="#{fatorUrMes}"
+															target="#{mapaAlocacaoController.bean.fatorUr}" />
+													</a4j:support>
+												</h:inputText></td>
+										</a4j:repeat>
+									</a4j:region>
+									<td></td>
+								</tr>
+								<tr style="background-color: #CCCCCC;">
+									<td class="dr-subtable-cell rich-subtable-cell"></td>
+									<td class="dr-subtable-cell rich-subtable-cell" align="center">
+										<h:outputLabel value="#{bundle['_nls.total.label']}"
+											styleClass="labelGeneric" />
+									</td>
+									<td class="dr-subtable-cell rich-subtable-cell" colspan="3"></td>
+									<td class="dr-subtable-cell rich-subtable-cell"></td>
+									<td class="dr-subtable-cell rich-subtable-cell" align="center">
+										<h:outputText value="#{mapaAlocacaoController.bean.totalUr}"
+											styleClass="labelGeneric">
+											<f:convertNumber locale="#{bundle['locale.en_us']}"
+												pattern="#{systemProperties['pattern.number']}" />
+										</h:outputText>
+									</td>
+									<td class="dr-subtable-cell rich-subtable-cell"></td>
+									<a4j:repeat
+										value="#{mapaAlocacaoController.bean.totalValuesList}"
+										var="total">
+										<td class="dr-subtable-cell rich-subtable-cell" align="center">
+											<h:outputText value="#{total}" styleClass="labelGeneric">
+												<f:convertNumber locale="#{bundle['locale.en_us']}"
+													pattern="#{systemProperties['pattern.number']}" />
+											</h:outputText>
+										</td>
+									</a4j:repeat>
+
+									<td width="5px"></td>
+								</tr>
+								<a4j:repeat
+									value="#{mapaAlocacaoController.bean.alocacaoRowList}"
+									var="item" rowKeyVar="row">
+									<!-- ****** Region View, Remove ****** -->
+									<h:panelGroup rendered="#{item.isView}">
+										<h:panelGroup rendered="#{!item.isRemove}">
+
+											<tr>
+												<td class="dr-subtable-cell rich-subtable-cell"
+													align="center"><h:selectBooleanCheckbox
+														value="#{item.isSelected}" /></td>
+												<td class="dr-subtable-cell rich-subtable-cell"><h:panelGroup
+														rendered="#{mapaAlocacaoController.bean.to.indicadorVersao == 'PB'}">
+														<h:panelGroup
+															rendered="#{item.alocacao.recurso.indicadorTipoRecurso == 'PE'}">
+															<a4j:commandLink rendered="#{item.showAlocations}"
+																reRender="alocationFormTable"
+																action="#{mapaAlocacaoController.findAllAlocationsByRecurso}">
+																<h:graphicImage value="/images/icons/plus.gif"
+																	style="border:0" />
+																<f:setPropertyActionListener value="#{item}"
+																	target="#{mapaAlocacaoController.bean.alocacaoRow}" />
+															</a4j:commandLink>
+															<h:panelGroup rendered="#{item.existsAlocation}">
+																<a4j:commandLink rendered="#{!item.showAlocations}"
+																	ajaxSingle="true"
+																	action="#{mapaAlocacaoController.hideAllAlocationsByRecurso}"
+																	reRender="alocationFormTable">
+																	<h:graphicImage value="/images/icons/minus.gif"
+																		style="border:0" />
+
+																	<f:setPropertyActionListener value="#{item}"
+																		target="#{mapaAlocacaoController.bean.alocacaoRow}" />
+																</a4j:commandLink>
+															</h:panelGroup>
+														</h:panelGroup>
+													</h:panelGroup> <h:outputText style="padding-left: 4px;"
+														value="#{item.alocacao.recurso.codigoMnemonico}"
+														styleClass="#{item.styleClass}" /></td>
+												<td class="dr-subtable-cell rich-subtable-cell"
+													align="center"><h:outputText
+														value="#{item.alocacao.cidadeBase.siglaCidadeBase}" /></td>
+												<td class="dr-subtable-cell rich-subtable-cell" style="#{item.alocacao.perfilVendido.indicadorDeleteLogico == 'S' ? 'background-color: #C6E2FF;' : ''}"><h:outputText
+														value="#{item.alocacao.perfilVendido.nomePerfilVendido}" />
+												</td>
+												<td class="dr-subtable-cell rich-subtable-cell"
+													align="center"><h:outputText
+														value="#{item.alocacao.indicadorEstagio}"
+														converter="StageAlocacaoConverter" /></td>
+												<td class="dr-subtable-cell rich-subtable-cell"><h:outputText
+														id="etiquetaAlocacaolabel"
+														value="#{item.etiquetaNamesPart}" /> <rich:toolTip
+														for="etiquetaAlocacaolabel" value="#{item.etiquetaNames}" /></td>
+												<td class="dr-subtable-cell rich-subtable-cell"
+													align="center"><a4j:region id="valorUrRegion">
+														<h:inputText value="#{item.alocacao.valorUr}"
+															required="true" dir="RTL" style="width: 25px;">
+
+															<a4j:support action="#{mapaAlocacaoController.updateUr}"
+																ajaxSingle="true" event="onchange" limitToList="true">
+																<f:setPropertyActionListener value="#{item.alocacao}"
+																	target="#{mapaAlocacaoController.alocacaoBean.to}" />
+															</a4j:support>
+
+														</h:inputText>
+													</a4j:region></td>
+												<td class="dr-subtable-cell rich-subtable-cell"><a4j:region
+														id="activeButtonsRegion">
+														<a4j:commandLink ajaxSingle="true" id="editlink"
+															style="padding-right: 6px;" limitToList="true"
+															reRender="editAlocacaoPanel"
+															oncomplete="#{rich:component('editAlocacaoPanel')}.show()"
+															action="#{mapaAlocacaoController.prepareEditAlocacao}">
+															<h:graphicImage title="#{bundle['_nls.hint.edit']}"
+																alt="#{bundle['_nls.hint.edit']}"
+																value="/images/icons/edit.gif" style="border:0" />
+
+
+															<f:setPropertyActionListener value="#{item}"
+																target="#{mapaAlocacaoController.bean.alocacaoRow}" />
+
+														</a4j:commandLink>
+
+														<a4j:commandLink ajaxSingle="false" id="editValidity"
+															limitToList="true" reRender="editValidityPanel"
+															action="#{mapaAlocacaoController.prepareEditValidityAlocacao}"
+															oncomplete="#{rich:component('editValidityPanel')}.show()">
+															<h:graphicImage
+																title="#{bundle['_nls.hint.edit.validity']}"
+																alt="#{bundle['_nls.hint.edit.validity']}"
+																value="/images/icons/calendar.gif" style="border:0" />
+															<f:setPropertyActionListener value="#{item.alocacao}"
+																target="#{mapaAlocacaoController.bean.toAlocacao}" />
+														</a4j:commandLink>
+
+														<a4j:commandLink ajaxSingle="false" id="deletelink"
+															oncomplete="#{rich:component('deleteAlocacaoPanel')}.show()"
+															rendered="#{false}">
+															<h:graphicImage value="/images/icons/delete.gif"
+																style="border:0" />
+															<f:setPropertyActionListener value="#{item.alocacao}"
+																target="#{mapaAlocacaoController.bean.toAlocacao}" />
+														</a4j:commandLink>
+
+													</a4j:region></td>
+
+
+												<a4j:repeat value="#{item.alocacaoCellList}" var="subitem">
+													<a4j:region id="alocacaoPeriodoRegion">
+														<a4j:region rendered="#{subitem.rendered}">
+
+
+															<td class="dr-subtable-cell rich-subtable-cell"
+																align="center" style="#{subitem.flagIndicadorAtivo? 'background-color : #FFDAB9;':'background-color : white;'}">
+
+
+																<div style="position: relative;">
+																	<h:panelGroup
+																		rendered="#{subitem.flagIndicadorAlocacao == 1 and !subitem.flagIndicadorAtivo}">
+																		<h:inputText
+																			value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+																			required="true" dir="RTL"
+																			style="width: 25px; color: red;">
+
+
+
+																			<f:convertNumber locale="#{bundle['locale.en_us']}"
+																				maxFractionDigits="2" />
+
+																			<a4j:support
+																				action="#{mapaAlocacaoController.updateAlocacaoPeriodo}"
+																				event="onchange" limitToList="true"
+																				oncomplete="
+																	if(#{subitem.showMessageError}) {
+																		document.getElementById('toolTipMensagemErro_#{item.rowId}_#{subitem.cellId}').style.display = 'block';
+																		document.getElementById('toolTipMensagemErro_#{item.rowId}_#{subitem.cellId}').style.visibility = 'visible';
+																	}
+																	">
+																				<f:setPropertyActionListener
+																					value="#{subitem.alocacaoPeriodo}"
+																					target="#{mapaAlocacaoController.bean.alocacaoPeriodo}" />
+																				<f:setPropertyActionListener value="#{true}"
+																					target="#{subitem.wasChanged}" />
+																				<f:setPropertyActionListener
+																					value="#{mapaAlocacaoController.admissionDateAfterAllocationDate}"
+																					target="#{subitem.showMessageError}" />
+																			</a4j:support>
+
+																		</h:inputText>
+																	</h:panelGroup>
+																	<h:panelGroup
+																		rendered="#{subitem.flagIndicadorAlocacao == -1 and !subitem.flagIndicadorAtivo}">
+																		<h:inputText styleClass="subAlocationColor"
+																			value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+																			required="true" dir="RTL"
+																			style="color: blue; width: 25px;">
+
+
+
+																			<f:convertNumber locale="#{bundle['locale.en_us']}"
+																				maxFractionDigits="2" />
+
+																			<a4j:support
+																				action="#{mapaAlocacaoController.updateAlocacaoPeriodo}"
+																				event="onchange" limitToList="true"
+																				oncomplete="
+																	if(#{subitem.showMessageError}) {
+																		document.getElementById('toolTipMensagemErro_#{item.rowId}_#{subitem.cellId}').style.display = 'block';
+																		document.getElementById('toolTipMensagemErro_#{item.rowId}_#{subitem.cellId}').style.visibility = 'visible';
+																	}
+																	">
+																				<f:setPropertyActionListener
+																					value="#{subitem.alocacaoPeriodo}"
+																					target="#{mapaAlocacaoController.bean.alocacaoPeriodo}" />
+																				<f:setPropertyActionListener value="#{true}"
+																					target="#{subitem.wasChanged}" />
+																				<f:setPropertyActionListener
+																					value="#{mapaAlocacaoController.admissionDateAfterAllocationDate}"
+																					target="#{subitem.showMessageError}" />
+																			</a4j:support>
+
+																		</h:inputText>
+
+																	</h:panelGroup>
+																	<h:panelGroup
+																		rendered="#{subitem.flagIndicadorAlocacao == 0 and !subitem.flagIndicadorAtivo}">
+																		<h:inputText
+																			value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+																			required="true" dir="RTL" style="width: 25px;">
+
+																			<a4j:support
+																				action="#{mapaAlocacaoController.updateAlocacaoPeriodo}"
+																				event="onchange" limitToList="true"
+																				oncomplete="
+																	if(#{subitem.showMessageError}) {
+																		document.getElementById('toolTipMensagemErro_#{item.rowId}_#{subitem.cellId}').style.display = 'block';
+																		document.getElementById('toolTipMensagemErro_#{item.rowId}_#{subitem.cellId}').style.visibility = 'visible';
+																	}
+																	">
+																				<f:setPropertyActionListener
+																					value="#{subitem.alocacaoPeriodo}"
+																					target="#{mapaAlocacaoController.bean.alocacaoPeriodo}" />
+																				<f:setPropertyActionListener value="#{true}"
+																					target="#{subitem.wasChanged}" />
+																				<f:setPropertyActionListener
+																					value="#{mapaAlocacaoController.admissionDateAfterAllocationDate}"
+																					target="#{subitem.showMessageError}" />
+																			</a4j:support>
+
+																			<f:convertNumber locale="#{bundle['locale.en_us']}"
+																				maxFractionDigits="2" />
+																		</h:inputText>
+																	</h:panelGroup>
+																	<h:panelGroup
+																		rendered="#{subitem.flagIndicadorAtivo}">
+
+																		<h:outputText
+																				value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}" />
+
+																	</h:panelGroup>
+																	<span class="dr-rich-tool-tip rich-tool-tip"
+																		id="toolTipMensagemErro_#{item.rowId}_#{subitem.cellId}"
+																		style="z-index: 99; position: absolute; left: 30px; top: -16px; display: none; visibility: hidden; width: 218px;">
+																		<h:graphicImage value="/images/icons/close.gif"
+																			onclick="document.getElementById('toolTipMensagemErro_#{item.rowId}_#{subitem.cellId}').style.display='none';"
+																			style="position: relative; top: -8px; left: -17px;" />
+																		<span style="position: relative; left: -20px;">
+																			<h:outputText
+																				value="#{bundle['_nls.mapa_alocacao.msg.warning.alocation_date_greater_admission_date']}" />
+																	</span>
+																	</span>
+																</div>
+															</td>
+
+														</a4j:region>
+
+
+
+														<a4j:region rendered="#{!subitem.rendered}">
+															<td
+																class="dr-subtable-cell rich-subtable-cell inactiveColor"
+																align="center"><h:panelGroup
+																	rendered="#{subitem.flagIndicadorAlocacao == 1}">
+																	<h:outputLabel
+																		value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+																		styleClass="superAlocationColor" />
+																</h:panelGroup> <h:panelGroup
+																	rendered="#{subitem.flagIndicadorAlocacao == -1}">
+																	<h:outputLabel
+																		value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+																		styleClass="subAlocationColor">
+																		<f:convertNumber locale="#{bundle['locale.en_us']}"
+																			pattern="#{systemProperties['pattern.number']}" />
+																	</h:outputLabel>
+																</h:panelGroup> <h:panelGroup
+																	rendered="#{subitem.flagIndicadorAlocacao == 0}">
+																	<h:outputLabel
+																		value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}">
+																		<f:convertNumber locale="#{bundle['locale.en_us']}"
+																			pattern="#{systemProperties['pattern.number']}" />
+																	</h:outputLabel>
+																</h:panelGroup></td>
+														</a4j:region>
+													</a4j:region>
+
+												</a4j:repeat>
+												<td></td>
+											</tr>
+
+											<!-- ************* Alocacoes dos outros Mapas ************* -->
+											<a4j:repeat value="#{item.alocacaoCPRowList}"
+												var="alocacaoCPRow">
+												<tr style="background-color: #F0F0F0;">
+													<td colspan="8" class="dr-subtable-cell rich-subtable-cell"
+														align="right"><h:outputText
+															value="#{alocacaoCPRow.contratoPratica.nomeContratoPratica}" />
+													</td>
+													<a4j:repeat value="#{alocacaoCPRow.alocacaoCellList}"
+														var="alocacaoCell">
+														<a4j:region>
+															<h:outputText value="" />
+															<td class="dr-subtable-cell rich-subtable-cell"
+																align="center"><h:outputLabel
+																	value="#{alocacaoCell.alocacaoPeriodo.percentualAlocacaoPeriodo}" />
+															</td>
+														</a4j:region>
+													</a4j:repeat>
+												</tr>
+											</a4j:repeat>
+											<!-- ***************************************************** -->
+										</h:panelGroup>
+										<!-- ********** / isRemove ********** -->
+									</h:panelGroup>
+									<!-- ********** / isView ********** -->
+									<!-- ******************************* -->
+								</a4j:repeat>
+
+
+							</tbody>
+
+
+						</table>
+
+
+
+					</div>
+					<rich:toolBar style="padding: 0px;" width="1005">
+
+						<rich:dropDownMenu direction="top-right" hideDelay="100">
+							<f:facet name="label">
+								<h:panelGroup style="vertical-align: top;">
+									<h:graphicImage value="/images/icons/edit_group.png"
+										styleClass="pic" height="18" width="18"
+										style="border:0; vertical-align: top" />
+									<h:outputText value="Alocation" />
+								</h:panelGroup>
+							</f:facet>
+
+							<rich:menuItem value="#{bundle['_nls.alocacao.hint.add.pessoa']}"
+								id="addPessoalink" submitMode="ajax"
+								oncomplete="#{rich:component('addAlocacaoPanel')}.show()"
+								action="#{mapaAlocacaoController.prepareAddPessoa}"
+								icon="/images/icons/add_pessoa.png" reRender="addAlocacaoPanel"
+								limitToList="true">
+							</rich:menuItem>
+
+							<rich:menuItem value="#{bundle['_nls.alocacao.hint.add.papel']}"
+								id="addPapellink" submitMode="ajax"
+								oncomplete="#{rich:component('addAlocacaoPanel')}.show()"
+								reRender="addAlocacaoPanel" limitToList="true"
+								action="#{mapaAlocacaoController.prepareAddPapel}"
+								icon="/images/icons/add_papel.png">
+							</rich:menuItem>
+
+
+							<rich:menuItem id="deleteAlllink" limitToList="true"
+								submitMode="ajax" value="#{bundle['_nls.hint.remove.all']}"
+								icon="/images/icons/delete_all.png"
+								oncomplete="#{rich:component('deleteAllAlocacaoPanel')}.show()">
+							</rich:menuItem>
+
+							<rich:menuItem id="copyAllLink" limitToList="true"
+								submitMode="ajax" value="#{bundle['_nls.hint.copy.all']}"
+								oncomplete="#{rich:component('copyAllModal')}.show()"
+								action="#{mapaAlocacaoController.prepareCopyAll}"
+								icon="/images/icons/copy.gif" reRender="copyAllModal">
+							</rich:menuItem>
+
+						</rich:dropDownMenu>
+
+						<rich:toolBar>
+
+						</rich:toolBar>
+						<rich:toolBarGroup location="left" style="padding: 0px;">
+							<h:panelGroup>
+								<h:outputText
+									value="#{bundle['_nls.alocacao.update_values.label']}:"
+									style="padding-right: 4px;" />
+
+								<h:outputText
+									value="#{bundle['_nls.alocacao.update_ur.label']}:"
+									style="padding-right: 4px;" />
+
+								<h:inputText required="true" id="updateUr" size="2"
+									maxlength="12"
+									label="#{bundle['_nls.alocacao.update_ur.label']}"
+									value="#{mapaAlocacaoController.bean.updateUr}">
+									<f:validateDoubleRange minimum="0" />
+
+								</h:inputText>
+
+								<a4j:commandButton value="#{bundle['_nls.button.ok']}"
+									action="#{mapaAlocacaoController.updateIncomeUr}"
+									reRender="alocationFormTable" limitToList="true" />
+
+								<h:outputText
+									value="#{bundle['_nls.alocacao.update_fte.label']}:"
+									style="padding-right: 4px; padding-left: 10px;" />
+
+								<h:inputText required="true" id="updateFte" size="2"
+									maxlength="12" style="padding-right: 4px;"
+									label="#{bundle['_nls.alocacao.update_fte.label']}"
+									value="#{mapaAlocacaoController.bean.updateFte}">
+									<f:validateDoubleRange minimum="0" />
+
+								</h:inputText>
+
+								<a4j:commandButton value="#{bundle['_nls.button.ok']}"
+									action="#{mapaAlocacaoController.updateIncomeFte}"
+									reRender="alocationFormTable" limitToList="true" />
+							</h:panelGroup>
+						</rich:toolBarGroup>
+
+					</rich:toolBar>
+				</a4j:outputPanel>
+
+			</h:panelGrid>
+		</h:form>
+
+		<ui:include src="/pages/protected/alocacao/AlocacaoAdd.xhtml" />
+		<ui:include src="/pages/protected/alocacao/AlocacaoEdit.xhtml" />
+		<ui:include src="/pages/protected/alocacao/AlocacaoEditValidity.xhtml" />
+		<ui:include src="/pages/protected/alocacao/AlocacaoDelete.xhtml" />
+		<ui:include src="/pages/protected/alocacao/AlocacaoDeleteAll.xhtml" />
+		<ui:include src="/pages/protected/alocacao/AlocacaoCopy.xhtml" />
+
+		<!-- Modal da confirmacao do change period -->
+		<rich:modalPanel id="cutExtendPeriodPanel" autosized="true"
+			width="400">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.title.confirmation']}"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="hidelinkCutExtendPeriod" />
+					<rich:componentControl for="cutExtendPeriodPanel"
+						attachTo="hidelinkCutExtendPeriod" operation="hide"
+						event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<h:form>
+				<table width="100%">
+					<thead>
+						<tr>
+							<td colspan="2" align="left"><h:outputText
+									value="#{bundle['_nls.mapa_alocacao.cut_extend_period.title']}"
+									styleClass="labelGeneric colorRed" /></td>
+						</tr>
+						<tr>
+							<td colspan="2"><rich:spacer height="5" /></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td align="left" colspan="2"><a4j:commandButton
+									value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+									action="#{mapaAlocacaoController.updateMapPeriod}"
+									oncomplete="#{rich:component('cutExtendPeriodPanel')}.hide();"
+									styleClass="buttonGeneric" /> <rich:spacer height="5"
+									width="10" /> <a4j:commandButton
+									value="#{bundle['_nls.button.cancel']}"
+									styleClass="buttonGeneric" immediate="true" ajaxSingle="true"
+									oncomplete="#{rich:component('cutExtendPeriodPanel')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

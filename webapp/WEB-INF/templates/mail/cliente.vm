@@ -1,0 +1,24 @@
+<html>
+
+
+<body>
+	<h3>A new Customer was created.</h3>
+	
+	<HR WIDTH=80% align=left>
+    
+    <p>Please, it's necessary to create a Customer Entity for this Customer:</p>
+    
+    <table>
+    
+    	<tr>
+	    	<td><b>Author:</b><td><td>${author}</td>    
+	    </tr>	
+		<tr>
+	    	<td><b>Customer:</b><td><td>${cliente.nomeCliente}</td>    
+	    </tr>
+			    
+     </table>
+<body>
+
+
+</html>

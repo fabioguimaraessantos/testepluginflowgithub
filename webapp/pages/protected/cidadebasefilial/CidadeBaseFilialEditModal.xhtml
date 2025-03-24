@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<rich:modalPanel id="cidadeBaseFilialEditModal" autosized="true" width="300" height="80"
+                 showWhenRendered="#{cidadeBaseFilialBean.editModalOpen}">
+  <f:facet name="header">
+    <h:outputText value="#{bundle['_nls.cidade_base_filial.msg.modal.edit_title']}" style="padding-right:15px;"/>
+  </f:facet>
+
+  <h:form>
+    <h:panelGroup style="padding: 20px;">
+      <legend style="text-align:center;">
+        <h:outputFormat escape="false" value="#{bundle['_nls.cidade_base_filial.msg.modal.edit_message']}">
+          <f:param value="#{cidadeBaseFilialBean.to.id.cidadeBase.nomeCidadeBase}"/>
+        </h:outputFormat>
+      </legend>
+
+      <rich:spacer height="10"/>
+
+      <legend>
+        <h:outputFormat escape="false" value="#{bundle['_nls.cidade_base_filial.msg.modal.edit_message_from_to']}">
+          <f:param value="From:"/>
+          <f:param value="#{cidadeBaseFilialBean.to.empresaMatriz.nomeEmpresa}"/>
+          <f:param value="#{cidadeBaseFilialBean.to.id.empresa.nomeEmpresa}"/>
+          <f:param value="#{cidadeBaseFilialBean.to.empresaFilial.nomeEmpresa}"/>
+          <f:param value="#{cidadeBaseFilialBean.to.id.cidadeBase.nomeCidadeBase}"/>
+        </h:outputFormat>
+      </legend>
+
+      <rich:spacer height="5"/>
+
+      <legend>
+        <h:outputFormat escape="false" value="#{bundle['_nls.cidade_base_filial.msg.modal.edit_message_from_to']}">
+          <f:param value="To:"/>
+          <f:param value="#{cidadeBaseFilialBean.filter.empresaMatriz.nomeEmpresa}"/>
+          <f:param value="#{cidadeBaseFilialBean.filter.id.empresa.nomeEmpresa}"/>
+          <f:param value="#{cidadeBaseFilialBean.filter.empresaFilial.nomeEmpresa}"/>
+          <f:param value="#{cidadeBaseFilialBean.filter.id.cidadeBase.nomeCidadeBase}"/>
+        </h:outputFormat>
+      </legend>
+
+      <rich:spacer height="10"/>
+
+      <legend>
+        <h:outputText value="#{bundle['_nls.cidade_base_filial.msg.modal.edit_message_confirmation']}"/>
+      </legend>
+
+      <rich:spacer height="5"/>
+
+      <table width="100%">
+        <tbody>
+        <tr>
+          <td align="right" width="50%">
+            <a4j:commandButton value="#{bundle['_nls.cidade_base_filial.msg.modal.cancel']}"
+                               action="#{cidadeBaseFilialController.toggleEditModalOpen}"
+                               style="margin: 15px;"
+                               styleClass="buttonGeneric" reRender="cidadeBaseFilialTable" ajaxSingle="true"
+                               oncomplete="#{rich:component('cidadeBaseFilialEditModal')}.hide()"/>
+          </td>
+          <td align="left" width="50%">
+            <a4j:commandButton value="#{bundle['_nls.cidade_base_filial.msg.modal.continue']}"
+                               action="#{cidadeBaseFilialController.update}"
+                               style="margin: 15px;"
+                               styleClass="buttonGeneric" reRender="cidadeBaseFilialTable" ajaxSingle="true"
+                               oncomplete="#{rich:component('cidadeBaseFilialEditModal')}.hide()"/>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </h:panelGroup>
+  </h:form>
+</rich:modalPanel>
+</html>

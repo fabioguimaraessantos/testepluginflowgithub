@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:outputLabel value="#{bundle['_nls.composicao_tce.pessoa.label']}"
+		styleClass="labelGeneric" for="codigoLogin" />
+	<h:outputText
+		value="#{composicaoTceController.bean.to.pessoa.codigoLogin}" />
+
+	<h:outputLabel value="#{bundle['_nls.composicao_tce.data_mes.label']}"
+		styleClass="labelGeneric" for="dataMes" />
+	<h:outputText value="#{composicaoTceController.bean.to.dataMes}">
+		<f:convertDateTime pattern="#{bundle['_nls.date.pattern.simple']}"
+			locale="#{bundle['locale.en_us']}" />
+	</h:outputText>
+
+	<h:outputLabel value="#{bundle['_nls.composicao_tce.moeda.label']}"
+		styleClass="labelGeneric" for="nomeMoeda" />
+	<h:outputText
+		value="#{composicaoTceController.bean.to.moeda.nomeMoeda}" />
+
+	<h:outputLabel
+		value="#{bundle['_nls.composicao_tce.valor_salario.label']}"
+		styleClass="labelGeneric" for="valorSalario" />
+	<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+		<h:outputText
+			value="#{composicaoTceController.bean.to.moeda.siglaMoeda}"
+			rendered="#{composicaoTceController.bean.to.valorSalario != null}" />
+		<rich:spacer width="5" />
+		<h:outputText value="#{composicaoTceController.bean.to.valorSalario}">
+			<f:convertNumber locale="#{bundle['locale.en_us']}"
+				pattern="#{systemProperties['pattern.number']}" />
+		</h:outputText>
+	</h:panelGrid>
+
+	<h:outputLabel
+		value="#{bundle['_nls.composicao_tce.valor_beneficios.label']}"
+		styleClass="labelGeneric" for="valorBeneficios" />
+	<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+		<h:outputText
+			value="#{composicaoTceController.bean.to.moeda.siglaMoeda}"
+			rendered="#{composicaoTceController.bean.to.valorBeneficios != null}" />
+		<rich:spacer width="5" />
+		<h:outputText
+			value="#{composicaoTceController.bean.to.valorBeneficios}">
+			<f:convertNumber locale="#{bundle['locale.en_us']}"
+				pattern="#{systemProperties['pattern.number']}" />
+		</h:outputText>
+	</h:panelGrid>
+
+	<h:outputLabel
+		value="#{bundle['_nls.composicao_tce.num_horas_jornada.label']}"
+		styleClass="labelGeneric" for="numeroHorasJornada" />
+	<h:outputText
+		value="#{composicaoTceController.bean.to.numeroHorasJornada}">
+		<f:convertNumber locale="#{bundle['locale.en_us']}"
+			pattern="#{systemProperties['pattern.number.1']}" />
+	</h:outputText>
+
+	<h:outputLabel
+		value="#{bundle['_nls.composicao_tce.indicador_tipo.label']}"
+		styleClass="labelGeneric" for="indicadorTipo" />
+	<h:outputText value="#{composicaoTceController.bean.to.indicadorTipo}"
+		converter="TipoComposicaoTceConverter" />
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

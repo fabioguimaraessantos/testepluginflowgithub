@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+    <h:form styleClass="noMargin">
+        <a4j:keepAlive beanName="tabelaPrecoBean" />
+        <a4j:keepAlive beanName="msaBean" />
+        <a4j:keepAlive beanName="msaContratoBean" />
+    </h:form>
+    <rich:spacer height="5" styleClass="noMargin" />
+    <h:form styleClass="noMargin">
+        <a4j:region>
+            <rich:dataTable value="#{msaController.tabelaPrecoBean.resultList}"
+                            var="item" width="100%" id="priceTableList">
+
+                <rich:column sortBy="#{item.descricaoTabelaPreco}">
+                    <f:facet name="header">
+                        <h:outputText
+                                value="#{bundle['_nls.tabela_preco.descricao_tabela_preco.label']}" />
+                    </f:facet>
+                    <h:outputText id="descricaoTabelaPreco"
+                                  value="#{item.descricaoTabelaPreco}" />
+                </rich:column>
+
+                <rich:column sortBy="#{item.moeda.nomeMoeda}"
+                             style="text-align: center;">
+                    <f:facet name="header">
+                        <h:outputText value="#{bundle['_nls.moeda.entity_name']}" />
+                    </f:facet>
+                    <h:outputText value="#{item.moeda.nomeMoeda}" />
+                </rich:column>
+
+                <rich:column sortBy="#{item.dataInicioVigencia}"
+                             style="text-align: center;">
+                    <f:facet name="header">
+                        <h:outputText
+                                value="#{bundle['_nls.tabela_preco.data_inicio_vigencia.label']}" />
+                    </f:facet>
+                    <h:outputText value="#{item.dataInicioVigencia}">
+                        <f:convertDateTime pattern="MMM/yyyy" />
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column sortBy="#{item.dataFimVigencia}"
+                             style="text-align: center;">
+                    <f:facet name="header">
+                        <h:outputText
+                                value="#{bundle['_nls.tabela_preco.data_fim_vigencia.label']}" />
+                    </f:facet>
+                    <h:outputText value="#{item.dataFimVigencia}"
+                                  rendered="#{item.dataFimVigencia != null}">
+                        <f:convertDateTime pattern="MMM/yyyy" />
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column sortBy="#{item.priceTableStatusFlowPms.name}"
+                             style="text-align: center;">
+                    <f:facet name="header">
+                        <h:outputText value="#{bundle['_nls.tabela_preco.status.label']}" />
+                    </f:facet>
+                    <h:outputText value="#{item.priceTableStatusFlowPms.name}" />
+                </rich:column>
+
+                <rich:column style="text-align: center;">
+                    <f:facet name="header">
+                        <h:outputText value="#{bundle['_nls.tabela_preco.action.label']}" />
+                    </f:facet>
+
+                    <!--  Botao view da tabela -->
+                    <a4j:commandLink ajaxSingle="true" id="viewlink"
+                                     action="#{msaController.prepareItemPriceTableView}"
+                                     rendered="#{(msaContratoBean.isPriceTableApproverLogin and
+                                     (item.priceTableStatusFlowPms.acronym == 'D'
+                                     or item.priceTableStatusFlowPms.acronym == 'REAP'
+                                     or item.priceTableStatusFlowPms.acronym == 'ONAP'
+                                     or item.priceTableStatusFlowPms.acronym == 'APP'
+                                     or item.priceTableStatusFlowPms.acronym == 'NAPP'
+                                     or item.priceTableStatusFlowPms.acronym == 'DEL'))
+                                     or (!msaContratoBean.isPriceTableEditorLogin  and !msaContratoBean.isPriceTableApproverLogin)}"
+                                     reRender="msaTable">
+                        <h:graphicImage value="/images/icons/view.png" style="border:0" />
+                        <f:setPropertyActionListener value="#{item}"
+                                                     target="#{msaController.tabelaPrecoBean.to}" />
+                    </a4j:commandLink>
+                    <rich:toolTip for="viewlink" value="#{bundle['_nls.hint.view.pricetable']}" />
+
+
+                    <!--  Botao configure da tabela -->
+                    <a4j:commandLink id="configurelink"
+                                     action="#{msaController.prepareItemPriceTable}"
+                                     rendered="#{(msaContratoBean.isPriceTableApproverLogin
+                                      and (item.priceTableStatusFlowPms.acronym == 'REAP'
+                                      or item.priceTableStatusFlowPms.acronym == 'ONAP'))
+                                      and ((item.isGreaterThenClosingDate and item.dataFimVigencia != null)
+                                           or item.dataFimVigencia == null)}">
+                        <h:graphicImage value="/images/icons/configure.png"
+                                        style="border:0" />
+                        <f:setPropertyActionListener value="#{item}"
+                                                     target="#{msaController.tabelaPrecoBean.to}" />
+                    </a4j:commandLink>
+                    <rich:toolTip for="configurelink"
+                                  value="#{bundle['_nls.hint.configure']}" />
+
+                </rich:column>
+
+                <f:facet name="footer">
+                    <h:outputText value="#{bundle['_nls.msg.no_registered_item']}"
+                                  rendered="#{empty msaController.tabelaPrecoBean.resultList}"
+                                  style="font-style: italic;" />
+                </f:facet>
+
+            </rich:dataTable>
+        </a4j:region>
+
+    </h:form>
+
+</ui:composition>
+
+</html>

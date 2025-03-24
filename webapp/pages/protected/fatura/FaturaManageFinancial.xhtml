@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.menu.fatura.faturamento']} &gt; #{bundle['_nls.menu.fatura.manage']}
+   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="faturaBean" />
+			<a4j:keepAlive beanName="messageControlBean" />
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+			<a4j:loadScript src="/js/utils.js" />
+			<h:panelGrid columns="4">
+				<h:outputLabel value="#{bundle['_nls.fatura.entity_name']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel value="#{faturaController.bean.to.codigoFatura}" />
+
+				<h:outputLabel value="#{bundle['_nls.fatura.moeda.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel value="#{faturaController.bean.to.moeda.nomeMoeda}" />
+
+				<h:outputLabel value="#{bundle['_nls.fatura.cliente.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel value="#{faturaController.bean.to.dealFiscal.msa.cliente.nomeCliente}" />
+				
+				<h:outputLabel value="#{bundle['_nls.fatura.msa.label']}" styleClass="labelGeneric" />
+					
+				
+				<h:outputLabel value="#{faturaController.bean.to.dealFiscal.msa.nomeMsa}" />
+				
+				<h:outputLabel value="#{bundle['_nls.fatura.deal_fiscal.label']}"
+					styleClass="labelGeneric" />
+					
+				<h:outputLabel value="#{faturaController.bean.to.dealFiscal.nomeDealFiscal}" />
+
+				<h:outputLabel value="#{bundle['_nls.fatura.data_previsao.label']}"
+					styleClass="labelGeneric" />
+				<h:panelGrid columns="2" style="border: 0px; " cellpadding="0"
+					cellspacing="0">
+					<a4j:region id="regionDataPrevisao">
+
+						<div
+							style="#{faturaController.bean.showMessageError?'border: 1px solid #ff0000;':''} width: 160px; position: relative;"
+							id="divDataPrevisao">
+						<rich:calendar id="dataPrevisao"
+							value="#{faturaController.bean.to.dataPrevisao}" tabindex="4"
+							locale="#{bundle['_nls.calendar.locale']}" popup="true"
+							enableManualInput="false"
+							datePattern="#{bundle['_nls.date.pattern']}"
+							showApplyButton="false" cellWidth="24px" cellHeight="22px"
+							style="width:200px;" required="true"
+							label="#{bundle['_nls.fatura.data_previsao.label']}"
+							validator="#{faturaController.validateDataPrevisao}"
+							disabled="#{!faturaController.bean.enableDate}">
+
+							<a4j:support limitToList="true" event="onchanged"
+								reRender="dataVencimento"
+								oncomplete="if(#{faturaController.bean.showMessageError}) {
+																		document.getElementById('toolTipMensagemErro').style.display = 'block';
+																		document.getElementById('toolTipMensagemErro').style.visibility = 'visible';
+																		document.getElementById('divDataPrevisao').style.border = '1px solid #ff0000';
+																	}else{
+																		document.getElementById('toolTipMensagemErro').style.display = 'none';
+																		document.getElementById('toolTipMensagemErro').style.visibility = 'hidden';
+																		document.getElementById('divDataPrevisao').style.border = '0px solid #ff0000';
+																	}" />
+						</rich:calendar> <span class="dr-rich-tool-tip rich-tool-tip"
+							id="toolTipMensagemErro"
+							style="#{faturaController.bean.showMessageError?'display: block; visibility: visible;':'display: none; visibility: hidden;'} z-index: 99; position: absolute; left: 153px; top: -16px; width: 218px;">
+						<table border="0px" cellpadding="0px" cellspacing="0px">
+							<tr>
+								<td><h:graphicImage value="/images/icons/close.gif"
+									onclick="document.getElementById('toolTipMensagemErro').style.display='none';"
+									style="position: relative; top: -15px; left: -8px;" /></td>
+
+								<td><span style="position: relative;"> <h:outputText
+									value="#{bundle['_nls.fatura.msg.warning.data_previsao_diferente_data_atual']}" />
+								</span></td>
+							</tr>
+						</table>
+						</span></div>
+					</a4j:region>
+					<h:outputText
+						value="#{bundle['_nls.date.pattern.name']}: #{bundle['_nls.date.pattern']}"
+						styleClass="labelDatePattern" />
+				</h:panelGrid>
+
+
+				<h:outputLabel value="#{bundle['_nls.fatura.login_ae.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel value="#{faturaController.bean.to.codigoLoginAe}" />
+
+				<h:outputText value="#{bundle['_nls.fatura.data_vencimento.label']}"
+					for="dataVencimento" styleClass="labelGeneric" />
+				<a4j:region renderRegionOnly="true">
+					<a4j:outputPanel id="dataVencimento" layout="block">
+						<rich:calendar value="#{faturaController.bean.to.dataVencimento}"
+							disabled="#{!faturaController.bean.enableExpiryDate}"
+							locale="#{bundle['_nls.calendar.locale']}" popup="true"
+							enableManualInput="true"
+							datePattern="#{bundle['_nls.date.pattern']}"
+							showApplyButton="false" cellWidth="24px" cellHeight="22px"
+							style="width:200px"
+							label="#{bundle['_nls.fatura.data_vencimento.label']}">
+						</rich:calendar>
+						<h:outputText
+							value="#{bundle['_nls.date.pattern.name']}: #{bundle['_nls.date.pattern']}"
+							style="FONT-WEIGHT: bold; FONT-STYLE: italic; COLOR: #808080; padding-left: 5px" />
+					</a4j:outputPanel>
+				</a4j:region>
+
+				<h:outputLabel
+					value="#{bundle['_nls.fatura.indicador_status.label']}"
+					for="indicadorStatus" styleClass="labelGeneric" />
+				<rich:comboBox validator="#{xssValidator.validate}"
+					id="indicadorStatus" required="true"
+					rendered="#{faturaController.bean.isFaturaEditable}"
+					enableManualInput="false"
+					label="#{bundle['_nls.fatura.indicador_status.label']}"
+					value="#{faturaController.bean.to.indicadorStatus}"
+					directInputSuggestions="true" converter="StatusFaturaConverter">
+					<f:selectItem itemValue="OP" />
+					<f:selectItem itemValue="AP" />
+				</rich:comboBox>
+				<h:outputText value="#{faturaController.bean.to.indicadorStatus}"
+					rendered="#{!faturaController.bean.isFaturaEditable}"
+					converter="StatusFaturaConverter" />
+
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<h:outputLabel
+					value="#{bundle['_nls.fatura.texto_observacao.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel value="#{faturaController.bean.to.textoObservacao}" />
+			</h:panelGrid>
+
+			<rich:spacer height="6" />
+
+			<a4j:keepAlive beanName="itemFaturaBean" />
+
+			<h:panelGrid columns="7" cellpadding="0" cellspacing="0">
+				<a4j:commandButton value="#{bundle['_nls.button.back']}"
+					styleClass="buttonGeneric"
+					action="#{faturaController.cancelFaturaFinancial}" immediate="true" />
+				<rich:spacer height="5" width="5" />
+				<a4j:commandButton action="#{faturaController.updateItemFaturaList}"
+					value="#{bundle['_nls.button.save']}" styleClass="buttonGeneric"
+					rendered="#{faturaController.bean.to.indicadorStatus != 'CA'}"
+					reRender="historicoFaturaTable" />
+
+
+				<!-- menu de Workflow -->
+
+				<rich:dropDownMenu hideDelay="100" direction="bottom-right"
+					jointPoint="bl"
+					style="background-color: transparent; border-color: transparent"
+					rendered="#{faturaController.bean.to.indicadorStatus == 'IN' or faturaController.bean.to.indicadorStatus == 'SB'}">
+					<f:facet name="label">
+						<h:graphicImage value="/images/button_workflow.png" />
+					</f:facet>
+
+					<rich:menuItem
+						rendered="#{faturaController.bean.to.indicadorStatus == 'IN' or faturaController.bean.to.indicadorStatus == 'SB'}"
+						value="#{bundle['_nls.button.reintegrate']}"
+						action="#{faturaController.reintegrate}" limitToList="true"
+						submitMode="ajax" reRender="errorMsgId">
+					</rich:menuItem>
+
+					<rich:menuItem
+						action="#{faturaController.prepareCancelSubmitFatura}"
+						oncomplete="#{rich:component('cancelSubmitModal')}.show()"
+						rendered="#{faturaController.bean.to.indicadorStatus == 'SB'}"
+						value="#{bundle['_nls.fatura.cancel_invoice.label']}"
+						limitToList="true" submitMode="ajax">
+					</rich:menuItem>
+				</rich:dropDownMenu>
+
+				<!-- ************************* -->
+
+			</h:panelGrid>
+
+			<rich:spacer height="6" />
+
+
+			<rich:tabPanel immediate="true" switchType="client">
+				<!-- Tab da Fatura -->
+				<rich:tab label="#{bundle['_nls.fatura.entity_name']}">
+
+					<rich:dataTable value="#{faturaController.bean.to.itemFaturas}"
+						var="item" width="100%" id="itemFaturaTable" rowKeyVar="row">
+
+						<rich:column sortBy="#{item.codigoItemFatura}"
+							style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.item_fatura.codigo_item_fatura.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.codigoItemFatura}" />
+						</rich:column>
+
+						<rich:column sortBy="#{item.tipoServico.nomeTipoServico}">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.item_fatura.tipo_servico.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.tipoServico.nomeTipoServico}" />
+						</rich:column>
+
+						<rich:column sortBy="#{item.fonteReceita.nomeFonteReceita}">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.item_fatura.fonte_receita.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.fonteReceita.nomeFonteReceita}" />
+						</rich:column>
+
+						<rich:column sortBy="#{item.numeroNotaFiscal}" width="70">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.item_fatura.doc_number.label']}" />
+							</f:facet>
+							<h:inputText validator="#{xssValidator.validate}"
+								rendered="#{faturaController.bean.docEditable}"
+								value="#{item.numeroNotaFiscal}"
+								style=" width : 90px;"
+								label="#{bundle['_nls.item_fatura.doc_number.label']}"
+								required="#{faturaController.bean.to.indicadorStatus == 'SB'}">
+								<f:validateLength maximum="40" />
+							</h:inputText>
+
+							<h:outputText rendered="#{!faturaController.bean.docEditable}" value="#{item.numeroNotaFiscal}" />
+						</rich:column>
+
+						<rich:column sortBy="#{item.textoObservacao}">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.item_fatura.description.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.textoObservacao}" />
+						</rich:column>
+
+						<rich:column sortBy="#{item.valorItem}" style="text-align: right;">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.item_fatura.valor_item.label']}" />
+							</f:facet>
+							<h:outputLabel value="#{faturaController.bean.patternCurrency}" />
+							<h:outputText value="#{item.valorItem}">
+								<f:convertNumber locale="#{bundle['locale.en_us']}"
+									pattern="#{systemProperties['pattern.number']}" />
+							</h:outputText>
+						</rich:column>
+
+						<f:facet name="footer">
+							<rich:columnGroup>
+								<rich:column style="text-align: center;">
+									<h:outputText value="#{bundle['_nls.total.label']}" />
+								</rich:column>
+								<rich:column style="text-align: right;" colspan="6">
+									<h:outputLabel
+										value="#{faturaController.itemFaturaBean.patternCurrency}" />
+									<h:outputText
+										value="#{faturaController.itemFaturaBean.totalGeralItemFatura}">
+										<f:convertNumber locale="#{bundle['locale.en_us']}"
+											pattern="#{systemProperties['pattern.number']}" />
+									</h:outputText>
+								</rich:column>
+							</rich:columnGroup>
+						</f:facet>
+					</rich:dataTable>
+
+					<rich:spacer height="5" />
+
+				</rich:tab>
+
+				<!-- Tab do HistoricoFatura -->
+				<rich:tab label="#{bundle['_nls.historico_fatura.entity_name']}">
+					<h:form styleClass="noMargin">
+						<rich:dataTable
+							value="#{faturaController.bean.historicoFaturaList}" var="hifa"
+							width="100%" id="historicoFaturaTable" rowKeyVar="row">
+
+							<rich:column style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.historico_fatura.codigo_login.label']}" />
+								</f:facet>
+								<h:outputText value="#{hifa.codigoAutor}" />
+							</rich:column>
+
+							<rich:column style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.historico_fatura.data_alteracao.label']}" />
+								</f:facet>
+								<h:outputText value="#{hifa.dataAlteracao}">
+									<f:convertDateTime
+										pattern="#{bundle['_nls.calendar.pattern.full']}"
+										timeZone="#{bundle['_nls.date.timezone.br']}" />
+								</h:outputText>
+							</rich:column>
+
+							<rich:column style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.historico_fatura.status_anterior.label']}" />
+								</f:facet>
+								<h:outputText value="#{hifa.indicadorStatusAnterior}"
+									converter="StatusFaturaConverter" />
+							</rich:column>
+
+							<rich:column style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.historico_fatura.status_atual.label']}" />
+								</f:facet>
+								<h:outputText value="#{hifa.indicadorStatusAtual}"
+									converter="StatusFaturaConverter" />
+							</rich:column>
+
+  						<rich:column style="text-align: center;">
+  							<f:facet name="header">
+  								<h:outputText
+  									value="#{bundle['_nls.historico_fatura.invoice_date.label']}" />
+  							</f:facet>
+  							<h:outputText value="#{hifa.dataPrevisao}">
+  								<f:convertDateTime
+  									pattern="#{bundle['_nls.calendar.pattern']}" />
+  							</h:outputText>
+  						</rich:column>
+  
+  					<rich:column
+  						style="text-align: center;">
+  						<f:facet name="header">
+  							<h:outputText
+  								value="#{bundle['_nls.historico_fatura.total_value.label']}" escape="false"/>
+  						</f:facet>
+  						<h:outputText value="#{hifa.moeda.siglaMoeda} " />
+  						<h:outputText 
+  							value="#{hifa.valorFatura}">
+  							<f:convertNumber locale="#{bundle['locale.en_us']}"
+  								pattern="#{systemProperties['pattern.number']}" />
+  						</h:outputText>
+  					</rich:column>
+
+					</rich:dataTable>
+				</h:form>
+			</rich:tab>
+			</rich:tabPanel>
+		</h:form>
+
+		<!-- Modal do Cancel  -->
+		<rich:modalPanel id="cancelSubmitModal" autosized="true" width="455"
+			onshow="javascript: setFocusOnField('dataCancelamento');">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.fatura.cancel.title']}"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="closeCancelSubmitModalId" />
+					<rich:componentControl for="cancelSubmitModal"
+						attachTo="closeCancelSubmitModalId" operation="hide"
+						event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<rich:messages errorClass="msgError" warnClass="msgWarng"
+				infoClass="msgSuccess" layout="table" ajaxRendered="true">
+			</rich:messages>
+			<h:form style="noMargin">
+				<table width="220">
+					<tbody>
+						<tr>
+							<td width="70"><h:outputText
+								value="#{bundle['_nls.fatura.data_cancelamento.label']}"
+								for="dataCancelamento" styleClass="labelGeneric" /></td>
+							<td><rich:calendar
+								value="#{faturaController.bean.dataCancelamento}"
+								locale="#{bundle['_nls.calendar.locale']}" required="true"
+								datePattern="#{bundle['_nls.calendar.pattern']}"
+								showApplyButton="false" cellWidth="24px" cellHeight="22px"
+								style="width:200px"
+								label="#{bundle['_nls.fatura.data_cancelamento.label']}"
+								id="dataCancelamento" /></td>
+						</tr>
+						<tr>
+							<td colspan="2"><h:outputText
+								value="#{bundle['_nls.fatura.texto_razao_cancelamento.label']}"
+								for="textoRazaoCancelamento" styleClass="labelGeneric" />
+								<h:inputTextarea validator="#{xssValidator.validate}"
+									cols="80" rows="3" id="textoRazaoCancelamento"
+									label="#{bundle['_nls.fatura.texto_razao_cancelamento.label']}"
+									value="#{faturaController.bean.textoRazaoCancelamento}"
+									required="true">
+									<f:validateLength maximum="500" />
+								</h:inputTextarea>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"><a4j:commandButton
+								action="#{faturaController.cancelSubmitFatura}"
+								value="#{bundle['_nls.button.ok']}" styleClass="buttonSpecific"
+								oncomplete="if (#{facesContext.maximumSeverity!=null and facesContext.maximumSeverity!='INFO 0'}) #{rich:component('cancelSubmitModal')}.show();"
+								reRender="cancelSubmitModal" /> <rich:spacer height="5"
+								width="5" /> <a4j:commandButton limitToList="true"
+								immediate="true"
+								actionListener="#{messageControlBean.showMessages}"
+								value="#{bundle['_nls.button.cancel']}"
+								styleClass="buttonGeneric"
+								oncomplete="#{rich:component('cancelSubmitModal')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

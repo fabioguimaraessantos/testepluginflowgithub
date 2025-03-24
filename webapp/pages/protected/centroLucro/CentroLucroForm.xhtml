@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+	<a4j:keepAlive beanName="centroLucroBean" />
+
+	<h:outputText for="nomeCentroLucro" styleClass="labelGeneric"
+		value="#{bundle['_nls.centro_lucro.nome_centro_lucro.label']}: ">
+	</h:outputText>
+	<h:inputText value="#{centroLucroController.bean.to.nomeCentroLucro}"
+		label="#{bundle['_nls.centro_lucro.nome_centro_lucro.label']}"
+		id="nomeCentroLucro" required="true" size="70" maxlength="99">
+		<f:validateLength
+			minimum="#{systemProperties['form.input.length.minimum']}"
+			maximum="99" />
+	</h:inputText>
+
+	<h:outputText for="codigoNatureza" styleClass="labelGeneric"
+		value="#{bundle['_nls.centro_lucro.natureza_centro_lucro.label']}: "></h:outputText>
+	<rich:comboBox required="true" id="codigoNatureza"
+		label="#{bundle['_nls.centro_lucro.natureza_centro_lucro.label']}"
+		defaultLabel="#{bundle['_nls.comboBox.default.label']}"
+		value="#{centroLucroController.bean.to.naturezaCentroLucro.nomeNatureza}"
+		suggestionValues="#{centroLucroController.bean.naturezaCentroLucroList}"
+		directInputSuggestions="true"
+		validator="#{centroLucroController.validateNaturezaCentroLucro}">
+	</rich:comboBox>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

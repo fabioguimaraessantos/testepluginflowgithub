@@ -1,0 +1,11 @@
+<html>
+	<body>
+		${time}<br />
+		<br />
+		An error occurred:<br /> 
+		${message}
+		<br /><br />
+		Stack Trace:<br /> 
+		${stackTrace}
+	<body>
+</html>

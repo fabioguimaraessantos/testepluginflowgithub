@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:outputText
+		value="#{bundle['_nls.natureza_centro_lucro.nome_natureza.label']}*: "
+		for="nomeNatureza" styleClass="labelGeneric"></h:outputText>
+	<h:inputText validator="#{xssValidator.validate}"
+		id="nomeNatureza" required="true" size="70" maxlength="99"
+		label="#{bundle['_nls.natureza_centro_lucro.nome_natureza.label']}"
+		value="#{naturezaCentroLucroController.bean.to.nomeNatureza}">
+		<f:validateLength
+			minimum="#{systemProperties['form.input.length.minimum']}"
+			maximum="99" />
+	</h:inputText>
+
+	<h:outputText
+		value="#{bundle['_nls.natureza_centro_lucro.indicador_is_bundle.label']}: "
+		for="indicadorIsBundle" styleClass="colorRed labelGeneric"
+		rendered="#{naturezaCentroLucroController.bean.isUpdate and naturezaCentroLucroController.bean.to.indicadorIsBundle}" />
+	<rich:spacer height="5"
+		rendered="#{naturezaCentroLucroController.bean.isUpdate and naturezaCentroLucroController.bean.to.indicadorIsBundle}" />
+
+	<h:outputText
+		value="#{bundle['_nls.natureza_centro_lucro.indicador_ativo.label']}: "
+		for="indicadorAtivo" styleClass="labelGeneric"
+		rendered="#{naturezaCentroLucroController.bean.isUpdate}"></h:outputText>
+	<rich:comboBox id="indicadorAtivo" required="true"
+		enableManualInput="false"
+		label="#{bundle['_nls.natureza_centro_lucro.indicador_ativo.label']}"
+		value="#{naturezaCentroLucroController.bean.to.indicadorAtivo}"
+		directInputSuggestions="true" converter="ActiveInactiveConverter"
+		rendered="#{naturezaCentroLucroController.bean.isUpdate}">
+
+		<f:selectItem itemValue="A" />
+		<f:selectItem itemValue="I" />
+	</rich:comboBox>
+
+	<h:outputText
+		value="#{bundle['_nls.natureza_centro_lucro.indicador_tipo.label']}: "
+		for="indicadorTipo" styleClass="labelGeneric"></h:outputText>
+	<rich:comboBox id="indicadorTipo" enableManualInput="false"
+		label="#{bundle['_nls.natureza_centro_lucro.indicador_tipo.label']}"
+		value="#{naturezaCentroLucroController.bean.to.indicadorTipo}"
+		directInputSuggestions="true"
+		converter="TipoNaturezaCentroLucroConverter" required="true">
+
+		<f:selectItem itemValue="O" />
+		<f:selectItem itemValue="F" />
+	</rich:comboBox>
+
+	<h:outputText
+			value="#{bundle['_nls.natureza_centro_lucro.text_information.label']}:"
+			for="textInformation" styleClass="labelGeneric" />
+	<h:inputTextarea cols="50" rows="4" id="textInformation"
+					 label="#{bundle['_nls.natureza_centro_lucro.text_information.label']}"
+					 value="#{naturezaCentroLucroController.bean.to.textInformationNaturezaCentroLucro}">
+	</h:inputTextarea>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:outputText
+		value="#{bundle['_nls.taxa_imposto.codigo_taxa_imposto.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel
+		value="#{taxaImpostoController.bean.to.codigoTaxaImposto}"
+		for="codigoTaxaImposto" />
+
+	<h:outputText value="#{bundle['_nls.taxa_imposto.empresa.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel
+		value="#{taxaImpostoController.bean.to.empresa.nomeEmpresa}"
+		for="nomeEmpresa" />
+
+	<h:outputText value="#{bundle['_nls.taxa_imposto.tipo_servico.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel
+		value="#{taxaImpostoController.bean.to.tipoServico.nomeTipoServico}"
+		for="nomeTipoServico" />
+
+	<h:outputText value="#{bundle['_nls.taxa_imposto.valor_taxa.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{taxaImpostoController.bean.to.valorTaxa} %"
+		for="valorTaxa" />
+
+	<h:outputText
+		value="#{bundle['_nls.taxa_imposto.data_inicio_vigencia.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{taxaImpostoController.bean.to.dataInicio}"
+		for="dataInicioVigencia">
+		<f:convertDateTime pattern="MMM/yyyy" />
+	</h:outputLabel>
+
+	<h:outputText
+		value="#{bundle['_nls.taxa_imposto.data_fim_vigencia.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{taxaImpostoController.bean.to.dataFim}"
+		for="dataFimVigencia">
+		<f:convertDateTime pattern="MMM/yyyy" />
+	</h:outputLabel>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

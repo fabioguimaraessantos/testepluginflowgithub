@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:outputText value="#{bundle['_nls.pratica.codigo_pratica.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{praticaController.bean.to.codigoPratica}"
+		for="codigoPratica" />
+
+	<h:outputText value="#{bundle['_nls.pratica.nome_pratica.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{praticaController.bean.to.nomePratica}"
+		for="nomePratica" />
+
+	<h:outputText value="#{bundle['_nls.pratica.sigla_pratica.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{praticaController.bean.to.siglaPratica}"
+		for="siglaPratica" />
+
+	<h:outputText value="#{bundle['_nls.form.pratica.type']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{praticaController.bean.to.tipoPratica.nomeTipoPratica}"
+		for="typeLob" />
+
+	<h:outputText value="#{bundle['_nls.pratica.indicador_ativo.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{praticaController.bean.to.indicadorAtivo}"
+		for="indicadorAtivo" converter="ActiveInactiveConverter" />
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

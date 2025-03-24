@@ -1,0 +1,51 @@
+<html>
+
+<body>
+	<p>Hi <b>${login}</b>, </p>
+	<p>The software listed below are associated with your login on ${dataMes}, suggesting that they are installed on you machine.</p>
+	<p>If you are no longer using the software listed, please remove them from your computer, or contact Service Desk to request the removal</p>
+	
+	<a href="${link}">(click here to open the request)</a>
+	
+	<p>&nbsp;</p>
+	
+	
+			<table CELLSPACING="0" CELLPADDING="1" BORDER="1">
+			  <tr bgcolor="#CCCCCC">
+				<th align="left"><b>Software Name</b></th>
+				<th align="center"><b>Unitary Value/Month</b></th>
+				<th align="center"><b>Units</b></th>
+				<th align="center"><b>Total License</b></th>
+			  </tr>
+			  
+			  #foreach( $row in $licencaEmailRowList )
+			  
+			  	<tr>
+			  		<td align="left">$row.tiRecurso.nomeTiRecurso</td>
+			  		<td align="left">$row.tiRecurso.moeda.siglaMoeda $row.custoUnitario/Month</td>
+			  		<td align="left">$row.numeroUnidades</td>
+			  		<td align="left">$row.tiRecurso.moeda.siglaMoeda $row.valorTotal/Month</td>
+			  	</tr>
+			  
+			  #end
+			  
+			  <tr>
+			  	<td colspan="2"></td>
+			  	<td bgcolor="#CCCCCC"><b>TOTAL</b></td>
+			  	<td>$moeda.siglaMoeda $total/Month</td>
+			  </tr>
+			 </table>
+				
+    <p>Your contract(s) will be charged by the use of these software, according to our charge-back policy, in order to promote the best return on investment.</p>
+    
+    <p>Thanks</p>
+    
+    <p>IT</p>
+    
+    <p>This email is an automated message. Please do not reply</p>
+    
+    <HR WIDTH=80% align=left>
+    
+</body>
+
+</html>

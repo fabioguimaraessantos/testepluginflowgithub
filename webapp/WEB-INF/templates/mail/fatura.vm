@@ -1,0 +1,41 @@
+<html>
+
+
+<body>
+	<h3>${title}</h3>
+	
+	<HR WIDTH=80% align=left>
+    
+    <table>
+    
+	    <tr>
+	    	<td><b>Author:</b><td><td>${author}</td>    
+	    </tr>
+	    <tr>
+	    	<td><b># Invoice:</b><td><td>${fatura.codigoFatura}</td>    
+	    </tr>		
+		<tr>
+	    	<td><b>Customer:</b><td><td>${fatura.dealFiscal.msa.cliente.nomeCliente}</td>    
+	    </tr>
+		<tr>
+	    	<td><b>Fiscal Deal:</b><td><td>${fatura.dealFiscal.nomeDealFiscal}</td>    
+	    </tr>
+	    <tr>
+	    	<td><b>Company:</b><td><td>${fatura.dealFiscal.empresa.nomeEmpresa}</td>    
+	    </tr>
+		<tr>
+	    	<td><b>Customer entity:</b><td>
+	    	<td>${fatura.dealFiscal.cliente.nomeCliente} - <b>CNPJ:</b> ${fatura.dealFiscal.cliente.codigoCnpj}</td>    
+	    </tr>
+	    <tr>
+	    	<td><b>Status:</b><td><td>${status}</td>    
+	    </tr>
+	    <tr>
+	    	<td><b>Observation:</b><td><td>${fatura.textoObservacao}</td>    
+	    </tr>
+	    
+     </table>
+<body>
+
+
+</html>

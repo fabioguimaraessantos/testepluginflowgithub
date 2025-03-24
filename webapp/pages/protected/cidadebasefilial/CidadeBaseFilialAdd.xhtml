@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+  <ui:define name="titleForm">
+    #{bundle['_nls.menu.city']} &gt; #{bundle['_nls.menu.city.company_base_city']} &gt;
+    #{bundle['_nls.menu.city.company_base_city.add']}
+  </ui:define>
+
+  <ui:define name="bodyForm">
+    <rich:spacer height="0" width="560" styleClass="noMargin"/>
+    <h:form styleClass="noMargin">
+      <a4j:loadScript src="/js/jquery.alphanumeric.js"/>
+      <a4j:loadScript src="/js/jquery.meio.mask.js"/>
+
+      <a4j:keepAlive beanName="cidadeBaseFilialBean"/>
+      <h:panelGrid id="cidadeBaseFilialForm" columns="2" width="63%">
+        <ui:include src="/pages/protected/cidadebasefilial/CidadeBaseFilialForm.xhtml">
+          <ui:param name="finalChar" value="*"/>
+          <ui:param name="isRequired" value="true"/>
+          <ui:param name="isComboDisabled" value="#{cidadeBaseFilialController.bean.comboDisabled}"/>
+        </ui:include>
+
+        <f:facet name="footer">
+          <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+            <a4j:commandButton value="#{bundle['_nls.button.add']}"
+                               action="#{cidadeBaseFilialController.create}" styleClass="buttonGeneric"/>
+            <rich:spacer height="5" width="5"/>
+            <a4j:commandButton value="#{bundle['_nls.button.clear']}" onclick="clearCidadeBaseFilialForm();"
+                               immediate="true"
+                               action="#{cidadeBaseFilialController.clearForm}" styleClass="buttonGeneric"
+                               reRender="cidadeBaseFilialForm"/>
+          </h:panelGrid>
+        </f:facet>
+      </h:panelGrid>
+    </h:form>
+
+    <script type="text/javascript">
+      // Lista de objetos que contém o ID do elemento HTML (combobox) e a chave do resourceBundle cujo valor é o placeholder do combobox.
+      const comboboxes = [
+        {
+          'elementId': 'comboEmpresaMatriz',
+          'placeholderResourceBundleKey': ''
+        },
+        {
+          'elementId': 'comboEmpresa',
+          'placeholderResourceBundleKey': ''
+        },
+        {
+          'elementId': 'comboEmpresaFilial',
+          'placeholderResourceBundleKey': ''
+        },
+        {
+          'elementId': 'comboCidadeBase',
+          'placeholderResourceBundleKey': ''
+        }
+      ];
+
+      function clearCidadeBaseFilialForm() {
+        for(let combobox of comboboxes) {
+          clearCombobox(combobox.elementId, combobox.placeholderResourceBundleKey);
+        }
+      }
+
+      function clearCombobox(elementId, resourceBundleLabel) {
+        const element = document.querySelectorAll(`[id$=\${elementId}]`)[0];
+        const elementValue = element.getElementsBySelector(`[id$=\${elementId}comboboxValue]`)[0];
+        const elementField = element.getElementsBySelector(`[id$=\${elementId}comboboxField]`)[0];
+
+        if (elementField.value != resourceBundleLabel) {
+          elementValue.removeAttribute('value');
+          elementField.setAttribute('value', resourceBundleLabel);
+          elementField.classList.replace('rich-combobox-font-inactive', 'rich-combobox-font-disabled');
+          elementField.classList.replace('rich-combobox-input-inactive', 'rich-combobox-input-disabled');
+        }
+      }
+    </script>
+
+  </ui:define>
+</ui:composition>
+
+</html>

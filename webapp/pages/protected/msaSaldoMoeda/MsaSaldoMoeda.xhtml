@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+	<h:form styleClass="noMargin" id="tabBudgetForm">
+		<rich:dataTable value="#{msaController.bean.listMsaSalMoeRow}" var="item"
+				id="tabBudgetTable" rowKeyVar="linha">
+			<rich:column style="text-align: center;" width="50">
+				<f:facet name="header">
+					<h:outputLabel value="#{bundle['_nls.msa_saldo_moeda.table_header.label']}" />
+				</f:facet>
+
+				<a4j:region>
+					<h:selectBooleanCheckbox value="#{item.isCheckBoxSelected}">
+						<a4j:support event="onclick">
+							<f:setPropertyActionListener target="#{item.msaSalMoe.indicadorAtivo}" value="#{item.msaSalMoe.indicadorAtivo == 'A' ? 'I' : 'A'}" />
+						</a4j:support>
+					</h:selectBooleanCheckbox>
+				</a4j:region>
+			</rich:column>
+
+			<rich:column style="text-align: center;">
+				<f:facet name="header">
+					<h:outputText value="#{bundle['_nls.msa_saldo_moeda.moeda.nm_moeda']}" />
+				</f:facet>
+
+				<h:outputText value="#{item.msaSalMoe.moeda.nomeMoeda}" />
+			</rich:column>
+
+			<rich:column style="text-align: center;">
+				<f:facet name="header">
+					<h:outputText value="#{bundle['_nls.msa_saldo_moeda.vl_orcamento']}" />
+				</f:facet>
+				<h:inputText class="valorMoeda#{linha}" size="8" maxlength="8"
+						label="#{bundle['_nls.msa_saldo_moeda.vl_orcamento']}"
+						value="#{item.msaSalMoe.valorOrcamento}"
+						style="#{((item.msaSalMoe.valorOrcamento != null) or (item.isCheckBoxSelected)) ? '' : 'visibility: hidden;'}" disabled="#{item.msaSalMoe.indicadorAtivo == 'I'}">
+					<f:validateLength maximum="8" />
+					<f:convertNumber locale="#{bundle['locale.en_us']}"
+							maxFractionDigits="2" pattern="#{systemProperties['pattern.number']}" />
+					<rich:jQuery query="numeric('')"
+							timing="onload" selector="#valorOrcamento" />
+
+				</h:inputText>
+			</rich:column>
+		</rich:dataTable>
+		
+		<rich:spacer height="20" styleClass="noMargin" />
+
+		<a4j:commandButton value="#{bundle['_nls.button.save']}"
+				styleClass="buttonGeneric"
+				action="#{msaController.updateBudget}"
+				reRender="tabBudgetForm,tabBudgetTable,errorMsgId"
+				limitToList="true"/>
+	</h:form>
+	</h:panelGrid>
+	
+</ui:composition>
+
+</html>

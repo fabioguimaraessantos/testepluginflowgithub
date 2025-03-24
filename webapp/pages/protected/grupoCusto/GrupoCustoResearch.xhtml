@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.grupo_custo']} &gt; #{bundle['_nls.menu.grupo_custo.research']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="2">
+				<h:outputText
+					value="#{bundle['_nls.grupo_custo.nome_grupo_custo.label']}:"
+					for="nomeGrupoCusto" styleClass="labelGeneric"></h:outputText>
+				<h:inputText id="nomeGrupoCusto" size="70" maxlength="99"
+					label="#{bundle['_nls.grupo_custo.nome_grupo_custo.label']}"
+					value="#{grupoCustoController.bean.filter.nomeGrupoCusto}">
+					<f:validateLength maximum="99" />
+				</h:inputText>
+
+				<h:outputText
+					value="#{bundle['_nls.grupo_custo.sigla_grupo_custo.label']}:"
+					for="siglaGrupoCusto" styleClass="labelGeneric"></h:outputText>
+				<h:inputText id="siglaGrupoCusto" size="10" maxlength="9"
+					label="#{bundle['_nls.grupo_custo.sigla_grupo_custo.label']}"
+					value="#{grupoCustoController.bean.filter.siglaGrupoCusto}">
+					<f:validateLength maximum="9" />
+				</h:inputText>
+
+				<h:outputText
+					value="#{bundle['_nls.grupo_custo.indicador_ativo.label']}:"
+					for="indicadorAtivo" styleClass="labelGeneric"></h:outputText>
+				<rich:comboBox id="indicadorAtivo" enableManualInput="false"
+					label="#{bundle['_nls.grupo_custo.indicador_ativo.label']}"
+					value="#{grupoCustoController.bean.filter.indicadorAtivo}"
+					directInputSuggestions="true" converter="ActiveInactiveConverter">
+
+					<f:selectItem itemValue="ALL" />
+					<f:selectItem itemValue="A" />
+					<f:selectItem itemValue="I" />
+				</rich:comboBox>
+
+				<rich:spacer height="5" />
+				<rich:spacer height="5" />
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+							styleClass="buttonGeneric" type="submit"
+							reRender="grupoCustoTable,errorMsgId,grupoCustoPanel"
+							limitToList="true" action="#{grupoCustoController.findByFilter}" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="grupoCustoBean" />
+			<a4j:outputPanel id="grupoCustoPanel">
+				<rich:dataTable value="#{grupoCustoController.bean.resultList}"
+					var="item" rows="#{systemProperties['research.size.page.result']}"
+					rendered="#{!empty grupoCustoController.bean.resultList}"
+					width="100%" id="grupoCustoTable" rowKeyVar="row">
+
+					<rich:column sortBy="#{item.nomeGrupoCusto}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.grupo_custo.nome_grupo_custo.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.nomeGrupoCusto}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.siglaGrupoCusto}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.grupo_custo.sigla_grupo_custo.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.siglaGrupoCusto}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.indicadorAtivo}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.grupo_custo.indicador_ativo.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.indicadorAtivo}"
+							converter="ActiveInactiveConverter" />
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.grupo_custo.action.label']}" />
+						</f:facet>
+						
+						<sec:ifAnyGranted roles="ROLE_PMS_ADMIN,ROLE_PMS_FINANCIAL">
+							<a4j:commandLink ajaxSingle="true" id="viewlink"
+								action="#{grupoCustoController.prepareView}"
+								reRender="grupoCustoTable">
+								<h:graphicImage value="/images/icons/view.png" style="border:0" />
+								<f:setPropertyActionListener value="#{item}"
+									target="#{grupoCustoController.bean.to}" />
+								<f:setPropertyActionListener value="#{item.codigoGrupoCusto}"
+									target="#{grupoCustoController.bean.currentRowId}" />
+							</a4j:commandLink>
+							<rich:toolTip for="viewlink" value="#{bundle['_nls.hint.view']}" />
+
+						<sec:ifAnyGranted roles="ROLE_PMS_ADMIN,ROLE_PMS_FINANCIAL">
+							<a4j:commandLink ajaxSingle="true" id="editlink"
+								action="#{grupoCustoController.prepareUpdate}"
+								reRender="grupoCustoTable">
+								<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+								<f:setPropertyActionListener value="#{item}"
+									target="#{grupoCustoController.bean.to}" />
+								<f:setPropertyActionListener value="#{item.codigoGrupoCusto}"
+									target="#{grupoCustoController.bean.currentRowId}" />
+							</a4j:commandLink>
+							<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+						</sec:ifAnyGranted>
+
+						<!-- Botao Travel Budget -->
+						<a4j:commandLink id="tblink"
+							action="#{orcDespesaGcController.prepareOrcDespesaGc}"
+							rendered="#{item.activeTravelBudget}">
+							<h:graphicImage value="/images/icons/travel.png" style="border:0" />
+							<f:setPropertyActionListener value="#{item.codigoGrupoCusto}"
+								target="#{grupoCustoController.bean.currentRowId}" />
+						</a4j:commandLink>
+						<rich:toolTip for="tblink"
+							value="#{bundle['_nls.hint.travel.budget']}" />
+
+						<sec:ifAnyGranted roles="ROLE_PMS_ADMIN,ROLE_PMS_FINANCIAL">
+							<a4j:commandLink ajaxSingle="true" id="deletelink"
+								action="#{grupoCustoController.prepareRemove}"
+								reRender="grupoCustoTable">
+								<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+								<f:setPropertyActionListener value="#{item}"
+									target="#{grupoCustoController.bean.to}" />
+								<f:setPropertyActionListener value="#{item.codigoGrupoCusto}"
+									target="#{grupoCustoController.bean.currentRowId}" />
+							</a4j:commandLink>
+							<rich:toolTip for="deletelink"
+								value="#{bundle['_nls.hint.delete']}" />
+						</sec:ifAnyGranted>
+
+						<!-- Botao Follow -->
+						<a4j:commandLink ajaxSingle="true" id="followLink"
+							action="#{grupoCustoController.followGrupoCusto}"
+							rendered="#{grupoCustoController.bean.mapFollowGrupoCusto[item.codigoGrupoCusto] == null}">
+							<h:graphicImage value="/images/icons/follow_gray.png" />
+							<f:setPropertyActionListener value="#{item.codigoGrupoCusto}"
+								target="#{grupoCustoController.bean.currentRowId}" />
+						</a4j:commandLink>
+						<rich:toolTip for="followLink"
+							value="#{bundle['_nls.hint.follow']}" />
+
+						<!-- Botao Unfollow -->
+						<a4j:commandLink ajaxSingle="true" id="unfollowLink"
+							action="#{grupoCustoController.unfollowGrupoCusto}"
+							rendered="#{grupoCustoController.bean.mapFollowGrupoCusto[item.codigoGrupoCusto] != null}">
+							<h:graphicImage url="/images/icons/follow.png"
+								onmouseover="onMouseOver(this);" onmouseout="onMouseOut(this);" />
+							<f:setPropertyActionListener value="#{item.codigoGrupoCusto}"
+								target="#{grupoCustoController.bean.currentRowId}"/>						
+						</a4j:commandLink>
+						<rich:toolTip for="unfollowLink"
+							value="#{bundle['_nls.hint.unfollow']}" />
+					</rich:column>
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{grupoCustoController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+				<script>
+					function onMouseOver(e) {
+						 jQuery(e).attr('src', '/pms/images/icons/follow_red.png');
+					}
+
+					function onMouseOut(e) {
+						 jQuery(e).attr('src', '/pms/images/icons/follow.png');
+					}
+				
+				</script>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

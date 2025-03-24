@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.receita']} &gt; #{bundle['_nls.menu.fiscal_balance']} &gt; #{bundle['_nls.menu.fiscal_balance.research']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin" id="formFiscalBalance">
+			<a4j:keepAlive beanName="fiscalBalanceBean" />
+			
+			<h:panelGrid columns="6">
+
+				<!-- Combo Cliente -->
+				<h:outputText
+					value="#{bundle['_nls.fiscal_balance.cliente.label']}: "
+					for="cliente" styleClass="labelGeneric" />
+				<rich:comboBox id="cliente" width="350" 
+					label="#{bundle['_nls.fiscal_balance.cliente.label']}"
+					value="#{fiscalBalanceController.bean.filter.cliente.nomeCliente}"
+					suggestionValues="#{fiscalBalanceController.bean.clienteList}"
+					directInputSuggestions="true" immediate="true"
+					valueChangeListener="#{fiscalBalanceController.prepareMsaCombo}">
+					<pms:validateComboBox
+						map="#{fiscalBalanceController.bean.clienteMap}" />
+					<a4j:support event="onselect" reRender="msaPanel, fiscalBalancePanel"
+						immediate="true" />
+					<a4j:support event="onchange" reRender="msaPanel, fiscalBalancePanel"
+						immediate="true" />
+				</rich:comboBox>
+
+				<rich:spacer with="5" styleClass="noMargin" />
+
+				<!-- End Month -->
+				<h:panelGrid columns="3">
+					<h:outputText
+						value="#{bundle['_nls.fiscal_balance.end_month.label']}*: "
+						for="endMonth" styleClass="labelGeneric" />
+					<h:panelGrid columns="3">
+						<rich:comboBox width="60" required="true"
+							enableManualInput="false"
+							label="#{bundle['_nls.fiscal_balance.month.label']}"
+							value="#{fiscalBalanceController.bean.filter.endMonth}"
+							suggestionValues="#{fiscalBalanceController.bean.validityMonthList}" />
+						<h:outputLabel value="/" />
+						<rich:comboBox width="60" required="true"
+							enableManualInput="false"
+							label="#{bundle['_nls.fiscal_balance.year.label']}"
+							value="#{fiscalBalanceController.bean.filter.endYear}"
+							suggestionValues="#{fiscalBalanceController.bean.validityYearList}" />
+					</h:panelGrid>
+				</h:panelGrid>
+
+				<!-- Combo MSA -->
+				<h:outputText value="#{bundle['_nls.fiscal_balance.msa.label']}: "
+					for="msa" styleClass="labelGeneric" />
+				<a4j:outputPanel id="msaPanel">
+					<rich:comboBox id="msa" width="350" 
+						label="#{bundle['_nls.fiscal_balance.msa.label']}"
+						value="#{fiscalBalanceController.bean.filter.msa.nomeMsa}"
+						suggestionValues="#{fiscalBalanceController.bean.msaList}"
+						directInputSuggestions="true" immediate="true"
+						validator="#{fiscalBalanceController.validateMsa}"
+						valueChangeListener="#{fiscalBalanceController.clearResultList}">
+						<a4j:support event="onselect" reRender="fiscalBalancePanel" 
+							immediate="true" />
+						<a4j:support event="onchange" reRender="fiscalBalancePanel" 
+							immediate="true" />
+					</rich:comboBox>
+				</a4j:outputPanel>
+
+				<rich:spacer with="5" styleClass="noMargin" />
+
+				<!-- Option -->
+				<h:selectOneRadio id="option"
+					value="#{fiscalBalanceController.bean.filter.option}">
+					<f:selectItem itemValue="LDM"
+						itemLabel="#{bundle['_nls.fiscal_balance.last_day_of_month.label']}" />
+					<f:selectItem itemValue="CFP"
+						itemLabel="#{bundle['_nls.fiscal_balance.cfp_cut_date.label']}" />
+				</h:selectOneRadio>
+			</h:panelGrid>
+
+			<h:panelGrid colspan="5">
+				<a4j:commandButton value="#{bundle['_nls.button.search']}"
+					styleClass="buttonGeneric"
+					reRender="fiscalBalanceTable,fiscalBalancePanel"
+					action="#{fiscalBalanceController.findByFilter}" />
+
+			</h:panelGrid>
+		
+			<rich:spacer height="5" styleClass="noMargin" />
+			<h:outputLabel style="font-size:10px" value="- #{bundle['_nls.apropriacao_fatura.label.evaluated_revenues']}" />
+			<rich:spacer height="5" styleClass="noMargin" />
+			
+			<a4j:outputPanel id="fiscalBalancePanel">
+				<rich:dataTable value="#{fiscalBalanceController.bean.resultList}"
+					rendered="#{!empty fiscalBalanceController.bean.resultList}"
+					var="item" width="100%" id="fiscalBalanceTable"
+					rows="#{systemProperties['research.size.page.result']}"
+					rowKeyVar="row" reRender="ds">
+
+					<!-- Nome MSA -->
+					<rich:column sortBy="#{item.dealFiscal.msa.nomeMsa}">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.fiscal_balance.msa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dealFiscal.msa.nomeMsa}" />
+					</rich:column>
+
+					<!-- Nome Fiscal Deal -->
+					<rich:column sortBy="#{item.dealFiscal.nomeDealFiscal}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.fiscal_balance.fiscal_deal.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dealFiscal.nomeDealFiscal}" />						
+					</rich:column>
+
+					<!-- Status -->
+					<rich:column sortBy="#{item.dealFiscal.indicadorStatus}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.fiscal_balance.status.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dealFiscal.indicadorStatus}"
+							converter="ActiveInactiveConverter" />
+					</rich:column>
+
+					<!-- Total Revenue -->
+					<rich:column sortBy="#{item.totalReceita}" style="text-align: right">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.fiscal_balance.total_revenue.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dealFiscal.moeda.siglaMoeda}" />
+						<rich:spacer width="5" styleClass="noMargin" />
+						<h:outputText value="#{item.totalReceita}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<!-- Total Invoice -->
+					<rich:column sortBy="#{item.totalFatura}" style="text-align: right">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.fiscal_balance.total_invoice.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dealFiscal.moeda.siglaMoeda}" />
+						<rich:spacer width="5" styleClass="noMargin" />
+						<h:outputText value="#{item.totalFatura}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<!-- Total Fiscal Balance -->
+					<rich:column sortBy="#{item.totalBalanceRounded}" style="text-align: right">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.fiscal_balance.fiscal_balance.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dealFiscal.moeda.siglaMoeda}" />
+						<rich:spacer width="5" styleClass="noMargin" />
+						<h:outputText value="#{item.totalBalanceRounded}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<!-- Ações -->
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.fiscal_balance.action.label']}" />
+						</f:facet>
+						<a4j:commandLink ajaxSingle="true" id="viewlink"
+							action="#{fiscalBalanceController.prepareDealFiscalFiscalBalanceGeneral}">
+							<h:graphicImage value="/images/icons/view.png" style="border:0" />
+							<f:setPropertyActionListener value="#{item.dealFiscal}"
+								target="#{fiscalBalanceController.bean.currentDealFiscal}" />
+						</a4j:commandLink>						
+					</rich:column>
+					
+					<f:facet name="footer">
+						<rich:datascroller id="ds" renderIfSinglePage="false"
+							reRender="fiscalBalanceTable" limitToList="true"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{fiscalBalanceController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+	<a4j:region id="regionProfile">
+		<rich:panel id="formPanel">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.my_profile']}" />
+			</f:facet>
+			<a4j:keepAlive beanName="pessoaBean" />
+			<rich:spacer height="0" width="560" styleClass="noMargin" />
+
+			<div style="max-height: 150px; overflow: auto;"><rich:messages
+				errorClass="msgError" warnClass="msgWarng" infoClass="msgSuccess"
+				id="errorMsgId" rendered="#{messageControlBean.displayMessages}"
+				layout="table" ajaxRendered="true">
+			</rich:messages></div>
+
+			<h:panelGrid columns="2" style="vertical-align: top">
+				<a4j:outputPanel>
+					<h:panelGrid columns="5">
+						<h:outputText value="#{bundle['_nls.pessoa.nome_pessoa.label']}:"
+							styleClass="labelGeneric" />
+						<h:outputText value="#{loginBean.pessoa.nomePessoa}" />
+
+						<rich:spacer width="5" />
+
+						<h:outputText value="#{bundle['_nls.pessoa.login.label']}:"
+							styleClass="labelGeneric" />
+						<h:outputText value="#{loginBean.pessoa.codigoLogin}" />
+
+						<h:outputText value="#{bundle['_nls.pessoa.email.label']}:"
+							styleClass="labelGeneric" />
+						<h:outputText value="#{loginBean.pessoa.textoEmail}" />
+
+						<rich:spacer width="5" />
+
+						<h:outputText value="#{bundle['_nls.pessoa.login_mgr.label']}:"
+							styleClass="labelGeneric" />
+						<h:outputText value="#{loginBean.pessoa.codigoLoginMgr}" />
+
+						<h:outputText
+							value="#{bundle['_nls.pessoa.data_admissao.label']}:"
+							styleClass="labelGeneric" />
+						<h:outputText value="#{loginBean.pessoa.dataAdmissao}">
+							<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+						</h:outputText>
+
+						<rich:spacer width="5" />
+
+						<h:outputText value="#{bundle['_nls.pessoa.cidade_base.label']}:"
+							styleClass="labelGeneric" />
+						<h:outputText value="#{loginBean.nomeCidadeBase}" />
+
+						<h:outputText value="#{bundle['_nls.pessoa.grupo_custo.label']}:"
+							styleClass="labelGeneric" />
+						<h:outputText value="#{loginBean.nomeGrupoCusto}" />
+
+						<rich:spacer width="5" />
+
+						<h:outputText
+							value="#{bundle['_nls.pessoa.tipo_contratacao.label']}:"
+							styleClass="labelGeneric" />
+						<h:outputText value="#{loginBean.nomeTipoContrato}" />
+
+					</h:panelGrid>
+				</a4j:outputPanel>
+			</h:panelGrid>
+
+			<sec:ifAnyGranted roles="ROLE_PMS_ADMIN, ROLE_PMS_PEOPLE_MANAGER">
+				<h:form id="myProfileFormFollow" styleClass="noMargin">
+					<h:panelGrid columns="1" width="100%">
+						<rich:panel id="peopleFollowPanel">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.pessoa.people_follow.label']}" />
+							</f:facet>
+
+							<h:panelGrid columns="3">
+								<h:selectOneRadio id="indicadorFollowOn"
+									value="#{loginBean.pessoa.indicadorFollowOn}">
+									<f:selectItem itemValue="Y"
+										itemLabel="#{bundle['_nls.yes.label']}" />
+									<f:selectItem itemValue="N"
+										itemLabel="#{bundle['_nls.no.label']}" />
+								</h:selectOneRadio>
+
+								<rich:spacer width="10" />
+
+								<a4j:commandButton value="#{bundle['_nls.button.update']}"
+									ajaxSingle="false" reRender="errorMsgId" limitToList="true"
+									action="#{loginBean.updatePeopleFollow}">
+								</a4j:commandButton>
+							</h:panelGrid>
+						</rich:panel>
+					</h:panelGrid>
+				</h:form>
+			</sec:ifAnyGranted>
+
+			<sec:ifAnyGranted roles="ROLE_PMS_ADMIN, ROLE_PMS_PEOPLE_MANAGER">
+				<h:panelGrid columns="1" width="100%">
+					<rich:panel id="delegatePanel">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.pessoa.delegacao.label']}" />
+						</f:facet>
+						<h:form id="myProfileFormDelegate" styleClass="noMargin">
+
+							<h:panelGrid columns="3">
+								<h:selectOneRadio id="indicadorDelegateOn"
+									value="#{loginBean.pessoa.indicadorDelegateOn}">
+									<f:selectItem itemValue="Y"
+										itemLabel="#{bundle['_nls.yes.label']}" />
+									<f:selectItem itemValue="N"
+										itemLabel="#{bundle['_nls.no.label']}" />
+									<a4j:support event="onchange" reRender="delegatePanel"
+										limitToList="true" />
+								</h:selectOneRadio>
+
+								<rich:spacer width="10" />
+
+								<a4j:commandButton value="#{bundle['_nls.button.update']}"
+									ajaxSingle="false" reRender="errorMsgId" limitToList="true"
+									action="#{loginBean.updateDelegateOff}"
+									rendered="#{loginBean.pessoa.indicadorDelegateOn == 'N'}">
+								</a4j:commandButton>
+
+							</h:panelGrid>
+
+						</h:form>
+						<h:form id="myProfileDelegate" styleClass="noMargin">
+							<h:panelGrid columns="2"
+								rendered="#{loginBean.pessoa.indicadorDelegateOn == 'Y'}">
+								<h:outputText
+									value="#{bundle['_nls.my_profile.delegate.label']}*: "
+									styleClass="labelGeneric" />
+								<h:panelGrid columns="1">
+									<a4j:region>
+										<rich:comboBox validator="#{xssValidator.validate}"
+											id="people_managers" width="180"
+											label="#{bundle['_nls.my_profile.delegate.label']}"
+											value="#{loginBean.pessoaDelegada.codigoLogin}"
+											suggestionValues="#{loginBean.peopleManagerList}"
+											valueChangeListener="#{loginBean.changeValuePeopleManager}"
+											directInputSuggestions="false" required="true">
+
+											<a4j:support event="onselect" limitToList="true" />
+										</rich:comboBox>
+									</a4j:region>
+								</h:panelGrid>
+
+								<h:outputText
+									value="#{bundle['_nls.my_profile.delegate.data_inicio.label']}*: "
+									styleClass="labelGeneric" />
+
+								<h:panelGrid columns="4">
+									<rich:calendar value="#{loginBean.pessoaDelegacao.dataInicio}"
+										locale="#{bundle['_nls.calendar.locale']}"
+										enableManualInput="false"
+										datePattern="#{bundle['_nls.date.pattern']}" required="true"
+										label="#{bundle['_nls.my_profile.delegate.data_inicio.label']}">
+									</rich:calendar>
+									<rich:spacer width="5" />
+									<h:outputText
+										value="#{bundle['_nls.my_profile.delegate.data_fim.label']}: "
+										styleClass="labelGeneric" />
+									<rich:calendar value="#{loginBean.pessoaDelegacao.dataFim}"
+										locale="#{bundle['_nls.calendar.locale']}"
+										enableManualInput="false"
+										datePattern="#{bundle['_nls.date.pattern']}"
+										label="#{bundle['_nls.my_profile.delegate.data_fim.label']}">
+									</rich:calendar>
+								</h:panelGrid>
+								<a4j:commandButton value="#{bundle['_nls.button.update']}"
+									ajaxSingle="false" reRender="errorMsgId" limitToList="true"
+									action="#{loginBean.updateDelegateOn}"
+									rendered="#{loginBean.pessoa.indicadorDelegateOn == 'Y'}">
+								</a4j:commandButton>
+
+							</h:panelGrid>
+						</h:form>
+					</rich:panel>
+				</h:panelGrid>
+			</sec:ifAnyGranted>
+
+		</rich:panel>
+	</a4j:region>
+</ui:composition>
+
+</html>

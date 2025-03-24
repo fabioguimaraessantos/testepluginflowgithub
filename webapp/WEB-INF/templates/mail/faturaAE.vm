@@ -1,0 +1,28 @@
+<html>
+
+
+<body>
+	<h3>${description}</h3>
+	
+	<HR WIDTH=80% align=left>
+    
+    <table WIDTH="80%" CELLSPACING="0" CELLPADDING="2" BORDER="1">
+		<tr>
+			<th align="center">Invoice</th>
+			<th align="center">Date</th>
+			<th align="center">C-LOB</th>
+			<th align="center">Client</th>
+		</tr>
+		#foreach( $fatura in $faturaList )    
+	    <tr>
+	    	<td align="center">$fatura.codigoFatura</td>    
+	       	<td align="center">$fatura.dataPrevisao</td>
+	       	<td align="left">$fatura.dealFiscal.contratoPratica.nomeContratoPratica</td>
+	       	<td align="left">$fatura.dealFiscal.cliente.nomeCliente</td>
+	    </tr>
+	    #end
+    </table>
+<body>
+
+
+</html>

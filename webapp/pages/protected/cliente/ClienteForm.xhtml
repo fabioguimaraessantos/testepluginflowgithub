@@ -1,0 +1,282 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:rich="http://richfaces.org/rich"
+	  xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+	<h:outputText value="#{bundle['_nls.cliente.nome_cliente.label']}*: "
+				  styleClass="labelGeneric" />
+	<h:inputText id="nomeCliente" required="true" size="70" maxlength="99"
+				 validator="#{xssValidator.validate}"
+				 label="#{bundle['_nls.cliente.nome_cliente.label']}"
+				 value="#{clienteController.bean.to.nomeCliente}">
+		<f:validateLength
+				minimum="#{systemProperties['form.input.length.minimum']}"
+				maximum="99" />
+	</h:inputText>
+
+	<h:outputText
+			value="#{bundle['_nls.cliente.codigo_mnemonico.label']}*: "
+			for="codigoMnemonico" styleClass="labelGeneric" />
+	<h:inputText id="codigoMnemonico" required="true" size="20"
+				 maxlength="20"
+				 validator="#{xssValidator.validate}"
+				 label="#{bundle['_nls.cliente.codigo_mnemonico.label']}"
+				 value="#{clienteController.bean.to.codigoMnemonico}">
+		<f:validateLength
+				minimum="#{systemProperties['form.input.length.minimum']}"
+				maximum="20" />
+		<rich:jQuery selector="#codigoMnemonico" query="alphanumeric()"
+					 timing="onload" />
+	</h:inputText>
+
+	<h:outputText value="#{bundle['_nls.cliente.type.label']}*: "
+				  for="type" styleClass="labelGeneric" />
+	<h:panelGrid columns="3" cellpadding="0" cellspacing="0"
+				 id="tipoRegistroFiscalPanel">
+		<a4j:region>
+			<h:selectOneRadio id="type" required="true"
+							  label="#{bundle['_nls.cliente.type.label']}"
+							  valueChangeListener="#{clienteController.setTipoRegistroFiscal}"
+							  value="#{clienteController.bean.to.tipoRegistroFiscal}">
+				<f:selectItem
+						itemLabel="#{bundle['_nls.cliente.codigo_cnpj.label']}"
+						itemValue="#{'C'}" />
+				<f:selectItem itemLabel="#{bundle['_nls.cliente.fiscal_id.label']}"
+							  itemValue="#{'F'}" />
+
+				<a4j:support reRender="tipoRegistroFiscalPanel" event="onchange"
+							 limitToList="true" />
+			</h:selectOneRadio>
+		</a4j:region>
+		<rich:spacer height="5" width="10" />
+
+		<h:inputText id="cnpj" size="30" maxlength="49" required="true"
+					 validator="#{xssValidator.validate}"
+					 rendered="#{clienteController.bean.to.tipoRegistroFiscal == 'C' and clienteController.bean.to.codigoCnpj == null}"
+					 label="#{bundle['_nls.cliente.codigo_cnpj.label']}"
+					 value="#{clienteController.bean.to.codigoCnpj}">
+
+			<rich:jQuery selector="#cnpj" query="setMask('cnpj')"
+						 timing="immediate" />
+
+			<f:validateLength
+					minimum="#{systemProperties['form.input.length.minimum']}"
+					maximum="49" />
+		</h:inputText>
+
+		<h:inputText id="fiscalId" size="30" maxlength="49" required="true"
+					 validator="#{xssValidator.validate}"
+					 rendered="#{clienteController.bean.to.tipoRegistroFiscal != 'C' and clienteController.bean.to.codigoCnpj == null}"
+					 label="#{bundle['_nls.cliente.fiscal_id.label']}"
+					 value="#{clienteController.bean.to.codigoCnpj}">
+
+			<f:validateLength
+					minimum="#{systemProperties['form.input.length.minimum']}"
+					maximum="49" />
+		</h:inputText>
+
+		<h:outputText value="#{clienteController.bean.to.codigoCnpj}" rendered="#{clienteController.bean.to.codigoCnpj != null}" />
+	</h:panelGrid>
+
+	<h:outputText value="#{bundle['_nls.cliente.texto_pais.label']}:"
+				  for="textoPais" styleClass="labelGeneric" />
+	<h:inputText id="textoPais" size="30" maxlength="49"
+				 validator="#{xssValidator.validate}"
+				 label="#{bundle['_nls.cliente.texto_pais.label']}"
+				 value="#{clienteController.bean.to.textoPais}">
+		<f:validateLength
+				minimum="#{systemProperties['form.input.length.minimum']}"
+				maximum="49" />
+	</h:inputText>
+
+	<h:outputText value="#{bundle['_nls.cliente.texto_estado.label']}:"
+				  for="textoEstado" styleClass="labelGeneric" />
+	<h:inputText id="textoEstado" size="30" maxlength="99"
+				 validator="#{xssValidator.validate}"
+				 label="#{bundle['_nls.cliente.texto_estado.label']}"
+				 value="#{clienteController.bean.to.textoEstado}">
+		<f:validateLength
+				minimum="#{systemProperties['form.input.length.minimum']}"
+				maximum="99" />
+	</h:inputText>
+
+	<h:outputText value="#{bundle['_nls.cliente.texto_cidade.label']}:"
+				  for="textoCidade" styleClass="labelGeneric" />
+	<h:inputText id="textoCidade" size="70" maxlength="99"
+				 validator="#{xssValidator.validate}"
+				 label="#{bundle['_nls.cliente.texto_cidade.label']}"
+				 value="#{clienteController.bean.to.textoCidade}">
+		<f:validateLength
+				minimum="#{systemProperties['form.input.length.minimum']}"
+				maximum="99" />
+	</h:inputText>
+
+	<h:outputText value="#{bundle['_nls.cliente.cliente_pai.label']}*: "
+				  for="clientePai" styleClass="labelGeneric" />
+	<a4j:region>
+		<rich:comboBox id="clientePai" width="300"
+								   label="#{bundle['_nls.cliente.cliente_pai.label']}"
+								   value="#{clienteController.bean.clientePaiSelected}"
+								   validator="#{clienteController.validateClientePai}"
+								   suggestionValues="#{clienteController.bean.clientePaiList}"
+					               valueChangeListener="#{clienteController.clientePaiListener}"
+								   required="true" directInputSuggestions="true">
+			<f:validator validatorId="xssValidator"/>
+			<a4j:support event="onselect" limitToList="true" reRender="conditionPaymenyList, megaAgenInputtPainel"></a4j:support>
+	</rich:comboBox>
+	</a4j:region>
+
+	<h:outputText value="#{bundle['_nls.cliente.indicador_ativo.label']}: "
+				  for="indicadorAtivo" styleClass="labelGeneric"
+				  rendered="#{clienteController.bean.isUpdate}" />
+	<rich:comboBox validator="#{xssValidator.validate}"
+				   id="indicadorAtivo" required="true"
+				   enableManualInput="false"
+				   label="#{bundle['_nls.cliente.indicador_ativo.label']}"
+				   value="#{clienteController.bean.to.indicadorAtivo}"
+				   suggestionValues="#{clienteController.bean.suggestionsListInAtivo}"
+				   directInputSuggestions="true" converter="ActiveInactiveConverter"
+				   rendered="#{clienteController.bean.isUpdate}">
+	</rich:comboBox>
+
+	<h:outputText value="#{bundle['_nls.cliente.indicador_tipo.label']}: "
+				  for="indicadorTipo" styleClass="labelGeneric"></h:outputText>
+	<rich:comboBox validator="#{xssValidator.validate}"
+				   id="indicadorTipo" enableManualInput="false"
+				   label="#{bundle['_nls.cliente.indicador_tipo.label']}"
+				   value="#{clienteController.bean.to.indicadorTipo}"
+				   directInputSuggestions="true" converter="TipoClienteConverter">
+
+		<f:selectItem itemValue="NAC" />
+		<f:selectItem itemValue="INT" />
+	</rich:comboBox>
+
+	<h:outputText
+			value="#{bundle['_nls.cliente.prazo_recebimento.label']}: "
+			for="prazoRecebimento" styleClass="labelGeneric" />
+	<h:inputText id="prazoRecebimento" size="4" maxlength="3"
+				 validator="#{xssValidator.validate}"
+				 label="#{bundle['_nls.cliente.prazo_recebimento.label']}"
+				 value="#{clienteController.bean.to.numeroDiasPrazoRecebimento}"
+				 required="true">
+		<rich:jQuery selector="#prazoRecebimento" query="numeric()"
+					 timing="onload" />
+	</h:inputText>
+
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="megaAgentPainel">
+		<h:outputText
+				value="#{bundle['_nls.cliente.mega_agent.label']}: "
+				for="megaAgent" styleClass="labelGeneric" />
+		<rich:toolTip for="megaAgentInfo" value="#{bundle['_nls.cliente.mega_agent.tooltip.label']}" />
+	</h:panelGrid>
+	<h:panelGrid columns="3" cellpadding="0" cellspacing="0"  id="megaAgenInputtPainel">
+		<h:inputText id="megaAgent" size="10" maxlength="10"
+					 validator="#{xssValidator.validate}"
+					 label="#{bundle['_nls.cliente.mega_agent.label']}"
+					 value="#{clienteController.bean.to.codigoAgenteMega}"
+		>
+			<rich:jQuery selector="#megaAgent" query="numeric()"
+						 timing="onload" />
+			<a4j:support event="onblur"
+						 limitToList="true"
+						 action="#{clienteController.findPaymentConditionByAgentCodeAndCompanyCode}"
+						 reRender="conditionPaymenyList, megaAgenInputtPainel, errorMsgId" ajaxSingle="true" />
+		</h:inputText>
+		<h:graphicImage id="megaAgentInfo" value="/images/icons/info.gif" style="border:0;padding:5px;" />
+		<h:outputText id="megaAgentName" rendered="#{!empty clienteController.bean.megaAgentName}" value="Name: #{clienteController.bean.megaAgentName}" />
+	</h:panelGrid>
+
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" >
+		<h:outputText
+				value="#{bundle['_nls.cliente.condicao_pagamento.label']}:"
+				styleClass="labelGeneric" />
+	</h:panelGrid>
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="conditiontPainel">
+			<h:selectManyListbox
+					id="conditionPaymenyList"
+					rendered="true"
+					value="#{clienteController.bean.conditionsPayment}"
+					size="5"
+					disabled="true"
+					label="#{bundle['_nls.cliente.condicao_pagamento.label']}">
+
+				<f:selectItems
+						value="#{clienteController.bean.conditionsPayment}" />
+			</h:selectManyListbox>
+	</h:panelGrid>
+
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="organizationCode">
+		<h:outputText value="Pipedrive Organization Code:" styleClass="labelGeneric" />
+	</h:panelGrid>
+
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="organizationCode2">
+		<h:inputText
+				size="4"
+				id="pipedriveCode"
+				validator="#{xssValidator.validate}"
+				value="#{clienteController.bean.to.codigoOrganizacaoPipedrive}">
+
+			<a4j:support event="onkeyup"
+						 limitToList="true"
+						 action="#{clienteController.findOrganizationById}"
+						 reRender="pipedriveName,organizationCode2" ajaxSingle="true" />
+		</h:inputText>
+		<h:outputText id="pipedriveName" rendered="#{!empty clienteController.bean.organizationName}" value="Name: #{clienteController.bean.organizationName}" />
+	</h:panelGrid>
+
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="quickBooksCustomerPanel">
+		<h:outputText
+				value="#{bundle['_nls.cliente.quickbooks_customer.label']}: "
+				for="quickBooksCustomer" styleClass="labelGeneric" />
+	</h:panelGrid>
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0"  id="quickBooksCustomerInputPanel">
+		<h:inputText
+					 validator="#{xssValidator.validate}"
+					 id="quickBooksCustomer" size="10" maxlength="10"
+					 label="#{bundle['_nls.cliente.quickbooks_customer.label']}"
+					 value="#{clienteController.bean.to.codigoCustomerQuickBooks}">
+			<rich:jQuery selector="#quickBooksCustomer" query="numeric()"
+						 timing="onload" />
+		</h:inputText>
+	</h:panelGrid>
+
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="xeroContactPanel">
+		<h:outputText
+				value="#{bundle['_nls.cliente.xero_contact.label']}: "
+				for="xeroContact" styleClass="labelGeneric" />
+	</h:panelGrid>
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0"  id="xeroContactInputPanel">
+		<h:inputText validator="#{xssValidator.validate}"
+					 id="xeroContact" size="35" maxlength="50"
+					 label="#{bundle['_nls.cliente.xero_contact.label']}"
+					 value="#{clienteController.bean.to.codigoContactXero}">
+			<rich:jQuery selector="#xeroContact" query="alphanumeric()"
+						 timing="onload" />
+		</h:inputText>
+	</h:panelGrid>
+
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="oracleTaxpayerCustomerPanel">
+		<h:outputText
+				value="#{bundle['_nls.cliente.oracle_taxpayer_customer.label']}:"
+				for="oracleTaxpayerCustomer" styleClass="labelGeneric"/>
+		<rich:toolTip for="oracleTaxpayerCustomerInfo" value="#{bundle['_nls.cliente.oracle_taxpayer_customer.tooltip.label']}" />
+	</h:panelGrid>
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" id="oracleTaxPayerCustomerInputPanel">
+		<h:inputText validator="#{xssValidator.validate}"
+					 id="oracleTaxpayerCustomer" size="35" maxlength="30"
+					 label="#{bundle['_nls.cliente.oracle_taxpayer_customer.label']}"
+					 value="#{clienteController.bean.to.codigoOracleTaxpayerCustomer}">
+			<rich:jQuery selector="#oracleTaxpayerCustomer" query="alphanumeric()"
+						 timing="onload"/>
+		</h:inputText>
+		<h:graphicImage id="oracleTaxpayerCustomerInfo" value="/images/icons/info.gif" style="border:0;padding:5px;" />
+	</h:panelGrid>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+</ui:composition>
+
+</html>

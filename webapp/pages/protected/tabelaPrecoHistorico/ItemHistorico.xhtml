@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+    <ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+        <ui:define name="titleForm">
+            #{bundle['_nls.tabela_preco.titulo']}
+        </ui:define>
+
+        <ui:define name="bodyForm">
+            <a4j:keepAlive beanName="itemTabelaPrecoBean"/>
+            <a4j:keepAlive beanName="tabelaPrecoBean"/>
+            <a4j:keepAlive beanName="anexoTabelaPrecoBean"/>
+            <a4j:keepAlive beanName="msaBean"/>
+            <a4j:keepAlive beanName="priceTableHistoryBean" />
+
+            <a4j:loadScript src="/js/utils.js"/>
+            <a4j:loadScript src="/js/jquery.numeric.js"/>
+            <a4j:loadScript src="/js/jquery.meio.mask.js"/>
+
+            <rich:spacer height="0" width="560" styleClass="noMargin"/>
+            <rich:spacer height="08"/>
+
+            <!-- Detalhes da price table -->
+            <h:panelGrid columns="5" id="detailsPriceTable">
+
+                <h:outputText value="#{bundle['_nls.msa.entity_name']}: "
+                              styleClass="labelGeneric"/>
+                <h:outputText value="#{msaController.bean.to.nomeMsa}"/>
+
+                <rich:spacer width="20px"/>
+
+                <h:outputText value="#{bundle['_nls.msa.cliente_msa.label']}: "
+                              styleClass="labelGeneric"/>
+                <h:outputText value="#{msaController.bean.to.cliente.nomeCliente}"/>
+
+                <h:outputText
+                        value="#{bundle['_nls.item_tabela_preco.tabela_preco.label']}:"
+                        styleClass="labelGeneric"/>
+                <h:outputText
+                        value="#{msaController.priceTableHistoryBean.priceTable.descricaoTabelaPreco}"/>
+
+                <rich:spacer width="20px"/>
+
+                <h:outputText value="#{bundle['_nls.deal.moeda.label']}:"
+                              styleClass="labelGeneric"/>
+                <h:outputText
+                        value="#{msaController.priceTableHistoryBean.priceTable.moeda.nomeMoeda}"/>
+
+                <h:outputText
+                        value="#{bundle['_nls.cpcl.data_inicio_vigencia.label']}:"
+                        styleClass="labelGeneric"/>
+                <h:outputText
+                        value="#{msaController.priceTableHistoryBean.priceTable.dataInicioVigencia}">
+                    <f:convertDateTime pattern="MMM/yyyy"/>
+                </h:outputText>
+
+                <rich:spacer width="20px"/>
+
+                <h:outputText value="#{bundle['_nls.cpcl.data_fim_vigencia.label']}:"
+                              styleClass="labelGeneric"/>
+
+                <h:outputText value="#{msaController.priceTableHistoryBean.priceTable.dataFimVigencia}">
+                    <f:convertDateTime pattern="MMM/yyyy"/>
+                </h:outputText>
+
+                <h:outputText value="#{bundle['_nls.tabela_preco.status.label']}: " styleClass="labelGeneric"/>
+                <h:outputText value="#{msaController.priceTableHistoryBean.history.status}"/>
+
+                <rich:spacer width="20px"/>
+
+                <h:outputText value="#{bundle['_nls.tabela_preco.last.modified.label']}:" styleClass="labelGeneric"/>
+                <h:outputText value="#{msaController.priceTableHistoryBean.history.updatedIn}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" type="both" timeZone="America/Sao_Paulo" />
+                </h:outputText>
+
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" id="detailsPriceTableHistory">
+                <h:outputText value="#{bundle['_nls.tabela_preco.reasons_to_disapprove.title']}: " styleClass="labelGeneric"
+                              rendered="#{not empty msaController.priceTableHistoryBean.history.reason}"/>
+                <h:outputText value="#{msaController.priceTableHistoryBean.history.reason}"/>
+            </h:panelGrid>
+
+            <rich:spacer height="08"/>
+
+            <h:form>
+                <h:panelGrid columns="1">
+                    <a4j:commandButton action="#{msaController.backToPriceTableHistory}"
+                                       value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric"/>
+                </h:panelGrid>
+
+                <rich:spacer height="5"/>
+            </h:form>
+
+            <rich:panel header="#{bundle['_nls.tabela_preco.titulo']}">
+
+                <h:form>
+
+                    <rich:spacer height="5" styleClass="noMargin"/>
+
+                    <!-- Lista de itens -->
+                    <rich:dataTable width="100%"
+                                    value="#{msaController.priceTableHistoryBean.items}"
+                                    var="item" id="lista">
+
+                        <f:facet name="header">
+                            <rich:columnGroup style="background-color: #{item.removedBackgroundColor}">
+                                <rich:column style="background-color: #{item.removedBackgroundColor}">
+                                    <h:outputText value="#{bundle['_nls.select.label']}" styleClass="labelGeneric" />
+                                </rich:column>
+                                <rich:column colspan="9" style="background-color: #{item.removedBackgroundColor}"></rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+
+                        <rich:column style="text-align: center; background-color: #{item.removedBackgroundColor}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['_nls.item_tabela_preco.approve']}"/>
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{item.approved}" disabled="true"/>
+                        </rich:column>
+
+                        <!-- Perfil Vendido -->
+                        <rich:column style="text-align: center; background-color: #{item.removedBackgroundColor}" sortBy="#{item.itemTabelaPreco.perfilVendido.nomePerfilVendido}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['_nls.perfil_vendido.entity_name']}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.itemTabelaPreco.perfilVendido.nomePerfilVendido}"/>
+                        </rich:column>
+
+                        <!-- Cargo -->
+                        <rich:column style="background-color: #{item.removedBackgroundColor}" sortBy="#{item.itemTabelaPreco.perfilVendido.perfilPadrao.cargoPms.nomeCargoPms}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['_nls.perfil_vendido.position']}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.itemTabelaPreco.perfilVendido.perfilPadrao.cargoPms.nomeCargoPms}"/>
+                        </rich:column>
+
+                        <!-- PMG -->
+                        <rich:column style="background-color: #{item.removedBackgroundColor}"
+                                     sortBy="#{item.itemTabelaPreco.perfilVendido.perfilPadrao.pmg.nomePmg}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['_nls.perfil_vendido.PMG']}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.itemTabelaPreco.perfilVendido.perfilPadrao.pmg.nomePmg}"/>
+                        </rich:column>
+
+                        <!-- Cidade Base -->
+                        <rich:column style="background-color: #{item.removedBackgroundColor}"
+                                     sortBy="#{item.itemTabelaPreco.perfilVendido.perfilPadrao.cidadeBase.siglaCidadeBase}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['_nls.perfil_vendido.base']}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.itemTabelaPreco.perfilVendido.perfilPadrao.cidadeBase.siglaCidadeBase}"/>
+                        </rich:column>
+
+                        <!-- Valor por Hora -->
+                        <rich:column style="background-color: #{item.removedBackgroundColor}"
+                                     sortBy="#{item.itemTabelaPreco.valorItemTbPreco}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['_nls.tabela_preco.item.rate_hour']}"/>
+                            </f:facet>
+
+                            <h:outputText value="#{item.itemTabelaPreco.perfilVendido.moeda.siglaMoeda}"/>
+
+                            <rich:spacer width="2px"/>
+                            <sec:ifAnyGranted roles="BUS.MSA:ED,BUS.MSA:CR">
+                                <h:outputText
+                                        value="#{item.itemTabelaPreco.valorItemTbPreco}"
+                                        disabled="true">
+                                    <f:convertNumber locale="#{bundle['locale.en_us']}" pattern="#{systemProperties['pattern.number']}"/>
+                                </h:outputText>
+                            </sec:ifAnyGranted>
+                            <sec:ifNotGranted roles="BUS.MSA:ED,BUS.MSA:CR">
+                                <h:outputText
+                                        value="#{item.itemTabelaPreco.valorItemTbPreco}">
+                                    <f:convertNumber locale="#{bundle['locale.en_us']}" pattern="#{systemProperties['pattern.number']}"/>
+                                </h:outputText>
+                            </sec:ifNotGranted>
+                        </rich:column>
+
+                        <!-- Valor em FTEs -->
+                        <rich:column style="background-color: #{item.removedBackgroundColor}" sortBy="#{item.fte}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['nls.tabela_preco.item.rate_FTE']}"/>
+                            </f:facet>
+
+                            <h:outputText value="#{item.itemTabelaPreco.perfilVendido.moeda.siglaMoeda}"/>
+                            <rich:spacer width="2px"/>
+
+                            <sec:ifAnyGranted roles="BUS.MSA:ED,BUS.MSA:CR">
+                                <h:outputText value="#{item.fte}" />
+                            </sec:ifAnyGranted>
+
+                            <sec:ifNotGranted roles="BUS.MSA:ED,BUS.MSA:CR">
+                                <h:outputText value="#{item.fte}"/>
+                            </sec:ifNotGranted>
+                        </rich:column>
+
+                        <!-- Percentual Embutido -->
+                        <rich:column style="background-color: #{item.removedBackgroundColor}">
+                            <f:facet name="header" class="embeddedCostHeader">
+                                <h:panelGroup style="display: flex; align-items: center;">
+                                    <h:outputText value="#{bundle['_nls.item_tabela_preco.embedded_cost_abreviacao']}"/>
+                                    <rich:toolTip for="embeddedCostInfoIcon">#{bundle['_nls.item_tabela_preco.embedded_cost.tooltip']}</rich:toolTip>
+                                    <h:graphicImage id="embeddedCostInfoIcon" value="/images/icons/info.gif" style="border:0;padding:5px;" />
+                                </h:panelGroup>
+                            </f:facet>
+                            <h:outputText value="#{item.itemTabelaPreco.percentualDespesa}" /> %
+                        </rich:column>
+
+                        <!-- Valor Embutido -->
+                        <rich:column sortBy="#{item.itemTabelaPreco.valorDespesa}"
+                                     style="text-align: right; background-color: #{item.removedBackgroundColor}">
+
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['_nls.item_tabela_preco.embedded_cost_abreviacao_fte']}"/>
+                            </f:facet>
+
+                            <h:outputText value="#{item.itemTabelaPreco.perfilVendido.moeda.siglaMoeda}"/>
+
+                            <rich:spacer width="2px"/>
+
+                            <h:outputText value="#{item.itemTabelaPreco.valorDespesa}" style="width: 60px" id="vlrDespesa">
+                                <f:convertNumber locale="#{bundle['locale.en_us']}" pattern="#{systemProperties['pattern.number']}"/>
+                            </h:outputText>
+                        </rich:column>
+                    </rich:dataTable>
+                </h:form>
+            </rich:panel>
+        </ui:define>
+    </ui:composition>
+</html>

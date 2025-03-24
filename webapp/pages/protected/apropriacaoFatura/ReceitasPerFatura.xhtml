@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<rich:modalPanel id="faturaReceitaListPanel" autosized="true"
+	width="400">
+	<f:facet name="header">
+		<h:outputText style="padding-right:15px;"
+			value="#{bundle['_nls.apropriacao_fatura.revenues_per_incoice.title']}" />
+	</f:facet>
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/images/icons/close.gif" styleClass="hidelink"
+				id="hidelink2" />
+			<rich:componentControl for="faturaReceitaListPanel"
+				attachTo="hidelink2" operation="hide" event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+	<h:form styleClass="noMargin">
+
+		<h:panelGrid columns="2">
+			<h:panelGrid columns="2">
+				<h:outputLabel
+					value="#{bundle['_nls.apropriacao_fatura.fatura.label']}"
+					styleClass="labelGeneric" />
+				<h:outputText
+					value="#{apropriacaoFaturaController.bean.faturaReceitaRow.faturaReceita.fatura.codigoFatura}" />
+
+				<h:outputLabel
+					value="#{bundle['_nls.apropriacao_fatura.data_fatura.label']}"
+					styleClass="labelGeneric" />
+				<h:outputText
+					value="#{apropriacaoFaturaController.bean.faturaReceitaRow.faturaReceita.fatura.dataPrevisao}">
+					<f:convertDateTime pattern="MMM/yyyy" />
+				</h:outputText>
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<h:outputLabel
+					value="#{bundle['_nls.apropriacao_fatura.total_fatura.label']}"
+					styleClass="labelGeneric" />
+				<h:panelGroup>
+					<h:outputText
+						value="#{apropriacaoFaturaController.bean.patternCurrency} " />
+					<h:outputText
+						value="#{apropriacaoFaturaController.bean.faturaReceitaRow.totalValueInvoice}">
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+				</h:panelGroup>
+
+				<h:outputText
+					value="#{bundle['_nls.apropriacao_fatura.saldo_fatura.label']}"
+					styleClass="labelGeneric" />
+				<h:panelGroup>
+					<h:outputText
+						value="#{apropriacaoFaturaController.bean.patternCurrency} " />
+					<h:outputText
+						value="#{apropriacaoFaturaController.bean.faturaReceitaRow.invoiceBalance}">
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+				</h:panelGroup>
+			</h:panelGrid>
+		</h:panelGrid>
+
+		<h:panelGrid columns="1" cellpadding="0" cellspacing="0" width="100%">
+
+			<rich:dataTable
+				value="#{apropriacaoFaturaController.bean.faturaReceitaList}"
+				var="item" width="100%" id="faturaReceitaList">
+				<f:facet name="header">
+
+
+					<h:outputText value="Revenues" />
+
+
+				</f:facet>
+				<rich:column style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.apropriacao_fatura.contrato_pratica.label']}" />
+					</f:facet>
+					<h:outputText
+						value="#{item.receitaDealFiscal.receitaMoeda.receita.contratoPratica.nomeContratoPratica}" />
+				</rich:column>
+
+				<rich:column style="text-align: center;" width="300">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.apropriacao_fatura.deal.label']}" />
+					</f:facet>
+					<h:outputText
+						value="#{item.receitaDealFiscal.dealFiscal.nomeDealFiscal}" />
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.apropriacao_fatura.data_mes.label']}" />
+					</f:facet>
+					<h:outputText value="#{item.receitaDealFiscal.receitaMoeda.receita.dataMes}">
+						<f:convertDateTime pattern="MMM/yyyy" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column style="text-align: left;">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.apropriacao_fatura.receita.total.label']}" />
+					</f:facet>
+					<h:outputLabel
+						value="#{item.receitaDealFiscal.receitaMoeda.moeda.siglaMoeda} " />
+					<h:outputText
+						value="#{item.receitaDealFiscal.valorReceita + item.receitaDealFiscal.totalAdjustmentValue}">
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column style="text-align: left;">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.apropriacao_fatura.receita.valor_associado.label']}" />
+					</f:facet>
+					<h:outputLabel
+						value="#{item.receitaDealFiscal.receitaMoeda.moeda.siglaMoeda} " />
+					<h:outputText value="#{item.valorReceitaAssociada}">
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+				</rich:column>
+
+			</rich:dataTable>
+			<rich:spacer height="5" />
+			<a4j:commandButton value="#{bundle['_nls.button.close']}"
+				styleClass="buttonGeneric" limitToList="true"
+				oncomplete="#{rich:component('faturaReceitaListPanel')}.hide(); return false;" />
+
+		</h:panelGrid>
+	</h:form>
+
+</rich:modalPanel>
+
+</html>

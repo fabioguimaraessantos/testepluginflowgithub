@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<!-- Formulario -->
+
+	<h:panelGrid columns="4">
+
+		<h:outputText value="#{bundle['_nls.travel_budget.label.name']}*: "
+			styleClass="labelGeneric" />
+		<h:inputText size="30"
+			value="#{orcamentoDespesaController.bean.to.nomeOrcDespesa}"
+			required="true" label="#{bundle['_nls.travel_budget.label.name']}" />
+
+		<rich:spacer width="1" />
+		<rich:spacer width="1" />
+
+		<h:outputText value="#{bundle['_nls.travel.budget.label.moeda']}*: "
+			styleClass="labelGeneric" />
+		<rich:comboBox required="true"
+			suggestionValues="#{orcamentoDespesaController.bean.listaMoedaCombobox}"
+			value="#{orcamentoDespesaController.bean.moeda}" label="#{bundle['_nls.travel.budget.label.moeda']}">
+		</rich:comboBox>
+
+		<h:outputText value="#{bundle['_nls.travel_budget.label.value']}*: "
+			styleClass="labelGeneric" />
+		<h:inputText id="valor"
+			value="#{orcamentoDespesaController.bean.to.valorOrcado}"
+			required="true" label="#{bundle['_nls.travel_budget.label.value']}">
+			<rich:jQuery selector="#valor"
+				query="setMask('#{bundle['jquery.monetary.pattern']}')"
+				timing="onload" />
+			<f:convertNumber locale="#{bundle['locale.en_us']}"
+				pattern="#{systemProperties['pattern.number']}" />
+		</h:inputText>
+
+
+		<h:outputText value="#{bundle['_nls.travel_budget.label.date']}*: "
+			styleClass="labelGeneric" />
+		<rich:calendar
+			value="#{orcamentoDespesaController.bean.to.dataInicio}"
+			locale="#{bundle['_nls.calendar.locale']}" required="true"
+			datePattern="#{bundle['_nls.date.pattern']}" enableManualInput="true"
+			showApplyButton="false" style="width:150px"
+			label="#{bundle['_nls.travel_budget.label.date']}" />
+		<h:outputText value="#{bundle['_nls.travel.budget.label.until']}*: "
+			styleClass="labelGeneric" />
+		<rich:calendar value="#{orcamentoDespesaController.bean.to.dataFim}"
+			locale="#{bundle['_nls.calendar.locale']}" required="true"
+			datePattern="#{bundle['_nls.date.pattern']}" enableManualInput="true"
+			showApplyButton="false" style="width:150px"
+			label="#{bundle['_nls.travel.budget.label.until']}" />
+
+	</h:panelGrid>
+
+
+	<!-- Reembolso -->
+	<h:panelGrid columns="2">
+		<h:outputText
+			value="#{bundle['_nls.travel.budget.label.reembolso']}: "
+			styleClass="labelGeneric" />
+		<h:selectBooleanCheckbox styleClass="noMargin"
+			value="#{orcamentoDespesaController.bean.tipoOrc}" />
+	</h:panelGrid>
+
+	<rich:spacer height="8" />
+
+	<!-- PickList -->
+	<h:panelGrid columns="1" id="teste">
+		<h:outputText value="#{bundle['_nls.travel.budget.label.clobs']}*: "
+			styleClass="labelGeneric" />
+		<rich:pickList targetListWidth="250" sourceListWidth="250"
+			listsHeight="120" label="#{bundle['_nls.travel.budget.label.clobs']}"
+			value="#{orcamentoDespesaController.bean.grantedCLob}"
+			required="true">
+			<f:selectItems
+				value="#{orcamentoDespesaController.bean.listPickList}" />
+		</rich:pickList>
+	</h:panelGrid>
+</ui:composition>
+</html>

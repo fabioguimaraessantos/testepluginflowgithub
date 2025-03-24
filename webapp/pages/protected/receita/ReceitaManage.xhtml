@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.receita']} &gt; #{bundle['_nls.menu.receita.manage']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<script>
+			// nao permite ficar com campo numerico vazio (branco).
+			function valorZero(objeto) {
+				if (objeto.value.trim() == "") {
+					objeto.value = 0.0;
+				}
+			}
+		</script>
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form id="itemReceitaFormTable" styleClass="noMargin">
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+			<a4j:loadScript src="/js/utils.js" />
+
+			<h:panelGrid columns="2" width="100%">
+				<h:column>
+					<h:panelGrid columns="2">
+						<h:outputLabel
+							value="#{bundle['_nls.receita.contrato_pratica.label']}"
+							styleClass="labelGeneric" />
+						<h:outputLabel
+							value="#{receitaController.bean.to.contratoPratica.nomeContratoPratica}" />
+
+						<h:outputLabel
+							value="#{bundle['_nls.receita.indicador_versao.label']}"
+							styleClass="labelGeneric" />
+						<h:outputLabel
+							value="#{receitaController.bean.to.indicadorVersao}"
+							converter="VersionReceitaConverter" />
+
+						<h:outputLabel value="#{bundle['_nls.receita.data_mes.label']}"
+							styleClass="labelGeneric" />
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<h:outputText value="#{receitaController.bean.validityMonth}"
+								for="validityMonth" />
+							<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+							<h:outputText value="#{receitaController.bean.validityYear}"
+								for="validityYear" />
+						</h:panelGrid>
+
+						<h:outputLabel for="textoObservacao" styleClass="labelGeneric"
+							value="#{bundle['_nls.receita.observacao.label']}: " />
+						<h:inputTextarea validator="#{xssValidator.validate}"
+							cols="60" rows="2" id="textoObservacao"
+							label="#{bundle['_nls.receita.observacao.label']}"
+							value="#{receitaController.bean.to.textoObservacao}">
+							<f:validateLength maximum="399" />
+						</h:inputTextarea>
+
+						<rich:spacer height="5" width="0" />
+						<rich:spacer height="5" width="0" />
+					</h:panelGrid>
+
+					<!-- ********* Inicio Botoes ******************** -->
+					<h:panelGrid columns="7" cellpadding="0" cellspacing="0">
+
+						<a4j:commandButton value="#{bundle['_nls.button.back']}"
+							action="#{receitaController.backToFilter}"
+							styleClass="buttonGeneric"
+							rendered="#{receitaController.bean.isUpdate}" immediate="true" />
+						<rich:spacer height="5" width="5"
+							rendered="#{receitaController.bean.isUpdate}" />
+						<a4j:commandButton value="#{bundle['_nls.button.save']}"
+							action="#{receitaController.create}" styleClass="buttonGeneric"
+							rendered="#{!receitaController.bean.isUpdate}" />
+						<rich:spacer height="5" width="5"
+							rendered="#{!receitaController.bean.isUpdate}" />
+						<a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+							action="#{receitaController.backToFilter}"
+							styleClass="buttonGeneric"
+							rendered="#{!receitaController.bean.isUpdate}" />
+						<a4j:commandButton value="#{bundle['_nls.button.save']}"
+							reRender="historicoReceitaTable"
+							action="#{receitaController.prepareUpdate}"
+							styleClass="buttonGeneric"
+							rendered="#{receitaController.bean.isUpdate}" />
+						<rich:spacer height="5" width="5"
+							rendered="#{receitaController.bean.isUpdate}" />
+						<h:panelGroup rendered="#{receitaController.bean.isUpdate}">
+							<a4j:commandButton action="#{receitaController.preparePublish}"
+								value="#{bundle['_nls.button.save_as.publish']}"
+								styleClass="buttonGeneric" reRender="historicoReceitaTable"
+								rendered="#{receitaController.bean.to.indicadorVersao == 'WK'}" />
+						</h:panelGroup>
+
+					</h:panelGrid>
+					<!-- ********* Fim Botoes ******************** -->
+				</h:column>
+				<h:column>
+
+				</h:column>
+
+			</h:panelGrid>
+			
+		</h:form>
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<!-- Modal de confirmacao referente a publicacao da Receita -->
+		<ui:include src="/pages/protected/receita/ReceitaSaveAsModal.xhtml" />
+
+		<!-- Painel com as abas (Main e History) -->
+
+		<rich:tabPanel immediate="true" switchType="ajax">
+
+			<!-- Tab do Main -->
+			<rich:tab label="#{bundle['_nls.main.label']}">
+				<ui:include src="/pages/protected/receita/ReceitaMainTab.xhtml" />
+			</rich:tab>
+
+			<!-- Tab do HistoricoReceita -->
+			<rich:tab label="#{bundle['_nls.historico_receita.entity_name']}"
+				action="#{receitaController.prepareHistoricoReceita}"
+				rendered="#{receitaController.bean.to.codigoReceita != null}">
+				<rich:dataTable
+					value="#{receitaController.bean.historicoReceitaList}" var="hire"
+					width="100%" id="historicoReceitaTable" rowKeyVar="row">
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.historico_receita.codigo_login.label']}" />
+						</f:facet>
+						<h:outputText value="#{hire.codigoAutor}" />
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.historico_receita.data_alteracao.label']}" />
+						</f:facet>
+						<h:outputText value="#{hire.dataAlteracao}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.calendar.pattern.full']}"
+								timeZone="#{bundle['_nls.date.timezone.br']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.historico_receita.versao_anterior.label']}" />
+						</f:facet>
+						<h:outputText value="#{hire.indicadorVersaoAnterior}"
+							converter="VersionReceitaConverter" />
+					</rich:column>
+
+					<rich:column style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.historico_receita.versao_atual.label']}" />
+						</f:facet>
+						<h:outputText value="#{hire.indicadorVersaoAtual}"
+							converter="VersionReceitaConverter" />
+					</rich:column>
+				</rich:dataTable>
+			</rich:tab>
+
+		</rich:tabPanel>
+
+	</ui:define>
+	
+</ui:composition>
+
+</html>

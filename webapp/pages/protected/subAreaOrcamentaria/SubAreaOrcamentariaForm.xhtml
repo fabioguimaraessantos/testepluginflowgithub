@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+    <a4j:keepAlive beanName="centroLucroBean" />
+
+    <h:outputText for="nomeSubAreaOrcamentaria" styleClass="labelGeneric"
+                  value="#{bundle['_nls.sub_area_orcamentaria.nome_area_orcamentaria.label']}: ">
+    </h:outputText>
+    <h:inputText validator="#{xssValidator.validate}"
+                 value="#{subAreaOrcamentariaController.bean.to.nomeAreaOrcamentaria}"
+                 label="#{bundle['_nls.sub_area_orcamentaria.nome_area_orcamentaria.label']}"
+                 id="nomeSubAreaOrcamentaria" size="70" maxlength="99">
+        <f:validateLength
+                minimum="#{systemProperties['form.input.length.minimum']}"
+                maximum="99" />
+    </h:inputText>
+
+    <h:outputText for="codigoAreaOrcamentariaPai" styleClass="labelGeneric"
+                  value="#{bundle['_nls.sub_area_orcamentaria.area_orcamentaria_pai.label']}: "></h:outputText>
+    <rich:comboBox id="codigoAreaOrcamentariaPai"
+                   required="true"
+                   label="#{bundle['_nls.sub_area_orcamentaria.area_orcamentaria_pai.label']}"
+                   defaultLabel="#{bundle['_nls.comboBox.default.label']}"
+                   value="#{subAreaOrcamentariaController.bean.selectedAreaOrcamentariaPai}"
+                   suggestionValues="#{subAreaOrcamentariaController.bean.areasOrcamentariasPaisString}"
+                   directInputSuggestions="true">
+    </rich:comboBox>
+
+    <h:outputText for="modelos" styleClass="labelGeneric"
+                  value="#{bundle['_nls.area_orcamentaria.modelos.label']}: "></h:outputText>
+    <rich:comboBox id="modelos"
+                   required="#{subAreaOrcamentariaController.bean.isUpdate}"
+                   label="#{bundle['_nls.area_orcamentaria.modelos.label']}"
+                   defaultLabel="#{bundle['_nls.comboBox.default.label']}"
+                   value="#{subAreaOrcamentariaController.bean.selectedModelo}"
+                   suggestionValues="#{subAreaOrcamentariaController.bean.modelos}"
+                   directInputSuggestions="true"
+                   converter="ModeloConverter">
+    </rich:comboBox>
+
+    <h:outputText
+            value="#{bundle['_nls.sub_area_orcamentaria.indicador_ativo.label']}:"
+            for="indicadorAtivo" styleClass="labelGeneric"
+            rendered="#{subAreaOrcamentariaController.bean.isUpdate}"></h:outputText>
+    <rich:comboBox id="indicadorAtivo" enableManualInput="false"
+                   label="#{bundle['_nls.sub_area_orcamentaria.indicador_ativo.label']}"
+                   value="#{subAreaOrcamentariaController.bean.to.indicadorStatus}"
+                   directInputSuggestions="true" converter="ActiveInactiveConverter"
+                   rendered="#{subAreaOrcamentariaController.bean.isUpdate}">
+        <f:selectItem itemValue="A" />
+        <f:selectItem itemValue="I" />
+    </rich:comboBox>
+
+    <rich:spacer height="5" />
+    <rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

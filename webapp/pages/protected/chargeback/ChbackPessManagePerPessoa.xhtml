@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.menu.chargeback']} &gt; #{bundle['_nls.menu.ti_alocacao.manage_per_pessoa']} &gt; 
+        #{bundle['_nls.menu.chargeback.manage']}
+   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form id="chargebackForm" styleClass="noMargin">
+			<a4j:loadScript src="/js/utils.js" />
+			<a4j:loadScript src="/js/jquery.alphanumeric.js" />
+
+			<a4j:keepAlive beanName="chargebackBean" />
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{bundle['_nls.filter.label']}" />
+				</f:facet>
+
+				<h:panelGrid columns="2">
+
+					<h:outputLabel value="#{bundle['_nls.chargeback.pessoa.label']}*: "
+						for="codigoLogin" styleClass="labelGeneric" />
+					<a4j:region renderRegionOnly="true" id="codigoLoginRegion">
+						<h:inputText id="codigoLogin" styleClass="fieldAutoCompl"
+							validator="#{chargebackController.validatePessoa}"
+							label="#{bundle['_nls.chargeback.pessoa.label']}"
+							immediate="true" required="true"
+							value="#{chargebackController.bean.pessoa.codigoLogin}">
+
+							<rich:suggestionbox for="codigoLogin" var="result"
+								suggestionAction="#{chargebackController.autoCompletePessoa}">
+								<h:column>
+									<h:outputText value="#{result.codigoLogin}" />
+								</h:column>
+							</rich:suggestionbox>
+						</h:inputText>
+					</a4j:region>
+
+					<h:outputLabel value="#{bundle['_nls.chargeback.vigencia.label']}*: "
+						styleClass="labelGeneric" />
+					<h:panelGrid columns="16" cellpadding="0" cellspacing="0">
+
+						<rich:comboBox id="mesInicio" enableManualInput="false"
+							value="#{chargebackController.bean.monthBeg}" required="true"
+							suggestionValues="#{dateBean.monthList}"
+							label="#{bundle['_nls.month.label']}" width="55">
+						</rich:comboBox>
+
+						<rich:spacer width="3" styleClass="noMargin" />
+						<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+						<rich:spacer width="3" styleClass="noMargin" />
+
+						<rich:comboBox id="anoInicio" enableManualInput="false"
+							required="true" suggestionValues="#{dateBean.yearList}"
+							value="#{chargebackController.bean.yearBeg}"
+							label="#{bundle['_nls.year.label']}" width="55">
+						</rich:comboBox>
+
+						<rich:spacer height="5" width="5" styleClass="noMargin" />
+
+						<h:outputLabel value="#{bundle['_nls.until.label']}*: "
+							styleClass="labelGeneric" />
+
+						<rich:spacer height="5" width="5" styleClass="noMargin" />
+
+						<rich:comboBox id="mesFim" enableManualInput="false"
+							required="true" suggestionValues="#{dateBean.monthList}"
+							value="#{chargebackController.bean.monthEnd}"
+							label="#{bundle['_nls.month.label']}" width="55">
+						</rich:comboBox>
+
+						<rich:spacer width="3" styleClass="noMargin" />
+						<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+						<rich:spacer width="3" styleClass="noMargin" />
+
+						<rich:comboBox id="anoFim" enableManualInput="false"
+							required="true" suggestionValues="#{dateBean.yearList}"
+							value="#{chargebackController.bean.yearEnd}"
+							label="#{bundle['_nls.year.label']}" width="55">
+						</rich:comboBox>
+					</h:panelGrid>
+
+					<a4j:commandButton value="#{bundle['_nls.button.search']}"
+						reRender="chargebackGrid, chargebackPessTable, errorMsgId"
+						action="#{chargebackController.findByPessoa}"
+						styleClass="buttonGeneric" type="submit" />
+					<rich:spacer width="5" />
+
+				</h:panelGrid>
+			</rich:panel>
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<h:panelGrid columns="5" cellpadding="0" cellspacing="0"
+				rendered="#{chargebackController.bean.chargebackRowListSize > 0}">
+
+				<!-- ****** Botao save ****** -->
+				<a4j:commandButton value="#{bundle['_nls.button.save']}"
+					reRender="chargebackGrid"
+					action="#{chargebackController.updateChargebackManagePerPessoa}"
+					styleClass="buttonGeneric" />
+				<!-- ************************ -->
+
+			</h:panelGrid>
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<!-- Mapa Chargeback -->
+			<h:panelGrid id="chargebackGrid" columns="1" cellpadding="0"
+				cellspacing="0" border="0" width="100%"
+				rendered="#{chargebackController.bean.chargebackRowListSize > 0}">
+				<rich:jQuery selector="#chargebackGrid" timing="onload"
+					query="numeric()" />
+
+				<a4j:outputPanel id="chargebackPessTable"
+					rendered="#{chargebackController.bean.numColumn > 0}">
+
+					<table border="1" class="dr-table rich-table" width="100%">
+						<thead class="dr-table-thead">
+							<tr class="dr-table-header rich-table-header">
+								<th colspan="#{chargebackController.bean.numColumn}"
+									align="center" height="26"><h:outputText
+									value="#{chargebackController.bean.pessoa.nomePessoa}" /></th>
+							</tr>
+						</thead>
+						<thead class="dr-table-thead">
+
+							<tr class="dr-table-header rich-table-header">
+								<th colspan="2"><h:outputText styleClass="labelGeneric"
+									value="#{bundle['_nls.chargeback.ti_recurso.label']}" /></th>
+								<a4j:repeat value="#{chargebackController.bean.dateList}"
+									var="dateMonth">
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+
+									<h:outputText value="#{dateMonth}">
+										<f:convertDateTime pattern="yyyy" />
+									</h:outputText></th>
+								</a4j:repeat>
+							</tr>
+
+						</thead>
+
+						<thead class="dr-table-thead">
+							<tr class="dr-table-subheader rich-table-subheader">
+								<th colspan="2" align="left"><a4j:region>
+									<h:outputText value="#{bundle['_nls.select.label']}"
+										styleClass="labelGeneric" />
+									<rich:spacer height="5" width="5" />
+									<h:outputLabel value="#{bundle['_nls.all.label']}"
+										styleClass="linkGeneric"
+										onclick="javascript: checkAllCheckbox();" />
+									<rich:spacer height="5" width="5" />
+									<h:outputText value="/" styleClass="labelGeneric" />
+									<rich:spacer height="5" width="5" />
+									<h:outputLabel value="#{bundle['_nls.none.label']}"
+										styleClass="linkGeneric"
+										onclick="javascript: uncheckAllCheckbox();" />
+								</a4j:region></th>
+								<a4j:repeat value="#{chargebackController.bean.dateList}"
+									var="dateMonth">
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<h:outputText value="#{dateMonth}">
+										<f:convertDateTime pattern="MMM" />
+									</h:outputText></th>
+								</a4j:repeat>
+
+							</tr>
+						</thead>
+
+						<tbody>
+
+							<a4j:repeat
+								value="#{chargebackController.bean.chargebackRowList}"
+								var="item">
+								<tr>
+									<!-- #####################################################
+		                    								Ti Recurso
+		                    			###################################################### -->
+									<td class="dr-subtable-cell rich-subtable-cell" align="center">
+									<h:selectBooleanCheckbox value="#{item.isSelected}"
+										styleClass="labelGeneric" /></td>
+									<td class="dr-subtable-cell rich-subtable-cell" align="left">
+									<h:outputText id="nomeTiRecurso"
+										value="#{item.tiRecurso.nomeTiRecurso}"
+										styleClass="labelGeneric" /> <rich:toolTip
+										for="nomeTiRecurso"
+										value="#{bundle['_nls.ti_recurso.desc_unidade.label']}:  #{item.tiRecurso.textoDescUnidade}" />
+									</td>
+									<!-- #####################################################
+	                    						Lista Chargeback (celulas)
+	                    				########################################################## -->
+									<a4j:repeat value="#{item.cellList}" var="cell">
+										<td class="dr-subtable-cell rich-subtable-cell" align="center">
+										<h:panelGroup>
+											<h:inputText id="inputDespesa" style="width: 40px"
+												required="true" readonly="#{cell.readonly}"
+												disabled="#{cell.readonly}"
+												value="#{cell.chargebackPess.numeroUnidades}"
+												label="#{item.tiRecurso.nomeTiRecurso} - #{bundle['_nls.chargeback.numero_unidades.label']}">
+
+												<f:convertNumber locale="#{bundle['locale.en_us']}" />
+												<f:validateDoubleRange minimum="0" />
+
+											</h:inputText>
+
+										</h:panelGroup></td>
+									</a4j:repeat>
+								</tr>
+
+							</a4j:repeat>
+						</tbody>
+						<tfoot class="dr-table-thead">
+							<tr>
+								<!-- *********** rodape botoes, campos **********-->
+								<td colspan="#{chargebackController.bean.numColumn}"
+									style="background-color: #F0F0F0;"
+									class="dr-subtable-cell rich-subtable-cell"><a4j:commandLink
+									id="addLink"
+									style="padding-right: 0px; border:0; vertical-align:text-top;"
+									oncomplete="#{rich:component('addItResourcePanel')}.show()"
+									action="#{chargebackController.prepareAddRowPerPessoa}"
+									reRender="addItResourcePanel,errorMsgId" limitToList="true">
+
+									<h:graphicImage value="/images/icons/add.gif" height="16"
+										width="16" style="border:0; vertical-align:text-top;" />
+								</a4j:commandLink> <rich:toolTip for="addLink" value="#{bundle['_nls.hint.add']}" />
+
+								<a4j:commandLink id="removeLink"
+									style="padding-right: 6px; border:0; vertical-align:text-top;"
+									oncomplete="#{rich:component('removeItResourcePanel')}.show()"
+									reRender="removeItResourcePanel,errorMsgId" limitToList="true">
+
+									<h:graphicImage value="/images/icons/delete.gif" height="16"
+										width="16" style="border:0; vertical-align:text-top; " />
+								</a4j:commandLink> <rich:toolTip for="removeLink"
+									value="#{bundle['_nls.hint.remove.all']}" /> <h:panelGroup>
+									<h:outputText style="padding-right: 4px;"
+										value="#{bundle['_nls.chargeback.update.label']}:" />
+									<!--*********  Botao update numero de unidades ********* -->
+									<h:outputText style="padding-right: 4px;"
+										value="#{bundle['_nls.chargeback.numero_unidades.label']}:" />
+									<h:inputText required="true" id="numUnits" size="2"
+										maxlength="12"
+										label="#{bundle['_nls.chargeback.numero_unidades.label']}"
+										value="#{chargebackController.bean.toPess.numeroUnidades}">
+										<f:validateDoubleRange minimum="0" />
+									</h:inputText>
+
+									<a4j:commandButton value="#{bundle['_nls.button.ok']}"
+										action="#{chargebackController.updateAllNumUnitsPerPessoa}"
+										reRender="chargebackPessTable,errorMsgId" limitToList="true" />
+									<!-- ***************************************************** -->
+								</h:panelGroup></td>
+							</tr>
+						</tfoot>
+					</table>
+				</a4j:outputPanel>
+
+			</h:panelGrid>
+
+		</h:form>
+
+		<ui:include
+			src="/pages/protected/chargeback/ChbackPessAddPerPessoa.xhtml" />
+		<ui:include
+			src="/pages/protected/chargeback/ChbackPessDeleteAllPerPessoa.xhtml" />
+	</ui:define>
+
+</ui:composition>
+
+</html>

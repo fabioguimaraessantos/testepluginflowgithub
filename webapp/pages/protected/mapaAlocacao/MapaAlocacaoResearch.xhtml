@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.mapa_alocacao']} &gt; #{bundle['_nls.menu.mapa_alocacao.research']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="2">
+				<f:facet name="header">
+					<h:column>
+						<div align="left"><h:outputText
+							value="#{bundle['_nls.mapa_alocacao.titulo.label']}: "
+							for="titulo" styleClass="labelGeneric"></h:outputText> <rich:spacer
+							width="10" styleClass="noMargin" /> <h:inputText id="titulo"
+							size="86" maxlength="99"
+							label="#{bundle['_nls.mapa_alocacao.titulo.label']}"
+							value="#{mapaAlocacaoController.bean.filter.textoTitulo}"
+							tabindex="1">
+						</h:inputText></div>
+					</h:column>
+				</f:facet>
+
+				<h:panelGrid columns="2">
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.natureza.label']}: "
+						for="natureza" styleClass="labelGeneric" />
+					<a4j:region>
+						<rich:comboBox id="natureza"
+							label="#{bundle['_nls.mapa_alocacao.natureza.label']}"
+							value="#{mapaAlocacaoController.bean.natureza.nomeNatureza}"
+							suggestionValues="#{mapaAlocacaoController.bean.naturezaList}"
+							valueChangeListener="#{mapaAlocacaoController.prepareCentroLucroCombo}"
+							immediate="true" directInputSuggestions="true" tabindex="2">
+							
+							<pms:validateComboBox map="#{mapaAlocacaoController.bean.naturezaMap}" />
+
+							<a4j:support event="onselect" reRender="centroLucro"
+								limitToList="true" immediate="true" />
+							<a4j:support event="onchange" reRender="centroLucro"
+								limitToList="true" immediate="true" />
+						</rich:comboBox>
+					</a4j:region>
+
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.cliente.label']}: "
+						for="cliente" styleClass="labelGeneric" />
+					<a4j:region>
+						<rich:comboBox id="cliente"
+							label="#{bundle['_nls.mapa_alocacao.cliente.label']}"
+							value="#{mapaAlocacaoController.bean.cliente.nomeCliente}"
+							suggestionValues="#{mapaAlocacaoController.bean.clienteList}"
+							directInputSuggestions="true" immediate="true"
+							valueChangeListener="#{mapaAlocacaoController.prepareContratoCombo}"
+							tabindex="4">
+							
+							<pms:validateComboBox map="#{mapaAlocacaoController.bean.clienteMap}" />
+
+							<a4j:support event="onselect" reRender="contrato"
+								limitToList="true" />
+							<a4j:support event="onselect" reRender="contrato"
+								limitToList="true" />
+						</rich:comboBox>
+					</a4j:region>
+
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.contrato_pratica.label']}: "
+						for="contratoPratica" styleClass="labelGeneric" />
+					<rich:comboBox id="contratoPratica"
+						label="#{bundle['_nls.mapa_alocacao.contrato_pratica.label']}"
+						value="#{mapaAlocacaoController.bean.filter.contratoPratica.nomeContratoPratica}"
+						suggestionValues="#{mapaAlocacaoController.bean.contratoPraticaList}"
+						directInputSuggestions="true" tabindex="6">
+						<pms:validateComboBox
+							map="#{mapaAlocacaoController.bean.contratoPraticaMap}" />
+					</rich:comboBox>
+
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.following_only.label']}: "
+						for="followingOnly" styleClass="labelGeneric" />
+					<h:selectBooleanCheckbox
+						value="#{mapaAlocacaoController.bean.isFollowingOnly}"
+						styleClass="noMargin" />
+
+				</h:panelGrid>
+
+
+				<h:panelGrid columns="2">
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.centro_lucro.label']}: "
+						for="centroLucro" styleClass="labelGeneric" />
+					<rich:comboBox id="centroLucro"
+						label="#{bundle['_nls.mapa_alocacao.centro_lucro.label']}"
+						value="#{mapaAlocacaoController.bean.centroLucro.nomeCentroLucro}"
+						suggestionValues="#{mapaAlocacaoController.bean.centroLucroList}"
+						directInputSuggestions="true" tabindex="3" />
+
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.msa.label']}: "
+						for="contrato" styleClass="labelGeneric" />
+					<a4j:region>
+						<rich:comboBox id="contrato"
+							label="#{bundle['_nls.mapa_alocacao.msa.label']}"
+							value="#{mapaAlocacaoController.bean.msa.nomeMsa}"
+							suggestionValues="#{mapaAlocacaoController.bean.msaList}"
+							valueChangeListener="#{mapaAlocacaoController.prepareContratoPraticaCombo}"
+							directInputSuggestions="true" immediate="true" tabindex="5">
+							
+							<pms:validateComboBox map="#{mapaAlocacaoController.bean.msaMap}" />
+
+							<a4j:support event="onselect" reRender="contratoPratica"
+								limitToList="true" />
+							<a4j:support event="onselect" reRender="contratoPratica"
+								limitToList="true" />
+
+						</rich:comboBox>
+					</a4j:region>
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.indicador_versao.label']}: "
+						for="indicadorVersao" styleClass="labelGeneric"></h:outputText>
+					<rich:comboBox id="indicadorVersao" enableManualInput="false"
+						label="#{bundle['_nls.mapa_alocacao.indicador_versao.label']}"
+						value="#{mapaAlocacaoController.bean.filter.indicadorVersao}"
+						directInputSuggestions="true"
+						converter="VersionMapaAlocacaoConverter" tabindex="7">
+
+						<f:selectItem itemValue="ALL" />
+						<f:selectItem itemValue="DF" />
+						<f:selectItem itemValue="PB" />
+						<f:selectItem itemValue="VD" />
+					</rich:comboBox>
+
+					<rich:spacer height="10" />
+					<rich:spacer height="10" />
+
+				</h:panelGrid>
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+							styleClass="buttonGeneric"
+							reRender="mapaAlocacaoTable,errorMsgId,mapaAlocacaoPanel"
+							limitToList="true" type="submit"
+							action="#{mapaAlocacaoController.findByFilter}" tabindex="8" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="mapaAlocacaoBean" />
+
+			<a4j:outputPanel id="mapaAlocacaoPanel">
+				<rich:dataTable value="#{mapaAlocacaoController.bean.resultList}"
+					var="item" rows="#{systemProperties['research.size.page.result']}"
+					width="100%" id="mapaAlocacaoTable" rowKeyVar="row"
+					rendered="#{!empty mapaAlocacaoController.bean.resultList}">
+
+					<rich:column sortBy="#{item.codigoMapaAlocacao}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.mapa_alocacao.codigo_mapa_alocacao.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.codigoMapaAlocacao}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.textoTitulo}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.mapa_alocacao.titulo.label']}" />
+						</f:facet>
+						<h:graphicImage id="lockMapImg" value="/images/icons/lock2.gif"
+							rendered="#{item.loginTrava != null}" style="border:0">
+
+							<rich:toolTip for="lockMapImg"
+								value="#{bundle['_nls.hint.locked_for']} #{item.loginTrava}" />
+						</h:graphicImage>
+						<h:outputText value="#{item.textoTitulo}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.contratoPratica.nomeContratoPratica}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.mapa_alocacao.contrato_pratica.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.contratoPratica.nomeContratoPratica}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.indicadorVersao}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.mapa_alocacao.indicador_versao.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.indicadorVersao}"
+							converter="VersionMapaAlocacaoConverter" />
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.mapa_alocacao.action.label']}" />
+						</f:facet>
+
+						<a4j:commandLink ajaxSingle="false" id="viewlink"
+							action="#{mapaAlocacaoController.prepareView}"
+							reRender="mapaAlocacaoTable">
+							<h:graphicImage value="/images/icons/view.png" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaAlocacaoController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="viewlink" value="#{bundle['_nls.hint.view']}" />
+
+						<a4j:commandLink ajaxSingle="false" id="editlink"
+							action="#{mapaAlocacaoController.prepareManage}"
+							reRender="mapaAlocacaoTable"
+							rendered="#{item.indicadorVersao != 'VD'}">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaAlocacaoController.bean.to}" />
+							<f:setPropertyActionListener value="#{item.codigoMapaAlocacao}"
+								target="#{mapaAlocacaoController.bean.currentRowId}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}"
+							rendered="#{item.indicadorVersao != 'VD'}" />
+
+						<a4j:commandLink ajaxSingle="false" id="deletelink"
+							action="#{mapaAlocacaoController.prepareRemove}"
+							reRender="mapaAlocacaoTable"
+							rendered="#{item.loginTrava == null}">
+							<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaAlocacaoController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="deletelink"
+							value="#{bundle['_nls.hint.delete']}"
+							rendered="#{item.loginTrava == null}" />
+
+						<a4j:commandLink ajaxSingle="false" id="unlockLink"
+							action="#{mapaAlocacaoController.unlockMapaAlocacaoResearch}"
+							reRender="mapaAlocacaoTable"
+							rendered="#{facesContext.externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME'] == item.loginTrava}">
+							<h:graphicImage value="/images/icons/lock.gif" style="border:0" />
+
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaAlocacaoController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="unlockLink"
+							value="#{bundle['_nls.hint.unlock']}" />
+
+						<a4j:commandLink ajaxSingle="false" id="followLink"
+							action="#{mapaAlocacaoController.followMapaAlocacao}"
+							reRender="mapaAlocacaoTable"
+							rendered="#{mapaAlocacaoController.bean.mapFollow[item.codigoMapaAlocacao] == null}">
+							<h:graphicImage value="/images/icons/follow.png" style="border:0" />
+
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaAlocacaoController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="followLink"
+							value="#{bundle['_nls.hint.follow']}" />
+
+						<a4j:commandLink ajaxSingle="false" id="unfollowLink"
+							action="#{mapaAlocacaoController.unfollowMapaAlocacao}"
+							reRender="mapaAlocacaoTable"
+							rendered="#{mapaAlocacaoController.bean.mapFollow[item.codigoMapaAlocacao] != null}">
+							<h:graphicImage value="/images/icons/unfollow.png"
+								style="border:0" />
+
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaAlocacaoController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="unfollowLink"
+							value="#{bundle['_nls.hint.unfollow']}" />
+
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{mapaAlocacaoController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

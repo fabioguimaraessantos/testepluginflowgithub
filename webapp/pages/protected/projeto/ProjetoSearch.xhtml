@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:pms="http://pms.cit.com.br" xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+	<h:form styleClass="noMargin">
+		<h:panelGrid columns="2">
+
+			<h:outputText
+				value="#{bundle['_nls.menu.activation.project.empresa.label']}:"
+				for="empresa" styleClass="labelGeneric" />
+			<rich:comboBox validator="#{xssValidator.validate}" id="empresa" width="480"
+				label="#{bundle['_nls.menu.activation.project.empresa.label']}"
+				value="#{activeProjectController.bean.empresaCombo.selected}"
+				suggestionValues="#{activeProjectController.bean.empresaCombo.list}"
+				directInputSuggestions="true" tabindex="4" style="padding:2px;">
+				<pms:validateComboBox
+					map="#{activeProjectController.bean.empresaCombo.map}" />
+			</rich:comboBox>
+
+			<h:outputText
+					value="#{bundle['_nls.menu.activation.project.c_lob.label']}:"
+					for="contrato_pratica" styleClass="labelGeneric" />
+			<rich:comboBox id="contrato_pratica" width="480"
+				label="#{bundle['_nls.menu.activation.project.c_lob.label']}"
+				value="#{activeProjectController.bean.nomeContratoPratica}"
+				suggestionValues="#{activeProjectController.bean.contratoPraticaList}"
+				directInputSuggestions="true" tabindex="4" style="padding:2px;"
+			    validator="#{activeProjectController.validateContratoPratica}">
+			</rich:comboBox>
+
+			<h:outputText
+				value="#{bundle['_nls.menu.activation.project.client.label']}:"
+				for="cliente" styleClass="labelGeneric" />
+			<rich:comboBox id="cliente" width="480"
+				label="#{bundle['_nls.menu.activation.project.client.label']}"
+				value="#{activeProjectController.bean.nomeCliente}"
+				suggestionValues="#{activeProjectController.bean.clienteList}"
+				directInputSuggestions="true" tabindex="2" style="padding:2px;"
+				validator="#{activeProjectController.validateCliente}">
+			</rich:comboBox>
+
+			<h:outputText
+				value="#{bundle['_nls.menu.activation.project.cost_center.label']}:"
+				for="centro_custo" styleClass="labelGeneric" />
+			<rich:comboBox id="centro_custo" width="480"
+				label="#{bundle['_nls.menu.activation.project.cost_center.label']}"
+						   value="#{activeProjectController.bean.nomeCentroCusto}"
+				suggestionValues="#{activeProjectController.bean.costCenterList}"
+				directInputSuggestions="true" tabindex="3" style="padding:2px;"
+			    validator="#{activeProjectController.validateCentroCusto}">
+			</rich:comboBox>
+
+			<h:outputText value="Status:" styleClass="labelGeneric" for="status" rendered="#{activeProjectController.bean.isUpdate}" />
+			<rich:comboBox id="status" tabindex="4" style="padding:2px;" width="480"
+				converter="ProjectStatusConverter" rendered="#{activeProjectController.bean.isUpdate}"
+				value="#{activeProjectController.bean.statusSelected}">
+				<f:selectItem itemValue="ALL"/>
+				<f:selectItem itemValue="AS" />
+				<f:selectItem itemValue="NA" />
+			</rich:comboBox>
+
+			<a4j:commandButton action="#{activeProjectController.search}"
+				reRender="activeProjectTable"
+				value="#{bundle['_nls.button.search']}" />
+		</h:panelGrid>
+	</h:form>
+</ui:composition>
+
+</html>

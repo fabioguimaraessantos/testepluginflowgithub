@@ -1,0 +1,476 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<a4j:keepAlive beanName="receitaBean" />
+	<a4j:keepAlive beanName="itemReceitaBean" />
+
+			<!-- ****** Botoes Tag ****** -->
+			<rich:panel style="padding:0" headerClass="outpanelHeader"
+				rendered="#{receitaController.bean.isUpdate}">
+				<f:facet name="header"></f:facet>
+
+				<h:panelGrid columns="18" cellpadding="0" cellspacing="0">
+					<h:outputText value="#{bundle['_nls.receita.etiqueta.label']}*: "
+						for="etiqueta" styleClass="labelGeneric" />
+
+					<rich:spacer height="5" width="5" />
+
+					<h:inputText id="nomeEtiquetaAdd" size="15" maxlength="20"
+						label="#{bundle['_nls.receita.etiqueta.label']}"
+						value="#{receitaController.bean.nomeEtiquetaAdd}">
+						<f:validateLength
+							minimum="#{systemProperties['form.input.length.minimum']}"
+							maximum="20" />
+					</h:inputText>
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandLink ajaxSingle="false" id="addEtiquetalink"
+						action="#{receitaController.addEtiqueta}" reRender="errorMsgId,itemReceitaManagePanel,dealListPanel">
+						<h:graphicImage width="16" height="16"
+							value="/images/icons/add.gif" style="border:0" />
+					</a4j:commandLink>
+					<rich:toolTip for="addEtiquetalink"
+						value="#{bundle['_nls.hint.add']}" />
+
+					<rich:spacer height="5" width="5" />
+
+					<rich:comboBox id="etiqueta"
+						label="#{bundle['_nls.receita.etiqueta.label']}"
+						value="#{receitaController.bean.nomeEtiquetaSelected}"
+						suggestionValues="#{receitaController.bean.etiquetaList}"
+						directInputSuggestions="true" enableManualInput="false">
+					</rich:comboBox>
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandLink ajaxSingle="false" id="filterEtiquetalink"
+						reRender="itemReceitaTable,dealListPanel"
+						action="#{receitaController.filterEtiqueta}" limitToList="true">
+						<h:graphicImage width="16" height="16"
+							value="/images/icons/filter.gif" style="border:0" />
+						<f:setPropertyActionListener
+							target="#{receitaController.bean.currentReceitaMoedaRow}"
+							value="#{recMoedaRow}" />							
+					</a4j:commandLink>
+					<rich:toolTip for="filterEtiquetalink"
+						value="#{bundle['_nls.hint.filter']}" />
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandLink ajaxSingle="false" id="deleteEtiquetalink"
+						action="#{receitaController.deleteEtiqueta}">
+						<h:graphicImage width="16" height="16"
+							value="/images/icons/delete.gif" style="border:0" />
+					</a4j:commandLink>
+					<rich:toolTip for="deleteEtiquetalink"
+						value="#{bundle['_nls.hint.delete']}" />
+
+					<rich:spacer height="5" width="10" />
+
+					<a4j:commandButton value="#{bundle['_nls.button.apply']}"
+						action="#{receitaController.applyEtiqueta}"
+						styleClass="buttonGeneric"
+						reRender="errorMsgId,itemReceitaManagePanel,dealListPanel"
+						limitToList="true">
+						<f:setPropertyActionListener value="#{recMoedaRow}"
+							target="#{receitaController.bean.currentReceitaMoedaRow}" />
+					</a4j:commandButton>
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandButton value="#{bundle['_nls.button.unapply']}"
+						action="#{receitaController.unapplyEtiqueta}"
+						styleClass="buttonGeneric"
+						reRender="itemReceitaManagePanel,dealListPanel,errorMsgId"
+						limitToList="true">
+						<f:setPropertyActionListener value="#{recMoedaRow}"
+							target="#{receitaController.bean.currentReceitaMoedaRow}" />
+					</a4j:commandButton>
+				</h:panelGrid>
+			</rich:panel>
+			<!-- ******************************* -->
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<a4j:keepAlive beanName="receitaBean" />
+			<a4j:keepAlive beanName="ajusteReceitaBean" />
+			<a4j:keepAlive beanName="messageControlBean" />
+			<a4j:region>
+				<h:panelGrid columns="1" cellpadding="0" cellspacing="0"
+					border="0" width="100%">
+
+					<a4j:outputPanel id="itemReceitaTable" >
+						<rich:jQuery selector="#itemReceitaTable"
+							query="numeric('#{bundle['locale.decimal.separator']}')"
+							timing="onload" />
+						<table border="1" class="dr-table rich-table" width="100%" id="itemReceitaTable${contador.index}">
+							<thead class="dr-table-thead">
+								<tr class="dr-table-header rich-table-header">
+									<th class="dr-table-headercell rich-table-headercell"
+										colspan="2"><h:outputText
+										value="#{bundle['_nls.select.label']}"
+										styleClass="labelGeneric" /> <rich:spacer height="5"
+										width="5" /> <h:outputLabel
+										value="#{bundle['_nls.all.label']}" styleClass="linkGeneric"
+										onclick="javascript: checkUncheckAllByGroup(document.getElementById('itemReceitaTable${contador.index}'), true);" /> <rich:spacer
+										height="5" width="5" /> <h:outputText value="/"
+										styleClass="labelGeneric" /> <rich:spacer height="5"
+										width="5" /> <h:outputLabel
+										value="#{bundle['_nls.none.label']}"
+										styleClass="linkGeneric"
+										onclick="javascript: checkUncheckAllByGroup(document.getElementById('itemReceitaTable${contador.index}'), false);" /></th>
+									<th class="dr-table-headercell rich-table-headercell"
+										colspan="10"><h:outputLabel
+										value="#{bundle['_nls.receita.item_receita.label']}" /></th>
+								</tr>
+							</thead>
+							<thead class="dr-table-thead">
+								<tr class="dr-table-subheader rich-table-subheader">
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+										<a4j:commandLink action="#{receitaController.columnSort}"
+														 reRender="itemReceitaTable" limitToList="true"
+														 styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+											#{bundle['_nls.item_receita.nome_cidade_base.label']} <h:graphicImage
+												value="/images/icons/column_sort.gif" style="border:0"
+												styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+											<f:setPropertyActionListener value="8"
+																		 target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+											<f:setPropertyActionListener value="#{recMoedaRow}"
+																		 target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<a4j:commandLink action="#{receitaController.columnSort}"
+										reRender="itemReceitaTable" limitToList="true"
+										styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+										#{bundle['_nls.item_receita.codigo_login_pessoa.label']} <h:graphicImage
+											value="/images/icons/column_sort.gif" style="border:0"
+											styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+										<f:setPropertyActionListener value="1"
+											target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+										<f:setPropertyActionListener value="#{recMoedaRow}"
+											target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<a4j:commandLink action="#{receitaController.columnSort}"
+										reRender="itemReceitaTable" limitToList="true"
+										styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+										#{bundle['_nls.item_receita.perfil_vendido.label']} <h:graphicImage
+											value="/images/icons/column_sort.gif" style="border:0"
+											styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+										<f:setPropertyActionListener value="2"
+											target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+										<f:setPropertyActionListener value="#{recMoedaRow}"
+											target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+										<a4j:commandLink action="#{receitaController.columnSort}"
+														 reRender="itemReceitaTable" limitToList="true"
+														 styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+										#{bundle['_nls.item_receita.perfil_vendido_base.label']} <h:graphicImage
+												value="/images/icons/column_sort.gif" style="border:0"
+												styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+											<f:setPropertyActionListener value="9"
+																		 target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+											<f:setPropertyActionListener value="#{recMoedaRow}"
+																		 target="#{receitaController.bean.currentReceitaMoedaRow}" />
+										</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<a4j:commandLink action="#{receitaController.columnSort}"
+										reRender="itemReceitaTable" limitToList="true"
+										styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+										#{bundle['_nls.item_receita.numero_horas.label']} <h:graphicImage
+											value="/images/icons/column_sort.gif" style="border:0"
+											styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+										<f:setPropertyActionListener value="3"
+											target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+										<f:setPropertyActionListener value="#{recMoedaRow}"
+											target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<a4j:commandLink action="#{receitaController.columnSort}"
+										reRender="itemReceitaTable" limitToList="true"
+										styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+										#{bundle['_nls.item_receita.numero_fte.label']} <h:graphicImage
+											value="/images/icons/column_sort.gif" style="border:0"
+											styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+										<f:setPropertyActionListener value="4"
+											target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+										<f:setPropertyActionListener value="#{recMoedaRow}"
+											target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<a4j:commandLink action="#{receitaController.columnSort}"
+										reRender="itemReceitaTable" limitToList="true"
+										styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+										#{bundle['_nls.item_receita.valor_hrs.label']} <h:graphicImage
+											value="/images/icons/column_sort.gif" style="border:0"
+											styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+										<f:setPropertyActionListener value="5"
+											target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+									</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<a4j:commandLink action="#{receitaController.columnSort}"
+										reRender="itemReceitaTable" limitToList="true"
+										styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+										#{bundle['_nls.item_receita.valor_fte.label']} <h:graphicImage
+											value="/images/icons/column_sort.gif" style="border:0"
+											styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+										<f:setPropertyActionListener value="6"
+											target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+										<f:setPropertyActionListener value="#{recMoedaRow}"
+											target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<a4j:commandLink action="#{receitaController.columnSort}"
+										reRender="itemReceitaTable" limitToList="true"
+										styleClass="colunmSortLink">
+										<span class="dr-table-sortable-header">
+										#{bundle['_nls.item_receita.receita.label']} <h:graphicImage
+											value="/images/icons/column_sort.gif" style="border:0"
+											styleClass="dr-table-header-sort-img rich-sort-icon" /> </span>
+										<f:setPropertyActionListener value="7"
+											target="#{receitaController.bean.toItemReceitaRow.comparableField}" />
+										<f:setPropertyActionListener value="#{recMoedaRow}"
+											target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"><h:outputLabel
+										value="#{bundle['_nls.item_receita.lista_etiqueta.label']}" /></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"><h:outputLabel
+										value="#{bundle['_nls.item_receita.action.label']}" /></th>
+								</tr>
+							</thead>
+							<thead class="dr-table-thead">
+								<tr class="dr-table-subheader rich-table-subheader"
+									style="background-color: #CCCCCC;">
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+									<td class="dr-table-subheadercell rich-table-subheadercell">
+									<h:outputLabel value="#{bundle['_nls.total.label']}"
+										styleClass="labelGeneric" /></td>
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<h:outputText value="#{recMoedaRow.totalHrs}">
+										<f:convertNumber locale="#{bundle['locale.en_us']}"
+											pattern="#{systemProperties['pattern.number']}" />
+									</h:outputText></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell">
+									<h:outputText value="#{recMoedaRow.totalFte}">
+										<f:convertNumber locale="#{bundle['locale.en_us']}"
+											pattern="#{systemProperties['pattern.number']}" />
+									</h:outputText></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"
+										align="right"><h:outputLabel
+										value="#{recMoedaRow.receitaMoeda.moeda.siglaMoeda} " />
+										<h:outputText value="#{recMoedaRow.totalAmount}">
+											<f:convertNumber locale="#{bundle['locale.en_us']}"
+																			 pattern="#{systemProperties['pattern.number']}" />
+										</h:outputText>
+									</th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"></th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<a4j:region renderRegionOnly="true">
+
+									<a4j:repeat
+										value="#{recMoedaRow.itemReceitaRowList}"
+										var="item">
+										<!-- ****** Region View, Remove ****** -->
+										<a4j:region rendered="#{item.isView}">
+											<a4j:region rendered="#{!item.isRemove}">
+												<tr>
+													<td class="dr-subtable-cell rich-subtable-cell"
+														align="center"><h:selectBooleanCheckbox
+														value="#{item.isSelected}" /></td>
+													<td class="dr-subtable-cell rich-subtable-cell"><h:outputText
+															value="#{item.nomeCidadeBase}" /></td>
+													<td class="dr-subtable-cell rich-subtable-cell"><h:outputText
+														value="#{item.itemReceita.pessoa.codigoLogin}" /></td>
+													<td class="dr-subtable-cell rich-subtable-cell"><h:outputText
+														value="#{item.itemReceita.perfilVendido.nomePerfilVendido}" />
+													</td>
+													<td class="dr-subtable-cell rich-subtable-cell"><h:outputText
+															value="#{item.itemReceita.perfilVendido.perfilPadrao.cidadeBase.siglaCidadeBase}" />
+													</td>
+													<a4j:region id="valuesRegion">
+														<td class="dr-subtable-cell rich-subtable-cell"
+															align="center"><h:inputText
+															value="#{item.numberHours}" dir="RTL"
+															style="width: 45px;">
+															<f:convertNumber locale="#{bundle['locale.en_us']}"
+																pattern="#{systemProperties['pattern.number']}" />
+															<a4j:support event="onblur"
+																action="#{receitaController.updateItemReceitaValuesByNumberHours}"
+																reRender="itemReceitaTable,dealListPanel"
+																limitToList="true">
+																<f:setPropertyActionListener value="#{item}"
+																	target="#{receitaController.bean.toItemReceitaRow}" />
+															</a4j:support>
+
+														</h:inputText></td>
+														<td class="dr-subtable-cell rich-subtable-cell"
+															align="center"><h:inputText
+															value="#{item.itemReceita.numeroFte}" dir="RTL"
+															style="width: 30px;">
+															<f:convertNumber locale="#{bundle['locale.en_us']}"
+																pattern="#{systemProperties['pattern.number']}" />
+															<a4j:support event="onblur"
+																action="#{receitaController.updateItemReceitaValuesByNumberFte}"
+																reRender="itemReceitaTable,dealListPanel"
+																limitToList="true">
+																<f:setPropertyActionListener value="#{item}"
+																	target="#{receitaController.bean.toItemReceitaRow}" />
+															</a4j:support>
+
+														</h:inputText></td>
+													</a4j:region>
+													<td class="dr-subtable-cell rich-subtable-cell"
+														align="right"><h:outputLabel
+														value="#{recMoedaRow.receitaMoeda.moeda.siglaMoeda} " /> <h:outputText
+														value="#{item.hrsPrice}">
+														<f:convertNumber locale="#{bundle['locale.en_us']}"
+															pattern="#{systemProperties['pattern.number']}" />
+													</h:outputText></td>
+													<td class="dr-subtable-cell rich-subtable-cell"
+														align="right"><h:outputLabel
+														value="#{recMoedaRow.receitaMoeda.moeda.siglaMoeda} " /> <h:outputText
+														value="#{item.ftePrice}">
+														<f:convertNumber locale="#{bundle['locale.en_us']}"
+															pattern="#{systemProperties['pattern.number']}" />
+													</h:outputText></td>
+													<td class="dr-subtable-cell rich-subtable-cell"
+														align="right"><h:outputLabel
+														value="#{recMoedaRow.receitaMoeda.moeda.siglaMoeda} " /> <h:outputText
+														value="#{item.amountValue}">
+														<f:convertNumber locale="#{bundle['locale.en_us']}"
+															pattern="#{systemProperties['pattern.number']}" />
+													</h:outputText></td>
+													<td class="dr-subtable-cell rich-subtable-cell"><h:outputText
+														id="etiquetaItemReceitalabel"
+														value="#{item.etiquetaNamesPart}" /> <rich:toolTip
+														for="etiquetaItemReceitalabel"
+														value="#{item.etiquetaNames}" /></td>
+													<td class="dr-subtable-cell rich-subtable-cell"
+														align="center">
+													<a4j:commandLink ajaxSingle="false"
+														id="editlink" limitToList="true"
+														reRender="itemReceitaEditPanelGrid,itemReceitaEditMessages"
+														oncomplete="#{rich:component('editItemReceitaPanel')}.show()"
+														action="#{receitaController.prepareEditItemReceita}">
+														<h:graphicImage value="/images/icons/edit.gif"
+															style="border:0" />
+														<f:setPropertyActionListener value="#{item.itemReceita}"
+															target="#{receitaController.bean.toItemReceita}" />
+														<f:setPropertyActionListener value="#{item}"
+															target="#{receitaController.bean.toItemReceitaRow}" />
+														<f:setPropertyActionListener value="#{recMoedaRow}"
+															target="#{receitaController.bean.currentReceitaMoedaRow}" />
+													</a4j:commandLink> <rich:toolTip rendered="true" for="editlink"
+														value="#{bundle['_nls.hint.edit']}" /> <a4j:commandLink
+														ajaxSingle="false" id="deletelink"
+														oncomplete="#{rich:component('deleteItemReceitaPanel')}.show()"
+														rendered="false">
+														<h:graphicImage value="/images/icons/delete.gif"
+															style="border:0" />
+														<f:setPropertyActionListener value="#{item}"
+															target="#{receitaController.bean.toItemReceitaRow}" />
+													</a4j:commandLink> <rich:toolTip rendered="false" for="deletelink"
+														value="#{bundle['_nls.hint.delete']}" /></td>
+												</tr>
+											</a4j:region>
+											<!-- ********** / isRemove ********** -->
+										</a4j:region>
+										<!-- ********** / isView ********** -->
+										<!-- ******************************* -->
+									</a4j:repeat>
+								</a4j:region>
+								<tr style="background-color: #F0F0F0;">
+
+									<!-- Botoes -->
+									<td class="dr-subtable-cell rich-subtable-cell" colspan="2">
+									<a4j:commandLink rendered="#{receitaController.bean.isRevenueOpenToAdjustment}"
+										ajaxSingle="false" id="addPessoalink"
+										oncomplete="#{rich:component('addItemReceitaPanel')}.show()"
+										action="#{receitaController.prepareAddItemReceita}"
+										reRender="itemReceitaAddPanelGrid,itemReceitaAddMessages" limitToList="true">
+										<h:graphicImage value="/images/icons/add_pessoa.png"
+											height="16" width="16" style="border:0" />
+										<f:setPropertyActionListener value="#{recMoedaRow}"
+											target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink> <rich:toolTip for="addPessoalink"
+										value="#{bundle['_nls.item_hrs_fat_deal.hint.add.pessoa']}" />
+
+									<rich:spacer height="5" width="5" />
+									<a4j:commandLink rendered="#{receitaController.bean.isRevenueOpenToAdjustment}"
+										ajaxSingle="false" id="deleteAlllink" limitToList="true"
+										oncomplete="#{rich:component('deleteAllItemReceitaPanel')}.show()">
+										<h:graphicImage value="/images/icons/delete_all.png"
+											height="16" width="16" style="border:0" />
+										<f:setPropertyActionListener value="#{recMoedaRow}"
+											target="#{receitaController.bean.currentReceitaMoedaRow}" />
+									</a4j:commandLink> <rich:toolTip for="deleteAlllink"
+										value="#{bundle['_nls.hint.remove.all']}" /></td>
+									<!-- Botoes do rodape  -->
+									<td class="dr-subtable-cell rich-subtable-cell" colspan="10"
+										align="right">
+										<a4j:commandButton
+											disabled="#{!receitaController.bean.isRevenueOpenToAdjustment}"
+											value="#{bundle['_nls.receita.update_hours.label']}"
+											limitToList="true"
+											oncomplete="#{rich:component('updateHorasModal')}.show();">
+											<f:setPropertyActionListener value="#{recMoedaRow}"
+												target="#{receitaController.bean.currentReceitaMoedaRow}" />
+										</a4j:commandButton>
+									<rich:spacer width="5" styleClass="noMargin" /> <a4j:commandButton
+										disabled="#{!receitaController.bean.isRevenueOpenToAdjustment}"
+										value="#{bundle['_nls.item_receita.button.update_fte']}"
+										oncomplete="#{rich:component('updateFTEModal')}.show();"
+										limitToList="true">
+											<f:setPropertyActionListener value="#{recMoedaRow}"
+												target="#{receitaController.bean.currentReceitaMoedaRow}" />
+										</a4j:commandButton> <rich:spacer width="5"
+										styleClass="noMargin" /> <a4j:commandButton
+										value="#{bundle['_nls.item_receita.button.redistribute']}"
+										limitToList="true"
+										oncomplete="#{rich:component('redistributionModal')}.show();">
+											<f:setPropertyActionListener value="#{recMoedaRow}"
+												target="#{receitaController.bean.currentReceitaMoedaRow}" />
+										</a4j:commandButton>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+
+					</a4j:outputPanel>
+
+					<rich:spacer height="5" />
+
+				</h:panelGrid>
+
+			</a4j:region>
+
+</ui:composition>
+</html>

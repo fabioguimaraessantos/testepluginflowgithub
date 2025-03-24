@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:pms="http://pms.cit.com.br"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.taxa_imposto']} &gt; #{bundle['_nls.menu.taxa_imposto.search']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="taxaImpostoBean" />
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+
+			<h:panelGrid columns="2">
+
+				<h:outputText value="#{bundle['_nls.taxa_imposto.empresa.label']}:"
+					for="empresa" styleClass="labelGeneric" />
+				<rich:comboBox id="empresa"
+					label="#{bundle['_nls.taxa_imposto.empresa.label']}"
+					value="#{taxaImpostoController.bean.filter.empresa.nomeEmpresa}"
+					suggestionValues="#{taxaImpostoController.bean.empresaList}"
+					directInputSuggestions="true">
+					<pms:validateComboBox
+						map="#{taxaImpostoController.bean.empresaMap}" />
+				</rich:comboBox>
+
+				<h:outputText
+					value="#{bundle['_nls.taxa_imposto.tipo_servico.label']}:"
+					for="tipo_servico" styleClass="labelGeneric" />
+				<rich:comboBox id="tipo_servico"
+					label="#{bundle['_nls.taxa_imposto.tipo_servico.label']}"
+					value="#{taxaImpostoController.bean.filter.tipoServico.nomeTipoServico}"
+					suggestionValues="#{taxaImpostoController.bean.tipoServicoList}"
+					directInputSuggestions="true">
+					<pms:validateComboBox
+						map="#{taxaImpostoController.bean.tipoServicoMap}" />
+				</rich:comboBox>
+
+				<rich:spacer height="5" />
+				<rich:spacer height="5" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="9" border="0" cellspacing="0">
+				<h:outputText
+					value="#{bundle['_nls.taxa_imposto.data_inicio_vigencia.label']}:"
+					styleClass="labelGeneric" />
+
+				<rich:comboBox id="mesIni"
+					label="#{bundle['_nls.taxa_imposto.data_mes.label']}"
+					defaultLabel="#{bundle['_nls.taxa_imposto.data_mes.label']}"
+					value="#{taxaImpostoController.bean.mesInicioVigenciaFiltro}"
+					suggestionValues="#{taxaImpostoController.bean.validityMonthList}"
+					width="55">
+				</rich:comboBox>
+
+				<h:outputText value="/" styleClass="labelGeneric" />
+
+				<rich:comboBox id="anoIni"
+					label="#{bundle['_nls.taxa_imposto.data_ano.label']}"
+					defaultLabel="#{bundle['_nls.taxa_imposto.data_ano.label']}"
+					value="#{taxaImpostoController.bean.anoInicioVigenciaFiltro}"
+					suggestionValues="#{taxaImpostoController.bean.validityYearList}"
+					width="55">
+				</rich:comboBox>
+
+				<rich:spacer width="5" />
+
+				<h:outputText
+					value="#{bundle['_nls.taxa_imposto.data_fim_vigencia.label']}:"
+					styleClass="labelGeneric" />
+
+				<rich:comboBox id="mesFim"
+					label="#{bundle['_nls.taxa_imposto.data_mes.label']}"
+					defaultLabel="#{bundle['_nls.taxa_imposto.data_mes.label']}"
+					value="#{taxaImpostoController.bean.mesFimVigencia}"
+					suggestionValues="#{taxaImpostoController.bean.validityMonthList}"
+					width="55">
+				</rich:comboBox>
+
+				<h:outputText value="/" styleClass="labelGeneric" />
+
+				<rich:comboBox id="anoFim"
+					label="#{bundle['_nls.taxa_imposto.data_ano.label']}"
+					defaultLabel="#{bundle['_nls.taxa_imposto.data_ano.label']}"
+					value="#{taxaImpostoController.bean.anoFimVigencia}"
+					suggestionValues="#{taxaImpostoController.bean.validityYearList}"
+					width="55">
+				</rich:comboBox>
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<rich:spacer height="5" />
+				<rich:spacer height="5" />
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+							styleClass="buttonGeneric" limitToList="true"
+							reRender="resultTable,errorMsgId,resultPanel"
+							action="#{taxaImpostoController.search}" type="submit" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:outputPanel id="resultPanel">
+				<rich:dataTable value="#{taxaImpostoController.bean.resultList}"
+					var="item" rows="#{systemProperties['research.size.page.result']}"
+					rendered="#{!empty taxaImpostoController.bean.resultList}"
+					width="100%" id="resultTable" rowKeyVar="row">
+
+					<rich:column sortBy="#{item.empresa.nomeEmpresa}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.taxa_imposto.empresa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.empresa.nomeEmpresa}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.tipoServico.nomeTipoServico}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.taxa_imposto.tipo_servico.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.tipoServico.nomeTipoServico}" />
+					</rich:column>
+					
+					<rich:column sortBy="#{item.valorTaxaMunicipal}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.taxa.taxa_imposto.municipal']}" />
+						</f:facet>
+						<h:outputText value="#{item.valorTaxaMunicipal}" />
+						<h:outputText value="#{item.valorTaxaMunicipal != null ? '%' : '-'}" />
+					</rich:column>
+					<rich:column sortBy="#{item.valorTaxaFederal}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.taxa.taxa_imposto.federal']}" />
+						</f:facet>
+						<h:outputText value="#{item.valorTaxaFederal}" />
+						<h:outputText value="#{item.valorTaxaFederal != null ? '%' : '-'}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.dataInicio}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.taxa_imposto.data_inicio_vigencia.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dataInicio}">
+							<f:convertDateTime pattern="MMM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.dataFim}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.taxa_imposto.data_fim_vigencia.label']}" />
+
+						</f:facet>
+						<h:outputText value="#{item.dataFim}">
+							<f:convertDateTime pattern="MMM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.actions.label']}" />
+						</f:facet>
+
+						<sec:ifAnyGranted roles="BOF.TAXES:ED">
+							<a4j:commandLink ajaxSingle="true" id="editlink"
+								action="#{taxaImpostoController.prepareUpdate}"
+								reRender="dealTable"
+								rendered="#{item.dataInicio > taxaImpostoController.bean.historyLockDate}">
+								<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+								<f:setPropertyActionListener value="#{item}"
+									target="#{taxaImpostoController.bean.to}" />
+								<f:setPropertyActionListener value="#{item.codigoTaxaImposto}"
+									target="#{taxaImpostoController.bean.currentRowId}" />
+							</a4j:commandLink>
+							<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}"
+								rendered="#{item.dataInicio > taxaImpostoController.bean.historyLockDate}" />
+						</sec:ifAnyGranted>
+
+						<sec:ifAnyGranted roles="BOF.TAXES:DE">
+							<a4j:commandLink ajaxSingle="true" id="deletelink"
+								action="#{taxaImpostoController.prepareRemove}"
+								reRender="dealTable"
+								rendered="#{item.dataInicio > taxaImpostoController.bean.historyLockDate}">
+								<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+								<f:setPropertyActionListener value="#{item.codigoTaxaImposto}"
+									target="#{taxaImpostoController.bean.currentRowId}" />
+							</a4j:commandLink>
+							<rich:toolTip for="deletelink"
+								value="#{bundle['_nls.hint.delete']}"
+								rendered="#{item.dataInicio > taxaImpostoController.bean.historyLockDate}" />
+						</sec:ifAnyGranted>
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{taxaImpostoController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

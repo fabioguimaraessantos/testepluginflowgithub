@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+			<h:outputLabel
+				value="#{bundle['_nls.menu.receita']} &gt; #{bundle['_nls.menu.receita.view']}"
+				rendered="#{!receitaController.bean.isRemove}" />
+			<h:outputLabel
+				value="#{bundle['_nls.menu.receita']} &gt; #{bundle['_nls.menu.receita.delete']}"
+				rendered="#{receitaController.bean.isRemove}" />
+		</h:panelGrid>
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form id="itemReceitaFormTable" styleClass="noMargin">
+
+			<h:panelGrid columns="2" width="100%">
+				<h:column>
+					<h:panelGrid columns="2">
+						<h:outputLabel
+							value="#{bundle['_nls.receita.contrato_pratica.label']}"
+							styleClass="labelGeneric" />
+						<h:outputLabel
+							value="#{receitaController.bean.receitaLicenca.contratoPratica.nomeContratoPratica}" />
+
+						<h:outputLabel
+							value="#{bundle['_nls.receita.indicador_versao.label']}"
+							styleClass="labelGeneric" />
+						<h:outputLabel
+							value="#{receitaController.bean.receitaLicenca.indicadorVersao}"
+							converter="VersionReceitaConverter" />
+
+						<h:outputLabel value="#{bundle['_nls.receita.data_mes.label']}"
+							styleClass="labelGeneric" />
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<h:outputText value="#{receitaController.bean.validityMonth}"
+								for="validityMonth" />
+							<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+							<h:outputText value="#{receitaController.bean.validityYear}"
+								for="validityYear" />
+						</h:panelGrid>
+
+						<h:outputLabel for="textoObservacao" styleClass="labelGeneric"
+							value="#{bundle['_nls.receita.observacao.label']}: " />
+						<h:outputText id="textoObservacao"
+							value="#{receitaController.bean.receitaLicenca.textoObservacao}" />
+
+						<rich:spacer height="5" width="0" />
+						<rich:spacer height="5" width="0" />
+					</h:panelGrid>
+
+					<!-- ********* Inicio Botoes ******************** -->
+					<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+
+						<a4j:commandButton value="#{bundle['_nls.button.back']}"
+							styleClass="buttonGeneric"
+							action="#{receitaController.backToFilter}" immediate="true" />
+						<rich:spacer height="5" width="5"
+							rendered="#{receitaController.bean.isRemove}" />
+						<a4j:commandButton value="#{bundle['_nls.button.delete']}"
+							styleClass="buttonGeneric"
+							oncomplete="#{rich:component('deleteReceitaPanel')}.show()"
+							rendered="#{receitaController.bean.isRemove}" />
+
+					</h:panelGrid>
+					<!-- ********* Fim Botoes ******************** -->
+				</h:column>
+				<h:column>
+
+				</h:column>
+
+			</h:panelGrid>
+		</h:form>
+		<rich:spacer height="5" styleClass="noMargin" />
+
+
+		<!-- Painel com as abas (Main e History) -->
+
+		<rich:tabPanel immediate="true" switchType="ajax">
+
+			<!-- Tab do Main -->
+			<rich:tab label="#{bundle['_nls.main.label']}">
+				<h:form>
+				<a4j:keepAlive beanName="receitaBean" />
+
+									<a4j:outputPanel id="table">
+											<rich:dataTable value="#{receitaController.bean.receitaLicencas}" var="item">
+												<f:facet name="header">
+													<rich:columnGroup>
+														<rich:column>
+															<h:outputText value="#{bundle['_nls.deal.entity_name']}" />
+														</rich:column>
+														<rich:column>
+															<h:outputText
+																value="#{bundle['_nls.ajuste_receita.valor_receita.label']}" />
+														</rich:column>
+													</rich:columnGroup>
+												</f:facet>
+
+												<rich:column>
+													<div align="right">
+														<h:outputLabel
+															value="#{item.moeda.siglaMoeda} " />
+														<h:outputLabel value="#{item.dealFiscal.nomeDealFiscal}">
+															<f:convertNumber locale="#{bundle['locale.en_us']}"
+																pattern="#{systemProperties['pattern.number']}" />
+														</h:outputLabel>
+
+													</div>
+												</rich:column>
+
+												<rich:column>
+													<div align="right">
+														<h:outputLabel
+															value="#{item.moeda.siglaMoeda} " />
+														<h:outputText value="#{item.valorReceita}">
+															<f:convertNumber locale="#{bundle['locale.en_us']}"
+																pattern="#{systemProperties['pattern.number']}" />
+														</h:outputText>
+													</div>
+												</rich:column>
+
+											</rich:dataTable>
+
+										<!-- Legenda do delete logico -->
+										<h:panelGrid columns="2"
+											rendered="#{not empty recMoedaRow.recDealFiscalRowList}">
+											<div
+												style="background-color: #FFA07A; width: 10px; height: 10px;"></div>
+											<h:outputText
+												value="#{bundle['_nls.deal.logic_delete.legend']}"
+												styleClass="labelGeneric" />
+										</h:panelGrid>
+
+										<!-- ************************************* -->
+									</a4j:outputPanel>
+					<rich:spacer height="3" />
+				<!--/ Itera as moedas do contrato pratica -->
+			</h:form>
+			</rich:tab>
+
+			<!-- Tab do HistoricoReceitaLicenca -->
+			<rich:tab label="#{bundle['_nls.historico_receita.entity_name']}"
+				action="#{receitaLicencaController.prepareHistory}" >
+				<h:form>
+
+				<rich:dataTable value="#{receitaLicencaController.bean.receitaLicencaRows}"
+				var="item" rows="#{systemProperties['research.size.page.result']}"
+				width="100%" id="receitaTable" >
+	
+					<rich:column
+						sortBy="#{item.installmentNumber}">
+						<f:facet name="header">
+							<h:outputText
+								value="" />
+						</f:facet>
+						<h:outputText
+							value="#{item.installmentNumber}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.receitaLicenca.dataMes}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita_licenca.label.month']}" />
+						</f:facet>
+						<h:outputText value="#{item.receitaLicenca.dataMes}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}" />
+						</h:outputText>
+					</rich:column>
+	
+					<rich:column
+						sortBy="#{item.receitaLicenca.dealFiscal.nomeDealFiscal}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita_licenca.label.fiscal_deal']}" />
+						</f:facet>
+						<h:outputText
+							value="#{item.receitaLicenca.dealFiscal.nomeDealFiscal}" />
+					</rich:column>
+	
+					<rich:column
+						sortBy="#{item.receitaLicenca.indicadorVersao}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita.receita_tipo.label']}" />
+						</f:facet>
+						<h:outputText rendered="#{item.receitaLicenca.indicadorVersao == 'WK'}"
+							value="Working" />
+						<h:outputText rendered="#{item.receitaLicenca.indicadorVersao == 'PB'}"
+							value="Published" />
+						<h:outputText rendered="#{item.receitaLicenca.indicadorVersao == 'IN'}"
+							value="Integrated" />
+					</rich:column>
+
+					<rich:column
+						style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita_licenca.label.revenue_value']}" escape="false"/>
+						</f:facet>
+						<h:outputText rendered="#{item.receitaLicenca.indicadorDeleteLogico == 'N'}"
+							value="#{item.receitaLicenca.moeda.siglaMoeda} " />
+						<h:outputText 
+							rendered="#{item.receitaLicenca.indicadorDeleteLogico == 'N'}" 
+							value="#{item.receitaLicenca.valorReceita}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+
+						<h:outputText style="padding-right: 45px;"
+							rendered="#{item.receitaLicenca.indicadorDeleteLogico == 'S'}" 
+							value="#{bundle['_nls.receita_licenca.label.revenue_value_deleted']}">
+						</h:outputText>
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:columnGroup>
+							<rich:column style="text-align: right;">
+								<h:outputText value="" />
+							</rich:column>
+							<rich:column style="text-align: right;">
+								<h:outputText value="" />
+							</rich:column>
+							<rich:column style="text-align: right;">
+								<h:outputText value="" />
+							</rich:column>
+							<rich:column style="text-align: right;">
+								<h:outputText value="#{bundle['_nsl.total.label']}:" />
+							</rich:column>
+							<rich:column style="text-align: right;">
+								<h:outputLabel
+									value="#{item.receitaLicenca.moeda.siglaMoeda} " />
+								<h:outputText value="#{receitaController.bean.receitaLicencaInstallmentsTotal}">
+									<f:convertNumber locale="#{bundle['locale.en_us']}"
+										pattern="#{systemProperties['pattern.number']}" />
+								</h:outputText>
+							</rich:column>
+						</rich:columnGroup>
+					</f:facet>
+				</rich:dataTable>
+				</h:form>
+			</rich:tab>
+
+		</rich:tabPanel>
+		
+		<ui:include src="/pages/protected/receitaLicenca/ReceitaLicencaDelete.xhtml" />
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

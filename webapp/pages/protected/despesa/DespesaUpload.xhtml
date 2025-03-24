@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" 
+	xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.despesa']} &gt; #{bundle['_nls.menu.despesa.upload']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="despesaBean" />
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+
+			<h:panelGrid columns="5">
+				<h:outputText value="#{bundle['_nls.despesa.upload.empresa.label']}*: "
+					for="empresa" styleClass="labelGeneric" />
+				<a4j:region>
+					<rich:comboBox validator="#{xssValidator.validate}"
+						id="empresa" width="180"
+						label="#{bundle['_nls.despesa.upload.empresa.label']}"
+						value="#{despesaController.bean.empresa.nomeEmpresa}"
+						suggestionValues="#{despesaController.bean.empresaList}"
+						valueChangeListener="#{despesaController.changeValueEmpresa}"
+						required="true" directInputSuggestions="false">
+
+						<a4j:support event="onselect" limitToList="true" />
+					</rich:comboBox>
+				</a4j:region>
+				<rich:spacer width="5" />
+				<rich:spacer width="5" />
+				<rich:spacer width="5" />
+				<h:outputText value="#{bundle['_nls.mes.label']}*: "
+					styleClass="labelGeneric" />
+				<a4j:region>
+					<rich:comboBox validator="#{xssValidator.validate}"
+						id="mes" width="80"
+						label="#{bundle['_nls.mes.label']}"
+						value="#{despesaController.bean.selectedMonthDate}"
+						suggestionValues="#{despesaController.bean.dataMesList}"
+						valueChangeListener="#{despesaController.changeValueDate}"
+						required="true" directInputSuggestions="false">
+						<a4j:support event="onselect" limitToList="true" />
+					</rich:comboBox>
+				</a4j:region>
+				<rich:spacer width="5" />
+				<rich:spacer width="5" />
+				<rich:spacer width="5" />
+				<h:outputText
+					value="#{bundle['_nls.despesa.upload.padrao_arquivo.label']}: *"
+					for="padraoArquivo" styleClass="labelGeneric" />
+				<a4j:region>
+					<rich:comboBox validator="#{xssValidator.validate}"
+						id="padraoArquivo" width="180"
+						label="#{bundle['_nls.despesa.upload.padrao_arquivo.label']}"
+						value="#{despesaController.bean.padraoArquivo.nomePadraoArquivo}"
+						suggestionValues="#{despesaController.bean.padraoArquivoList}"
+						valueChangeListener="#{despesaController.changeValuePadraoArquivo}"
+						required="true" directInputSuggestions="false">
+
+						<a4j:support event="onselect" limitToList="true" />
+					</rich:comboBox>
+				</a4j:region>
+				<h:graphicImage id="uploadInfo" value="/images/icons/info.gif" />
+				<rich:toolTip for="uploadInfo" event="onmouseover" layout="block"
+					value="#{bundle['_nls.msg.info.despesa.upload.file_pattern']}" />
+				<h:commandLink action="#{despesaController.getSampleFile}"
+					value="#{bundle['_nls.despesa.upload.arquivo.exemplo']}"
+					immediate="true" />
+
+			</h:panelGrid>
+
+			<rich:spacer height="10" styleClass="noMargin" />
+
+			<a4j:region renderRegionOnly="true">
+
+				<rich:fileUpload listHeight="60px" listWidth="100%"
+					fileUploadListener="#{despesaController.uploadDespesaListener}"
+					maxFilesQuantity="5" id="upload" immediateUpload="false"
+					acceptedTypes="csv" allowFlash="false">
+
+					<f:facet name="label">
+						<h:outputText value="{_KB}KB from {KB}KB uploaded --- {mm}:{ss}" />
+					</f:facet>
+
+					<a4j:support event="onuploadcomplete" limitToList="true"
+						reRender="despesaPanel,errorMsgId,btnSaveImport" />
+
+				</rich:fileUpload>
+				<rich:spacer height="5" styleClass="noMargin" />
+
+				<h:panelGrid columns="1" width="100%" id="despesaPanel">
+					<a4j:region rendered="#{despesaController.bean.errorList != null}">
+						<rich:dataTable value="#{despesaController.bean.errorList}"
+							var="item"
+							rows="#{systemProperties['research.size.page.result']}"
+							width="100%" id="errosTable" rowKeyVar="row">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.despesa.upload.error_import.label']}" />
+							</f:facet>
+							<rich:column>
+								<h:outputText value="#{item}" />
+							</rich:column>
+							<f:facet name="footer">
+								<rich:datascroller renderIfSinglePage="false"
+									maxPages="#{systemProperties['research.size.page.maxpages']}"
+									page="#{despesaController.bean.currentPageId}" />
+							</f:facet>
+						</rich:dataTable>
+					</a4j:region>
+
+					<a4j:region
+						rendered="#{despesaController.bean.uploadArquivo.uploadDespesas != null}">
+						<rich:dataTable
+							value="#{despesaController.bean.uploadArquivo.uploadDespesas}"
+							var="item" width="100%" id="despesaTable" rowKeyVar="row">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.despesa.upload.success_import.label']}" />
+							</f:facet>
+							<rich:column sortBy="#{item.id}" style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText value="#{bundle['_nls.despesa.id.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.id}" />
+							</rich:column>
+							<rich:column sortBy="#{item.grupoCusto.nomeGrupoCusto}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.despesa.grupo_custo.label']}" />
+								</f:facet>
+								<a4j:region id="regionGrupoCusto">
+									<h:outputText value="#{item.grupoCusto.nomeGrupoCusto}"
+										rendered="#{!item.editGrupoCusto}" />
+									<rich:comboBox validator="#{xssValidator.validate}"
+										id="grupoCusto" width="180" required="true"
+										label="#{bundle['_nls.despesa.grupo_custo.label']}"
+										value="#{item.grupoCusto.nomeGrupoCusto}"
+										suggestionValues="#{despesaController.bean.grupoCustoList}"
+										valueChangeListener="#{despesaController.changeValueGrupoCustoList}"
+										directInputSuggestions="false"
+										rendered="#{item.editGrupoCusto}" enableManualInput="false">
+
+										<a4j:support event="onselect" limitToList="true">
+											<f:param name="grupoCustoP" id="grupoCustoP"
+												value="#{item.count}" />
+										</a4j:support>
+									</rich:comboBox>
+								</a4j:region>
+							</rich:column>
+
+							<rich:column sortBy="#{item.contratoPratica.nomeContratoPratica}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.despesa.contrato_pratica.label']}" />
+								</f:facet>
+								<a4j:region id="regionContratoPratica">
+									<h:outputText value="#{item.contratoPratica.nomeContratoPratica}"
+										rendered="#{!item.editContratoPratica}" />
+									<rich:comboBox validator="#{xssValidator.validate}"
+										id="contratoPratica" width="180" required="true"
+										label="#{bundle['_nls.despesa.contrato_pratica.label']}"
+										value="#{item.contratoPratica.nomeContratoPratica}"
+										suggestionValues="#{despesaController.bean.contratoPraticaList}"
+										valueChangeListener="#{despesaController.changeValueContratosPratica}"
+										directInputSuggestions="false"
+										rendered="#{item.editContratoPratica}" enableManualInput="false">
+
+										<a4j:support event="onselect" limitToList="true">
+											<f:param name="contratoPraticaP" id="contratoPraticaP"
+												value="#{item.count}" />
+										</a4j:support>
+									</rich:comboBox>
+								</a4j:region>
+							</rich:column>
+
+							<rich:column sortBy="#{item.tipoDespesa.nomeTipoDespesa}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText value="#{bundle['_nls.despesa.categoria.label']}" />
+								</f:facet>
+								<a4j:region id="regionTipoDespesa">
+									<h:outputText value="#{item.tipoDespesa.nomeTipoDespesa}"
+										rendered="#{!item.editTipoDespesa}" />
+									<rich:comboBox validator="#{xssValidator.validate}"
+										id="tipoDespesa" width="180" required="true"
+										label="#{bundle['_nls.despesa.categoria.label']}"
+										value="#{item.tipoDespesa.nomeTipoDespesa}"
+										suggestionValues="#{despesaController.bean.tipoDespesaList}"
+										valueChangeListener="#{despesaController.changeValueTipoDespesaList}"
+										directInputSuggestions="false"
+										rendered="#{item.editTipoDespesa}" enableManualInput="false">
+
+										<a4j:support event="onselect" limitToList="true">
+											<f:param name="tipoDespesaP" id="tipoDespesaP"
+												value="#{item.count}" />
+										</a4j:support>
+									</rich:comboBox>
+								</a4j:region>
+
+							</rich:column>
+
+							<rich:column sortBy="#{item.textoGrupoDespesa}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.despesa.grupo_despesa.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.textoGrupoDespesa}" />
+							</rich:column>
+
+							<rich:column sortBy="#{item.textoTipoDespesa}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.despesa.tipo_despesa.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.textoTipoDespesa}" />
+							</rich:column>
+
+							<rich:column sortBy="#{item.dataLancamento}"
+								style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.despesa.data_lancamento.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.dataLancamento}">
+									<f:convertDateTime
+										pattern="#{bundle['_nls.date.pattern.simple']}" />
+								</h:outputText>
+							</rich:column>
+
+							<rich:column sortBy="#{item.valorDespesa}"
+								style="text-align: right;">
+								<f:facet name="header">
+									<h:outputText value="#{bundle['_nls.despesa.valor.label']}" />
+								</f:facet>
+								<a4j:region id="regionMoeda">
+									<h:panelGrid columns="2">
+										<h:outputText value="#{item.moeda.siglaMoeda} "
+											rendered="#{!item.editMoeda}" />
+										<rich:comboBox validator="#{xssValidator.validate}"
+											id="moeda" width="70"
+											label="#{bundle['_nls.despesa.moeda.label']}" required="true"
+											value="#{item.moeda.nomeMoeda}"
+											suggestionValues="#{despesaController.bean.moedaList}"
+											valueChangeListener="#{despesaController.changeValueMoedaList}"
+											directInputSuggestions="false" rendered="#{item.editMoeda}"
+											enableManualInput="false">
+
+											<a4j:support event="onselect" limitToList="true">
+												<f:param name="moedaP" id="moedaP" value="#{item.count}" />
+											</a4j:support>
+										</rich:comboBox>
+										<h:outputText value="#{item.valorDespesa}" />
+									</h:panelGrid>
+								</a4j:region>
+
+							</rich:column>
+
+						</rich:dataTable>
+
+					</a4j:region>
+					<rich:spacer height="5" />
+
+					<h:commandButton
+						rendered="#{despesaController.bean.uploadArquivo.uploadDespesas != null}"
+						action="#{despesaController.saveUploadDespesa}"
+						value="Save Import" id="btnSaveImport" />
+				</h:panelGrid>
+			</a4j:region>
+
+		</h:form>
+
+
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

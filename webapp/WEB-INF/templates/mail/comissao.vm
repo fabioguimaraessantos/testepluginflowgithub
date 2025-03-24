@@ -1,0 +1,18 @@
+<html>
+
+<body>
+	<p>There are one or more commissions in the state of <b>${status}</b>, 
+		submitted by <b>${username}</b>
+	</p>
+	<p>To access the PMS click the link below.</p>
+	<a href="https://citweb.cit.com.br/pms">https://citweb.cit.com.br/pms</a>
+	
+    
+    <p>This email is an automated message. Please do not reply</p>
+    
+    <HR WIDTH=80% align=left>
+    
+<body>
+
+
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.title.travel.budget']} &gt; #{bundle['_nls.travel.budget.label.clobs']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<a4j:keepAlive beanName="orcDespWhiteListBean" />
+		<a4j:keepAlive beanName="orcDespesaClBean" />
+
+		<!-- Informacoes do Travel Budget -->
+		<h:form>
+			<h:panelGrid columns="2">
+				<h:outputText value="#{bundle['_nls.travel_budget.label.client']}: "
+					styleClass="labelGeneric" />
+				<h:outputLabel
+					value="#{orcDespesaClController.clienteBean.to.nomeCliente}" />
+			</h:panelGrid>
+			<h:panelGrid columns="8">
+
+				<h:outputText value="#{bundle['_nls.title.travel.budget']}: "
+					styleClass="labelGeneric" />
+				<h:outputLabel
+					value="#{orcDespesaClController.bean.to.orcamentoDespesa.nomeOrcDespesa}" />
+
+				<rich:spacer width="5" />
+
+				<h:outputText value="#{bundle['_nls.travel_budget.label.value']}: "
+					styleClass="labelGeneric" />
+				<h:outputText
+					value="#{orcDespesaClController.bean.to.orcamentoDespesa.moeda.siglaMoeda} #{orcDespesaClController.bean.to.orcamentoDespesa.valorOrcado}">
+					<f:convertNumber locale="#{bundle['locale.en_us']}"
+						pattern="#{systemProperties['pattern.number']}" />
+				</h:outputText>
+
+				<rich:spacer width="5" />
+
+				<h:outputText value="Reimbursable: " styleClass="labelGeneric" />
+				<h:outputLabel value="#{bundle['_nls.yes.label']}"
+					rendered="#{orcDespesaClController.bean.to.isReembolsavel}" />
+				<h:outputLabel value="#{bundle['_nls.no.label']}"
+					rendered="#{not orcDespesaClController.bean.to.isReembolsavel}" />
+
+				<h:outputText
+					value="#{bundle['_nls.travel.budget.label.data_inicio']}: "
+					styleClass="labelGeneric" />
+				<h:outputLabel
+					value="#{orcDespesaClController.bean.to.orcamentoDespesa.dataInicio}">
+					<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+				</h:outputLabel>
+
+				<rich:spacer width="5" />
+
+				<h:outputText
+					value="#{bundle['_nls.travel.budget.label.data_fim']}: "
+					styleClass="labelGeneric" />
+				<h:outputLabel value="#{orcDespesaClController.bean.to.orcamentoDespesa.dataFim}">
+					<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+				</h:outputLabel>
+
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" />
+
+		<h:form>
+			<a4j:commandButton
+				action="#{orcDespesaClController.prepareOrcDespesaCl}"
+				value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric"
+				immediate="true" />
+		</h:form>
+
+		<rich:spacer height="10" />
+
+		<!-- Lista de C-Lobs -->
+		<h:form>
+			<rich:dataTable id="listaCLob"
+				value="#{orcDespesaClController.bean.to.contratoPraticaOrcDespCls}" var="itemCLob"
+				width="100%" rows="7">
+
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.travel.budget.lavel.clob']}" />
+					</f:facet>
+					<h:outputText value="#{itemCLob.contratoPratica.nomeContratoPratica}" />
+				</rich:column>
+				<f:facet name="footer">
+					<rich:datascroller renderIfSinglePage="false"
+						maxPages="#{systemProperties['research.size.page.maxpages']}"
+						page="#{orcDespesaClController.whiteListBean.currentPageId}" />
+				</f:facet>
+			</rich:dataTable>
+		</h:form>
+
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

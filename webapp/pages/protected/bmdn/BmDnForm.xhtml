@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+    <h:outputText value="#{bundle['_nls.bmdn.nome_bmdn.label']}*: "
+                  styleClass="labelGeneric" />
+    <h:inputText id="bmDnName" required="true" size="70" maxlength="255"
+                 label="#{bundle['_nls.bmdn.nome_bmdn.label']}"
+                 value="#{bmDnController.bean.bmDn.name}">
+        <f:validateLength
+                minimum="#{systemProperties['form.input.length.minimum']}"
+                maximum="255" />
+    </h:inputText>
+    <h:outputText value="#{bundle['_nls.bmdn.status_bmdn.label']}: "
+                  for="indicadorAtivo" styleClass="labelGeneric" rendered="#{bmDnController.bean.update}" />
+    <rich:comboBox id="indicadorAtivo" required="true"
+                   enableManualInput="false"
+                   label="#{bundle['_nls.bmdn.status_bmdn.label']}"
+                   value="#{bmDnController.bean.bmDn.inActive}"
+                   suggestionValues="#{bmDnController.bean.suggestionsListInAtivo}"
+                   directInputSuggestions="true" converter="ActiveInactiveConverter"
+                   rendered="#{bmDnController.bean.update}"
+                   disabled="#{!bmDnController.bean.updateStatus}">
+        <f:selectItem itemValue="A" />
+        <f:selectItem itemValue="I" />
+    </rich:comboBox>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.menu.tipo_contrato']} &gt; #{bundle['_nls.menu.tipo_contrato.manage']}
+   	</ui:define>
+
+	<ui:define name="bodyForm">
+
+		<a4j:loadScript src="/js/jquery.numeric.js" />
+
+		<a4j:keepAlive beanName="tipoContratoBean" />
+		<a4j:keepAlive beanName="tipoContratoEncargoBean" />
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<rich:tabPanel switchType="ajax">
+
+			<!-- Aba de Tipo de Contrato -->
+			<rich:tab label="#{bundle['_nls.tipo_contrato.title.tab']}">
+				<a4j:outputPanel id="panelTipoContrato">
+					<sec:ifAnyGranted roles="PER.CONTRACT_TYPE:CR">
+						<h:form styleClass="noMargin">
+						<h:panelGrid columns="3">
+							<h:outputText
+								value="#{bundle['_nls.tipo_contrato.nome.label']}*:"
+								for="nomeTipo" styleClass="labelGeneric"></h:outputText>
+							<h:inputText id="nomeTipo" required="true" size="20"
+								maxlength="4" label="#{bundle['_nls.tipo_contrato.nome.label']}"
+								value="#{tipoContratoController.bean.to.nomeTipoContrato}"
+								onkeyup="this.value = this.value.toUpperCase();">
+								<f:validateLength
+									minimum="#{systemProperties['form.input.length.minimum']}"
+									maximum="4" />
+							</h:inputText>
+							<rich:spacer width="5px" />
+
+							<h:outputText
+								value="#{bundle['_nls.tipo_contrato.moeda.label']}*:"
+								for="moeda" styleClass="labelGeneric"></h:outputText>
+							<rich:comboBox id="moeda" required="true"
+								enableManualInput="true"
+								label="#{bundle['_nls.tipo_contrato.moeda.label']}"
+								value="#{tipoContratoController.bean.nomeMoedaSelected}"
+								suggestionValues="#{tipoContratoController.bean.moedaList}"
+								directInputSuggestions="true">
+							</rich:comboBox>
+
+							<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+								<a4j:commandButton value="#{bundle['_nls.button.add']}"
+									styleClass="buttonGeneric"
+									action="#{tipoContratoController.createTipoContrato}"
+									reRender="tipoContratoTable, panelTipoContrato" />
+								<rich:spacer height="5" width="5" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</h:form>
+					</sec:ifAnyGranted>
+				</a4j:outputPanel>
+				<rich:spacer height="15px" />
+				<h:form>
+					<rich:dataTable value="#{tipoContratoController.bean.resultList}"
+						var="item" rows="#{systemProperties['research.size.page.result']}"
+						width="100%" id="tipoContratoTable" rowKeyVar="row">
+
+						<rich:column sortBy="#{item.codigoTipoContrato}"
+							style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.tipo_contrato.codigo.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.codigoTipoContrato}" />
+						</rich:column>
+
+						<rich:column sortBy="#{item.nomeTipoContrato}"
+							style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="#{bundle['_nls.tipo_contrato.nome.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.nomeTipoContrato}" />
+						</rich:column>
+
+						<rich:column sortBy="#{item.moeda.nomeMoeda}"
+							style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.tipo_contrato.moeda.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.moeda.nomeMoeda}" />
+						</rich:column>
+
+						<rich:column sortBy="#{item.indicadorAtivo}"
+							style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.tipo_contrato.status.label']}" />
+							</f:facet>
+							<h:outputText value="#{bundle['_nls.active.label']}"
+								rendered="#{item.indicadorAtivo == 'A'}" />
+							<h:outputText value="#{bundle['_nls.inactive.label']}"
+								rendered="#{item.indicadorAtivo == 'I'}" />
+						</rich:column>
+
+						<rich:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.centro_lucro.action.label']}" />
+							</f:facet>
+
+							<sec:ifAnyGranted roles="PER.CONTRACT_TYPE:ED">
+								<a4j:commandLink ajaxSingle="true" id="editlink"
+									action="#{tipoContratoController.prepareUpdateTipoContrato}"
+									oncomplete="#{rich:component('editTipoContrato')}.show()">
+									<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+									<f:setPropertyActionListener value="#{item}"
+										target="#{tipoContratoController.bean.to}" />
+								</a4j:commandLink>
+								<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+							</sec:ifAnyGranted>
+
+							<sec:ifAnyGranted roles="PER.CONTRACT_TYPE:DE">
+								<a4j:commandLink ajaxSingle="true" id="deletelink"
+									oncomplete="#{rich:component('deleteTipoContrato')}.show()">
+									<h:graphicImage value="/images/icons/delete.gif"
+										style="border:0" />
+									<f:setPropertyActionListener value="#{item}"
+										target="#{tipoContratoController.bean.to}" />
+								</a4j:commandLink>
+								<rich:toolTip for="deletelink"
+									value="#{bundle['_nls.hint.delete']}" />
+							</sec:ifAnyGranted>
+						</rich:column>
+
+						<f:facet name="footer">
+							<rich:datascroller renderIfSinglePage="false"
+								maxPages="#{systemProperties['research.size.page.maxpages']}"
+								page="#{tipoContratoController.bean.currentPageId}" />
+						</f:facet>
+					</rich:dataTable>
+				</h:form>
+			</rich:tab>
+			<sec:ifAnyGranted roles="PER.CONTRACT_TYPE:CR">
+			<!-- Aba de Encargos -->
+			<rich:tab label="#{bundle['_nls.encargo.title.tab']}"
+				action="#{tipoContratoController.prepareCreateWelfare}">
+				<a4j:outputPanel id="panelEncargo">
+					<h:form styleClass="noMargin">
+						<h:panelGrid columns="3">
+							<h:outputText
+								value="#{bundle['_nls.encargo.tipo_contrato.label']}*:"
+								for="tipoContrato" styleClass="labelGeneric"></h:outputText>
+
+							<rich:comboBox id="tipoContrato" required="true"
+								valueChangeListener="#{tipoContratoController.findTipoContratoEncargos}"
+								enableManualInput="false" immediate="true"
+								label="#{bundle['_nls.encargo.tipo_contrato.label']}"
+								value="#{tipoContratoController.beanTipoContratoEncargo.nomeTipoContratoSelected}"
+								suggestionValues="#{tipoContratoController.beanTipoContratoEncargo.tipoContratoList}"
+								directInputSuggestions="true">
+								<a4j:support event="onselect"
+									reRender="panelEncargo, encargoTable" limitToList="true"
+									immediate="true" />
+								<a4j:support event="oncomplete" reRender="encargoTable" />
+							</rich:comboBox>
+							<rich:spacer width="5px" />
+
+							<h:panelGrid columns="2">
+								<h:outputText value="#{bundle['_nls.encargo.beneficio.label']}"
+									for="beneficio" styleClass="labelGeneric"></h:outputText>
+								<h:outputText
+									value="#{tipoContratoController.beanTipoContratoEncargo.nomeMoeda}*:"
+									for="beneficio" styleClass="labelGeneric"></h:outputText>
+							</h:panelGrid>
+							<h:inputText id="beneficio" required="true" size="20"
+								label="#{bundle['_nls.encargo.beneficio.label']}:"
+								value="#{tipoContratoController.beanTipoContratoEncargo.to.valorBeneficioPadrao}">
+								<rich:jQuery
+									query="numeric('#{bundle['locale.decimal.separator']}')"
+									timing="onload" selector="#beneficio" />
+							</h:inputText>
+							<rich:spacer width="5px" />
+
+							<h:outputText
+								value="#{bundle['_nls.encargo.percentual_encargos.label']}*:"
+								for="encargo" styleClass="labelGeneric"></h:outputText>
+							<h:panelGrid columns="4" cellpadding="0" cellspacing="0"
+								border="0">
+								<h:inputText id="encargo" required="true" size="20"
+									label="#{bundle['_nls.encargo.percentual_encargos.label']}"
+									value="#{tipoContratoController.beanTipoContratoEncargo.to.percentualEncargo}">
+									<rich:jQuery
+										query="numeric('#{bundle['locale.decimal.separator']}')"
+										timing="onload" selector="#encargo" />
+								</h:inputText>
+								<rich:spacer width="5px" />
+								<h:outputText
+									value="#{bundle['_nls.encargo.data_inicio.label']}:"
+									for="mesInicio" styleClass="labelGeneric" />
+								<h:panelGrid columns="3" border="0" cellspacing="0">
+									<rich:comboBox id="mesInicio" required="true"
+										enableManualInput="false"
+										label="#{bundle['_nls.encargo.mes.label']}"
+										value="#{tipoContratoController.beanTipoContratoEncargo.startMonth}"
+										directInputSuggestions="true"
+										suggestionValues="#{dateBean.monthList}"
+										defaultLabel="#{bundle['_nls.mes.label']}" width="60">
+									</rich:comboBox>
+									<h:outputText value="/"></h:outputText>
+									<rich:comboBox id="anoInicio" required="true"
+										enableManualInput="false"
+										label="#{bundle['_nls.encargo.ano.label']}"
+										value="#{tipoContratoController.beanTipoContratoEncargo.startYear}"
+										directInputSuggestions="true"
+										suggestionValues="#{dateBean.yearList}"
+										defaultLabel="#{bundle['_nls.ano.label']}" width="60">
+									</rich:comboBox>
+								</h:panelGrid>
+							</h:panelGrid>
+
+							<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+								<a4j:commandButton value="#{bundle['_nls.button.add']}"
+									styleClass="buttonGeneric"
+									action="#{tipoContratoController.createTipoContratoEncargo}"
+									reRender="encargoTable,panelEncargo,encargoPanel" />
+								<rich:spacer height="5" width="5" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</h:form>
+				</a4j:outputPanel>
+				<rich:spacer height="15px" />
+				<h:form>
+					<a4j:outputPanel id="encargoPanel">
+						<rich:dataTable
+							value="#{tipoContratoController.beanTipoContratoEncargo.resultList}"
+							var="item" width="100%" id="encargoTable" rowKeyVar="row"
+							rendered="#{!empty tipoContratoController.beanTipoContratoEncargo.resultList}"
+							rows="#{systemProperties['research.size.page.result']}">
+
+							<rich:column sortBy="#{item.valorBeneficioPadrao}"
+								style="text-align: right;">
+								<f:facet name="header">
+									<h:outputText value="#{bundle['_nls.encargo.beneficio.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.tipoContrato.moeda.siglaMoeda} ">
+								</h:outputText>
+								<h:outputText value="#{item.valorBeneficioPadrao}">
+									<f:convertNumber minFractionDigits="2" pattern="0.00" />
+								</h:outputText>
+							</rich:column>
+
+							<rich:column sortBy="#{item.percentualEncargo}"
+								style="text-align: right;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.encargo.percentual_encargos.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.percentualEncargo}">
+									<f:convertNumber minFractionDigits="2" pattern="0.00" />
+								</h:outputText>
+							</rich:column>
+
+							<rich:column sortBy="#{item.dataInicioVigencia}"
+								style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.encargo.data_inicio.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.dataInicioVigencia}">
+									<f:convertDateTime
+										pattern="#{bundle['_nls.date.pattern.simple']}" />
+								</h:outputText>
+							</rich:column>
+							<rich:column sortBy="#{item.dataInicioVigencia}"
+								style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText value="#{bundle['_nls.encargo.data_fim.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.dataFimVigencia}">
+									<f:convertDateTime
+										pattern="#{bundle['_nls.date.pattern.simple']}" />
+								</h:outputText>
+							</rich:column>
+
+							<rich:column style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.centro_lucro.action.label']}" />
+								</f:facet>
+
+								<a4j:commandLink ajaxSingle="true" id="deletelink2"
+									oncomplete="#{rich:component('deleteTipoContratoEncargo')}.show()"
+									rendered="#{item.dataInicioVigencia > tipoContratoController.beanTipoContratoEncargo.historyLockDate}">
+									<h:graphicImage value="/images/icons/delete.gif"
+										style="border:0" />
+									<f:setPropertyActionListener value="#{item}"
+										target="#{tipoContratoController.beanTipoContratoEncargo.to}" />
+								</a4j:commandLink>
+								<rich:toolTip for="deletelink2"
+									value="#{bundle['_nls.hint.delete']}" />
+							</rich:column>
+
+							<f:facet name="footer">
+								<rich:datascroller renderIfSinglePage="false"
+									maxPages="#{systemProperties['research.size.page.maxpages']}"
+									page="#{tipoContratoController.bean.currentPageId}" />
+							</f:facet>
+						</rich:dataTable>
+					</a4j:outputPanel>
+				</h:form>
+			</rich:tab>
+			</sec:ifAnyGranted>
+		</rich:tabPanel>
+
+		<!-- Modal do edit TipoContrato -->
+		<rich:modalPanel id="editTipoContrato" autosized="true" width="200">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.tipo_contrato.title.edit']}"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="hidelinkEditTipoContrato" />
+					<rich:componentControl for="editTipoContrato"
+						attachTo="hidelinkEditTipoContrato" operation="hide"
+						event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<h:form id="formEdit">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td colspan="2"><h:panelGrid columns="3">
+								<h:outputText
+									value="#{bundle['_nls.tipo_contrato.nome.label']}*: "
+									for="nomeTipo" styleClass="labelGeneric"></h:outputText>
+								<h:inputText id="nomeTipoEdit" required="true" size="20"
+									maxlength="4"
+									label="#{bundle['_nls.tipo_contrato.nome.label']}"
+									value="#{tipoContratoController.bean.to.nomeTipoContrato}"
+									onkeyup="this.value = this.value.toUpperCase();">
+									<f:validateLength
+										minimum="#{systemProperties['form.input.length.minimum']}"
+										maximum="4" />
+								</h:inputText>
+								<rich:spacer width="5px" />
+
+								<h:outputText
+									value="#{bundle['_nls.tipo_contrato.moeda.label']}*: "
+									for="moeda" styleClass="labelGeneric"></h:outputText>
+								<rich:comboBox id="moedaEdit" required="true"
+									enableManualInput="false"
+									label="#{bundle['_nls.tipo_contrato.moeda.label']}"
+									value="#{tipoContratoController.bean.nomeMoedaSelected}"
+									suggestionValues="#{tipoContratoController.bean.moedaList}"
+									directInputSuggestions="true">
+								</rich:comboBox>
+								<rich:spacer width="5px" />
+
+								<h:outputText
+									value="#{bundle['_nls.tipo_contrato.status.label']}: "
+									for="indicadorEdit" styleClass="labelGeneric"></h:outputText>
+								<h:selectOneRadio id="indicadorEdit"
+									value="#{tipoContratoController.bean.to.indicadorAtivo}">
+									<f:selectItem itemValue="A"
+										itemLabel="#{bundle['_nls.active.label']}" />
+									<f:selectItem itemValue="I"
+										itemLabel="#{bundle['_nls.inactive.label']}" />
+								</h:selectOneRadio>
+							</h:panelGrid></td>
+						</tr>
+						<tr>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.ok']}"
+								action="#{tipoContratoController.updateTipoContrato}"
+								oncomplete="#{rich:component('editTipoContrato')}.hide();"
+								styleClass="buttonGeneric"
+								reRender="tipoContratoTable, errorMsgId" /></td>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.cancel']}"
+								styleClass="buttonGeneric"
+								action="#{tipoContratoController.cancelTipoContrato}"
+								oncomplete="#{rich:component('deleteTipoContrato')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+		<!-- Modal do delete tipoContrato-->
+		<rich:modalPanel id="deleteTipoContrato" autosized="true" width="200">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.title.confirmation']}"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="hidelinkDeleteTipoContrato" />
+					<rich:componentControl for="deleteTipoContrato"
+						attachTo="hidelinkDeleteTipoContrato" operation="hide"
+						event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<h:form>
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td colspan="2"><h:outputText
+								value="#{bundle['_nls.tipo_contrato.msg.delete']}" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"><rich:spacer height="5px" /></td>
+						</tr>
+						<tr>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+								action="#{tipoContratoController.removeTipoContrato}"
+								oncomplete="#{rich:component('deleteTipoContrato')}.hide();"
+								styleClass="buttonGeneric"
+								reRender="tipoContratoTable, errorMsgId" /></td>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.cancel']}"
+								styleClass="buttonGeneric"
+								action="#{tipoContratoController.cancelTipoContrato}"
+								oncomplete="#{rich:component('deleteTipoContrato')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+		<!-- Modal do delete tipoContratoEncargo -->
+		<rich:modalPanel id="deleteTipoContratoEncargo" autosized="true"
+			width="200">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.title.confirmation']}"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="hidelinkDeleteTipoContratoEncargo" />
+					<rich:componentControl for="deleteTipoContratoEncargo"
+						attachTo="hidelinkDeletedeleteTipoContratoEncargo"
+						operation="hide" event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<h:form>
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td colspan="2"><h:outputText
+								value="#{bundle['_nls.encargo.msg.encargo.delete']}" /></td>
+						</tr>
+						<tr>
+							<td colspan="2"><rich:spacer height="5px" /></td>
+						</tr>
+						<tr>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+								action="#{tipoContratoController.removeTipoContratoEncargo}"
+								oncomplete="#{rich:component('deleteTipoContratoEncargo')}.hide();"
+								styleClass="buttonGeneric" reRender="encargoTable, errorMsgId" /></td>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.cancel']}"
+								styleClass="buttonGeneric"
+								action="#{tipoContratoController.cancelTipoContratoEncargo}"
+								oncomplete="#{rich:component('deleteTipoContratoEncargo')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

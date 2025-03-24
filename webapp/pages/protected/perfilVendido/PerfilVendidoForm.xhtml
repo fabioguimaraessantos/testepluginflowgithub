@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+
+	<h:panelGrid columns="3">
+
+		<!-- Nome Perfil Vendido -->
+		<h:outputText
+			value="#{bundle['_nls.perfil_vendido.nome_perfil_vendido.label']}*:"
+			for="nomePerfilVendido" styleClass="labelGeneric" />
+		<h:inputText id="nomePerfilVendido" required="true" size="70"
+			maxlength="99"
+			label="#{bundle['_nls.perfil_vendido.nome_perfil_vendido.label']}"
+			value="#{msaController.perfilVendidoBean.to.nomePerfilVendido}">
+			<f:validateLength minimum="3" maximum="99" />
+		</h:inputText>
+
+		<!-- Position -->
+		<h:outputText
+			value="#{bundle['_nls.perfil_padrao.item.position_pmg']}*:"
+			styleClass="labelGeneric" for="position" />
+		<rich:comboBox id="position" required="true" enableManualInput="false"
+			label="#{bundle['_nls.perfil_vendido.position']}"
+			suggestionValues="#{msaController.perfilVendidoBean.listaCargoCombobox}"
+			value="#{msaController.perfilVendidoBean.cargo}"
+			defaultLabel="#{bundle['_nls.perfil_vendido.position']}"
+			directInputSuggestions="true" width="200">
+
+		</rich:comboBox>
+
+		<!-- PMG -->
+		<h:outputText value="#{bundle['_nls.perfil_vendido.PMG']}*:"
+			styleClass="labelGeneric" />
+		<rich:comboBox id="pmg" required="true"
+			label="#{bundle['_nls.perfil_vendido.PMG']}"
+			suggestionValues="#{msaController.perfilVendidoBean.listaPmgCombobox}"
+			value="#{msaController.perfilVendidoBean.pmg}"
+			defaultLabel="#{bundle['_nls.perfil_vendido.PMG']}"
+			enableManualInput="false">
+
+		</rich:comboBox>
+
+		<!-- Base -->
+		<h:outputText value="#{bundle['_nls.perfil_vendido.base']}*:"
+			styleClass="labelGeneric" />
+		<rich:comboBox id="base" required="true"
+			label="#{bundle['_nls.perfil_vendido.base']}"
+			suggestionValues="#{msaController.perfilVendidoBean.listaCidadeBaseCombobox}"
+			value="#{msaController.perfilVendidoBean.cidade}"
+			defaultLabel="#{bundle['_nls.perfil_vendido.base']}"
+			enableManualInput="false">
+
+		</rich:comboBox>
+
+		<!-- Moeda -->
+		<h:outputText value="#{bundle['_nls.moeda.entity_name']}*:"
+			styleClass="labelGeneric" />
+		<rich:comboBox id="moeda" required="true"
+			label="#{bundle['_nls.moeda.entity_name']}"
+			suggestionValues="#{msaController.perfilVendidoBean.listaMoeda}"
+			value="#{msaController.perfilVendidoBean.moeda}"
+			defaultLabel="#{empty msaController.perfilVendidoBean.listaMoeda ? bundle['_nls.perfil_vendido.msg.warning.no_currency'] : bundle['_nls.moeda.entity_name']}"
+			enableManualInput="false">
+		</rich:comboBox>
+
+	</h:panelGrid>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

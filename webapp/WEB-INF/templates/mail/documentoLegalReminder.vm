@@ -1,0 +1,109 @@
+<html>
+    <head></head>
+    <body>
+		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td valign="top">
+						<img width="100%" style="float:left;" src="https://citweb.cit.com.br/pms/images/email/email-header.png">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td>
+						<img style="float:left;" src="https://citweb.cit.com.br/pms/images/email/invoice-title-header2.png">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h4>#br-pt</h4>
+		<table align="left" border="0" style="border-collapse: collapse; margin-top: 5px;">
+			<tbody>
+				<tr><p style="color: #444444; font-family: raleway, sans-serif;">Prezado <b>${nomesGestores}</b> </p>
+				<p style="color: #444444; font-family: raleway, sans-serif;">O Documento Legal, <b>${nomeDocLegal}</b>, expira em <b>${endDate}</b>.</p></tr>
+			</tbody>
+		</table>
+
+		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+		</table>
+
+		<table align="center" style="margin: 0 auto; border: 1px solid black; border-collapse: collapse;">
+			<thead>
+				<tr style="border: 1px solid black;">
+					<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;"><b>Codigo</b></td>
+					<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;"><b>Nome</b></td>
+					<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;"><b>Data Inicial</b></td>
+					<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;"><b>Data Final</b></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr style="border: 1px solid black;">
+					<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;">${codigoDocLegal}</td>
+					<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;">${nomeDocLegal}</td>
+					<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;">${startDate}</td>
+					<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;">${endDate}</td>
+				</tr>
+			</tbody>
+		</table>
+        
+		<table align="left" border="0" style="border-collapse: collapse; text-align=justify; margin=0 auto; padding: 990px;">
+			<tbody>
+				<tr><p style="color: #444444; font-family: raleway, sans-serif;">Portanto, se o projeto ainda n&atilde;o foi conclu&iacute;do ou seja do interesse das partes continuar a presta&ccedil;&atilde;o de servi&ccedil;os, a Invoicing Partner deve ser acionada atrav&eacute;s de Jira (JiraWeb - SSI-Invoicing), para que seja iniciado o processo de renova&ccedil;&atilde;o e elabora&ccedil;&atilde;o do documento suporte (contrato ou aditivo).</p></tr>
+				<tr><p style="color: #444444; font-family: raleway, sans-serif;">Caso os servi&ccedil;os n&atilde;o sejam renovados, por favor nos avise por e-mail (invoicing@ciandt.com).</p></tr>
+				<tr>
+					<p style="color: #444444; font-family: raleway, sans-serif;">Obrigado <br /> IT - PMS</p>
+				</tr>
+			</tbody>
+		</table>
+		<hr>
+		<h4>#us-en</h4>
+		<table align="left" border="0" style="border-collapse: collapse; margin-top: 5px;">
+			<tbody>
+				<tr>
+					<p style="color: #444444; font-family: raleway, sans-serif;">Dear <b>${nomesGestores}</b> </p>
+					<p style="color: #444444; font-family: raleway, sans-serif;">The Legal Document, <b>${nomeDocLegal}</b>, will expire on <b>${endDate}</b>.</p>
+				</tr>
+			</tbody>
+		</table>
+
+		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<table align="center" style="margin: 0 auto; border: 1px solid black; border-collapse: collapse;">
+					<thead>
+						<tr style="border: 1px solid black;">
+							<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;"><b>Code</b></td>
+							<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;"><b>Name</b></td>
+							<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;"><b>Start Date</b></td>
+							<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;"><b>End Date</b></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="border: 1px solid black;">
+							<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;">${codigoDocLegal}</td>
+							<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;">${nomeDocLegal}</td>
+							<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;">${startDate}</td>
+							<td style="border: 1px solid black; padding: 3px; color: #444444; font-family: raleway, sans-serif;">${endDate}</td>
+						</tr>
+					</tbody>
+				</table>
+			</tbody>
+		</table>
+        
+		<table align="left" border="0" style="border-collapse: collapse; text-align=justify; margin=0 auto; padding: 990px;">
+			<tbody>
+				<tr>
+					<p style="color: #444444; font-family: raleway, sans-serif;">So if the project has not yet been completed or if it is the parties' interest to continue to provide services, Invoicing Partner must be triggered by Jira (JiraWeb - SSI-Invoicing), so that the process of renewal and development of the support document starts (contract or additive).</p>
+				</tr>
+				<tr>
+					<p style="color: #444444; font-family: raleway, sans-serif;">If the services are not renewed, please let us know by email (invoicing@ciandt.com).</p></tr>
+				<tr>
+					<p style="color: #444444; font-family: raleway, sans-serif;">Thanks <br /> IT - PMS <br /> This email is an automated message. Please do not reply.</p>
+				</tr>
+			</tbody>
+		</table>
+    </body>
+</html>

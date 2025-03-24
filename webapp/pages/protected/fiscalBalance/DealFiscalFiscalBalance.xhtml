@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.receita']} &gt; #{bundle['_nls.menu.apropriacao_fatura']} &gt; #{bundle['_nls.deal.entity_name']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="fiscalBalanceBean" />
+			
+			<h:panelGrid columns="5">
+				<h:outputLabel
+					value="#{bundle['_nls.apropriacao_fatura.label.client']}: "
+					styleClass="labelGeneric"/>
+				<h:outputLabel value="#{fiscalBalanceController.bean.currentDealFiscal.msa.cliente.nomeCliente}" />
+				<rich:spacer width="5px" />
+				<h:outputLabel
+					value="#{bundle['_nls.fiscal_balance.msa.label']}: "
+					styleClass="labelGeneric" />
+				<h:outputLabel value="#{fiscalBalanceController.bean.currentDealFiscal.msa.nomeMsa}" />
+				<h:outputLabel
+					value="#{bundle['_nls.apropriacao_fatura.label.date']}:"
+					styleClass="labelGeneric" />
+				<h:panelGrid columns="3">
+					<rich:comboBox width="60" label="#{bundle['_nls.apropriacao_fatura.label.date']}"
+						suggestionValues="#{fiscalBalanceController.bean.validityMonthList}"
+						value="#{fiscalBalanceController.bean.startValidityMonth}" />
+					<h:outputLabel value="/" />
+					<rich:comboBox width="60" label="#{bundle['_nls.apropriacao_fatura.label.date']}"
+						suggestionValues="#{fiscalBalanceController.bean.validityYearList}"
+						value="#{fiscalBalanceController.bean.startValidityYear}" />
+				</h:panelGrid>
+				<rich:spacer width="5px" />
+				<h:outputLabel
+					value="#{bundle['_nls.apropriacao_fatura.label.until']}:"
+					styleClass="labelGeneric" />
+				<h:panelGrid columns="3">
+					<rich:comboBox width="60" label="#{bundle['_nls.apropriacao_fatura.label.until']}"
+						suggestionValues="#{fiscalBalanceController.bean.validityMonthList}"
+						value="#{fiscalBalanceController.bean.endValidityMonth}" />
+					<h:outputLabel value="/" />
+					
+					<rich:comboBox width="60" label="#{bundle['_nls.apropriacao_fatura.label.until']}"
+						suggestionValues="#{fiscalBalanceController.bean.validityYearList}"
+						value="#{fiscalBalanceController.bean.endValidityYear}" />
+				</h:panelGrid>
+				<h:outputLabel
+					value="#{bundle['_nls.apropriacao_fatura.label.fiscal_deal']}: "
+					styleClass="labelGeneric" />
+				<rich:comboBox
+					suggestionValues="#{fiscalBalanceController.bean.dealFiscalComboList}"
+					value="#{fiscalBalanceController.bean.dealFiscalSelected}"
+					required="true"
+					valueChangeListener="#{fiscalBalanceController.clearDealFiscalResultList}"
+					immediate="true">
+					<a4j:support event="onselect" reRender="lista" immediate="true" />
+					<a4j:support event="onchange" reRender="lista" immediate="true" />
+				</rich:comboBox>
+
+				<rich:spacer with="5" styleClass="noMargin" />
+
+				<!-- Option -->
+				<h:selectOneRadio id="option"
+					value="#{fiscalBalanceController.bean.option}">
+					<f:selectItem itemValue="LDM"
+						itemLabel="#{bundle['_nls.fiscal_balance.last_day_of_month.label']}" />
+					<f:selectItem itemValue="CFP"
+						itemLabel="#{bundle['_nls.fiscal_balance.cfp_cut_date.label']}" />
+				</h:selectOneRadio>
+			</h:panelGrid>
+
+			<a4j:commandButton value="#{bundle['_nls.button.back']}" 
+				action="#{fiscalBalanceController.back}" />
+				
+			<rich:spacer height="0" width="5" styleClass="noMargin" />
+			
+			<a4j:commandButton value="#{bundle['_nls.button.search']}"
+				action="#{fiscalBalanceController.filterDealFiscalFiscalBalance}"
+				reRender="lista" />	
+			
+			<br />
+			<h:outputLabel style="font-size:10px" value="- #{bundle['_nls.apropriacao_fatura.label.evaluated_revenues']}" />
+			<br />
+
+			<rich:dataTable width="100%"
+				value="#{fiscalBalanceController.bean.dealFiscalFiscalBalanceRowList}"
+				var="item" id="lista" reRender="ds" 
+				rows="#{systemProperties['research.size.page.result']}"
+				rowKeyVar="row">
+				
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column>
+							<h:outputLabel
+								value="#{bundle['_nls.apropriacao_fatura.label.month']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputLabel
+								value="#{bundle['_nls.apropriacao_fatura.label.revenue']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputLabel
+								value="#{bundle['_nls.apropriacao_fatura.label.total_invoiced']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputLabel
+								value="#{bundle['_nls.apropriacao_fatura.label.balance']}" />
+						</rich:column>
+					</rich:columnGroup>
+				</f:facet>
+				<rich:column>
+					<h:outputText
+						value="#{item.balanceDate}">
+						<f:convertDateTime pattern="MMM/yyyy" />
+					</h:outputText>
+				</rich:column>
+				<rich:column style="text-align: right">
+					<h:outputText
+						value="#{item.moeda.siglaMoeda}" />
+					<rich:spacer width="3px" />
+					<h:outputText value="#{item.totalRevenue}">
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+				</rich:column>
+				<rich:column style="text-align: right">
+					<h:outputText
+						value="#{item.moeda.siglaMoeda}" />
+					<rich:spacer width="3px" />
+					<h:outputText value="#{item.totalInvoiced}">
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+				</rich:column>
+				<rich:column style="text-align: right">
+					<h:outputText
+						value="#{item.moeda.siglaMoeda} " />
+					
+					<h:outputText value="#{item.publishedFiscalBalanceRounded}"> 
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+				</rich:column>
+				<f:facet name="footer">
+					<rich:datascroller id="ds" renderIfSinglePage="false"
+						reRender="fiscalBalanceTable" limitToList="true"
+						maxPages="#{systemProperties['research.size.page.maxpages']}"/>
+				</f:facet>
+			</rich:dataTable>
+		</h:form>
+
+		<ui:include
+			src="/pages/protected/fiscalBalance/FiscalBalancePendingAFaturarModal.xhtml" />
+			
+		<ui:include
+			src="/pages/protected/fiscalBalance/FiscalBalancePendingAReceitarModal.xhtml" />
+	</ui:define>
+
+</ui:composition>
+
+<rich:modalPanel>
+
+</rich:modalPanel>
+
+</html>

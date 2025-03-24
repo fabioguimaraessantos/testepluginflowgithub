@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<rich:modalPanel id="editAlocacaoPanel" autosized="true" width="310"
+	onshow="javascript: setFocusOnField('codigoMnemonico');">
+	<f:facet name="header">
+		<h:outputText
+			value="#{bundle['_nls.menu.alocacao']} &gt; #{bundle['_nls.menu.alocacao.edit']}"
+			style="padding-right:15px;" />
+	</f:facet>
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/images/icons/close.gif" styleClass="hidelink"
+				id="hidelinkEditAlocacao" />
+			<rich:componentControl for="editAlocacaoPanel"
+				attachTo="hidelinkEditAlocacao" operation="hide" event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+	<rich:messages errorClass="msgError" warnClass="msgWarng"
+		infoClass="msgSuccess" layout="table" ajaxRendered="true">
+	</rich:messages>
+	<h:form styleClass="noMargin">
+		<a4j:region renderRegionOnly="true" id="cidadeBaseRegion">
+			<h:panelGrid columns="2">
+
+				<a4j:keepAlive beanName="alocacaoBean" />
+
+				<h:outputText
+					value="#{bundle['_nls.alocacao.codigo_mnemonico.label']}*:"
+					for="codigoMnemonico" styleClass="labelGeneric" />
+
+				<h:inputText id="codigoMnemonico" immediate="true" required="true"
+					style=" width : 150px;"
+					validator="#{mapaAlocacaoController.validateRecurso}"
+					label="#{bundle['_nls.alocacao.codigo_mnemonico.label']}"
+					valueChangeListener="#{mapaAlocacaoController.verifyRecurso}"
+					disabled="#{!mapaAlocacaoController.bean.alocacaoRow.isEnabled}"
+					value="#{mapaAlocacaoController.alocacaoBean.to.recurso.codigoMnemonico}">
+
+					<f:validator validatorId="xssValidator" />
+					<rich:suggestionbox for="codigoMnemonico" var="result"
+						suggestionAction="#{mapaAlocacaoController.autoCompleteRecurso}">
+						<h:column>
+							<h:outputText value="#{result.codigoMnemonico}" />
+						</h:column>
+					</rich:suggestionbox>
+
+					<a4j:support event="onchange" limitToList="cidadeBase"
+						immediate="true" reRender="cidadeBase" />
+					<a4j:support event="onblur" limitToList="cidadeBase"
+						immediate="true" reRender="cidadeBase" />
+				</h:inputText>
+
+				<h:outputText value="#{bundle['_nls.alocacao.cidade_base.label']}*:"
+					id="cidadeBaseLabel" for="cidadeBase" styleClass="labelGeneric" />
+				<rich:comboBox id="cidadeBase"
+					required="#{!mapaAlocacaoController.bean.isPessoa}"
+					disabled="#{mapaAlocacaoController.bean.isPessoa || !mapaAlocacaoController.bean.alocacaoRow.isEnabled}"
+					label="#{bundle['_nls.alocacao.cidade_base.label']}"
+					value="#{mapaAlocacaoController.alocacaoBean.to.cidadeBase.nomeCidadeBase}"
+					suggestionValues="#{mapaAlocacaoController.alocacaoBean.cidadeBaseList}"
+					validator="#{mapaAlocacaoController.validateCidadeBase}">
+				</rich:comboBox>
+
+
+				<h:outputText
+					value="#{bundle['_nls.alocacao.perfil_vendido.label']}*:"
+					for="perfilVendido" styleClass="labelGeneric" />
+				<rich:comboBox id="perfilVendido" required="true"
+					label="#{bundle['_nls.alocacao.perfil_vendido.label']}"
+					value="#{mapaAlocacaoController.alocacaoBean.to.perfilVendido.nomePerfilVendido}"
+					suggestionValues="#{mapaAlocacaoController.alocacaoBean.perfilVendidoList}"
+					directInputSuggestions="true"
+					validator="#{mapaAlocacaoController.validatePerfilVendido}">
+				</rich:comboBox>
+
+				<h:outputText
+					value="#{bundle['_nls.alocacao.indicador_estagio.label']}*:"
+					for="indicadorEstagio" styleClass="labelGeneric" />
+				<rich:comboBox id="indicadorEstagio" required="true"
+					label="#{bundle['_nls.alocacao.indicador_estagio.label']}"
+					value="#{mapaAlocacaoController.alocacaoBean.to.indicadorEstagio}"
+					directInputSuggestions="true" converter="StageAlocacaoConverter">
+
+					<f:selectItem itemValue="PL" />
+					<f:selectItem itemValue="PH" />
+					<f:selectItem itemValue="RV" />
+					<f:selectItem itemValue="CM" />
+				</rich:comboBox>
+
+				<rich:spacer height="5" />
+				<rich:spacer height="5" />
+
+			</h:panelGrid>
+		</a4j:region>
+
+		<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+			<a4j:commandButton value="#{bundle['_nls.button.save']}"
+				limitToList="true" reRender="editAlocacaoPanel, alocationFormTable"
+				action="#{mapaAlocacaoController.editAlocacao}"
+				oncomplete="if (#{facesContext.maximumSeverity!=null}) #{rich:component('editAlocacaoPanel')}.show();"
+				styleClass="buttonGeneric" />
+			<rich:spacer height="5" width="5" />
+			<a4j:region>
+				<a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+					styleClass="buttonGeneric" limitToList="true"
+					actionListener="#{messageControlBean.showMessages}"
+					oncomplete="#{rich:component('editAlocacaoPanel')}.hide();return false;" />
+			</a4j:region>
+		</h:panelGrid>
+
+	</h:form>
+
+</rich:modalPanel>
+
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition>
+
+	<rich:panel>
+		<f:facet name="header">
+			<h:outputText
+				value="#{bundle['_nls.menu.custo_base_papel_alocacao']}" />
+		</f:facet>
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="custoBasePapelAlocacaoBean" />
+			<a4j:keepAlive beanName="basePapelAlocacaoBean" />
+			<h:panelGrid columns="1" id="custoBasePapelAlocacaoFormFields">
+				<h:panelGrid columns="2">
+					<h:outputText
+							value="#{bundle['_nls.custo_base_papel_alocacao.data_inicio.label']}*: "
+							for="dataInicio" styleClass="labelGeneric" />
+					<h:outputText id="dataInicio" rendered="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}"
+								  value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.dataInicio}">
+						<f:convertDateTime pattern="#{bundle['_nls.date.pattern.month.year']}" />
+					</h:outputText>
+					<h:panelGrid columns="5" border="0" cellspacing="0"
+								 rendered="#{!basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}">
+						<rich:comboBox id="monthBeg" enableManualInput="false"
+									   value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.validityMonthBeg}"
+									   label="#{bundle['_nls.custo_base_papel_alocacao.mes.label']}"
+									   defaultLabel="#{bundle['_nls.custo_base_papel_alocacao.mes.label']}"
+									   required="true"
+									   suggestionValues="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.validityMonthList}"
+									   width="55">
+						</rich:comboBox>
+
+						<rich:spacer height="5" width="3" styleClass="noMargin" />
+						<h:outputText value="/" styleClass="labelGeneric" />
+						<rich:spacer height="5" width="3" styleClass="noMargin" />
+
+						<rich:comboBox id="yearBeg" enableManualInput="false"
+									   value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.validityYearBeg}"
+									   label="#{bundle['_nls.custo_base_papel_alocacao.ano.label']}"
+									   defaultLabel="#{bundle['_nls.custo_base_papel_alocacao.ano.label']}"
+									   required="true"
+									   suggestionValues="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.validityYearList}"
+									   width="55">
+						</rich:comboBox>
+					</h:panelGrid>
+
+					<h:outputText rendered="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}"
+								  value="#{bundle['_nls.custo_base_papel_alocacao.data_fim.label']}: "
+								  for="dataFim" styleClass="labelGeneric" />
+					<h:outputText id="dataFim" rendered="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}"
+								  value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.dataFim}">
+						<f:convertDateTime pattern="#{bundle['_nls.date.pattern.month.year']}" />
+					</h:outputText>
+
+					<h:outputText
+							value="#{bundle['_nls.custo_base_papel_alocacao.salary.label']} (#{basePapelAlocacaoController.bean.to.cidadeBase.moeda.siglaMoeda})*: "
+							for="salary" styleClass="labelGeneric" />
+					<h:inputText id="salary" size="15" maxlength="10"
+								 label="#{bundle['_nls.custo_base_papel_alocacao.salary.label']}"
+								 value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.valorSalario}"
+								 required="true" immediate="true">
+						<f:validateLength maximum="10" />
+						<a4j:support event="onchange" limitToList="true" reRender="salary" />
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+										 pattern="#{systemProperties['pattern.number']}" />
+						<rich:jQuery timing="onload" selector="#salary"
+									 query="setMask('#{bundle['jquery.monetary.pattern']}')" />
+					</h:inputText>
+
+					<h:outputText
+							value="#{bundle['_nls.custo_base_papel_alocacao.benefit.label']} (#{basePapelAlocacaoController.bean.to.cidadeBase.moeda.siglaMoeda})*: "
+							for="benefit" styleClass="labelGeneric" />
+					<h:inputText id="benefit" size="15" maxlength="10"
+								 label="#{bundle['_nls.custo_base_papel_alocacao.benefit.label']}"
+								 value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.valorBeneficios}">
+						<f:validateLength maximum="10" />
+						<a4j:support event="onchange" limitToList="true" reRender="benefit" />
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+										 pattern="#{systemProperties['pattern.number']}" />
+						<rich:jQuery timing="onload" selector="#benefit"
+									 query="setMask('#{bundle['jquery.monetary.pattern']}')" />
+					</h:inputText>
+
+					<h:outputText
+							value="#{bundle['_nls.custo_base_papel_alocacao.tax.label']} (#{basePapelAlocacaoController.bean.to.cidadeBase.moeda.siglaMoeda})*: "
+							for="tax" styleClass="labelGeneric" />
+					<h:inputText id="tax" size="15" maxlength="10"
+								 label="#{bundle['_nls.custo_base_papel_alocacao.tax.label']}"
+								 value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.valorImpostos}">
+						<f:validateLength maximum="10" />
+						<a4j:support event="onchange" limitToList="true" reRender="tax" />
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+										 pattern="#{systemProperties['pattern.number']}" />
+						<rich:jQuery timing="onload" selector="#tax"
+									 query="setMask('#{bundle['jquery.monetary.pattern']}')" />
+					</h:inputText>
+
+					<h:outputText
+							value="#{bundle['_nls.custo_base_papel_alocacao.provisioning.label']} (#{basePapelAlocacaoController.bean.to.cidadeBase.moeda.siglaMoeda})*: "
+							for="provisioning" styleClass="labelGeneric" />
+					<h:inputText id="provisioning" size="15" maxlength="10"
+								 label="#{bundle['_nls.custo_base_papel_alocacao.provisioning.label']}"
+								 value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.valorProvisionamento}">
+						<f:validateLength maximum="10" />
+						<a4j:support event="onchange" limitToList="true" reRender="provisioning" />
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+										 pattern="#{systemProperties['pattern.number']}" />
+						<rich:jQuery timing="onload" selector="#provisioning"
+									 query="setMask('#{bundle['jquery.monetary.pattern']}')" />
+					</h:inputText>
+				</h:panelGrid>
+				<h:panelGrid columns="2" border="0" cellspacing="0"
+							 rendered="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}">
+					<h:selectBooleanCheckbox id="updateAllMonths"
+											 label="#{bundle['_nls.custo_base_papel_alocacao.update_all_months_ahead.label']}"
+											 value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.updateAllMonthsAhead}"/>
+					<h:outputText for="updateAllMonths"
+								  value="#{bundle['_nls.custo_base_papel_alocacao.update_all_months_ahead.label']}" />
+				</h:panelGrid>
+				<f:facet name="footer">
+					<h:panelGrid columns="3" border="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.add']}"
+										   styleClass="buttonGeneric"
+										   reRender="custoBasePapelAlocacaoTable,resultPanel"
+										   action="#{basePapelAlocacaoController.createCustoBasePapelAlocacao}"
+										   rendered="#{!basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}" />
+						<a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+										   styleClass="buttonGeneric"
+										   reRender="custoBasePapelAlocacaoFormFields"
+										   action="#{basePapelAlocacaoController.cancelEditOneCost}"
+										   rendered="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}" />
+						<rich:spacer width="10" styleClass="noMargin"
+									 rendered="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}" />
+						<a4j:commandButton value="#{bundle['_nls.button.save']}"
+										   styleClass="buttonGeneric"
+										   reRender="custoBasePapelAlocacaoTable,resultPanel,custoBasePapelAlocacaoFormFields"
+										   action="#{basePapelAlocacaoController.editOneCost}"
+										   rendered="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.isUpdate}" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+
+			<a4j:outputPanel id="resultPanel">
+				<rich:spacer height="20" styleClass="noMargin"
+							 rendered="#{!empty basePapelAlocacaoController.custoBasePapelAlocacaoBean.resultList}"/>
+				<rich:dataTable
+					value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.resultList}"
+					var="item" width="100%" id="custoBasePapelAlocacaoTable"
+					rowKeyVar="row"
+					rendered="#{!empty basePapelAlocacaoController.custoBasePapelAlocacaoBean.resultList}">
+
+					<rich:column sortBy="#{item.dataInicio}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.custo_base_papel_alocacao.data_inicio.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dataInicio}">
+							<f:convertDateTime pattern="MMM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.dataFim}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.custo_base_papel_alocacao.data_fim.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dataFim}">
+							<f:convertDateTime pattern="MMM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorSalario}"
+						style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.custo_base_papel_alocacao.salary.label']}" />
+						</f:facet>
+						<h:outputLabel
+							value="#{item.basePapelAlocacao.cidadeBase.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.valorSalario}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorBeneficios}"
+								 style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+									value="#{bundle['_nls.custo_base_papel_alocacao.benefit.label']}" />
+						</f:facet>
+						<h:outputLabel
+								value="#{item.basePapelAlocacao.cidadeBase.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.valorBeneficios}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+											 pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorImpostos}"
+								 style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+									value="#{bundle['_nls.custo_base_papel_alocacao.tax.label']}" />
+						</f:facet>
+						<h:outputLabel
+								value="#{item.basePapelAlocacao.cidadeBase.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.valorImpostos}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+											 pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorProvisionamento}"
+								 style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+									value="#{bundle['_nls.custo_base_papel_alocacao.provisioning.label']}" />
+						</f:facet>
+						<h:outputLabel
+								value="#{item.basePapelAlocacao.cidadeBase.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.valorProvisionamento}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+											 pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorBasePapelAlocacao}"
+								 style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+									value="#{bundle['_nls.custo_base_papel_alocacao.valor.label']}" />
+						</f:facet>
+						<h:outputLabel
+								value="#{item.basePapelAlocacao.cidadeBase.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.valorBasePapelAlocacao}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+											 pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.lastUpdated}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+									value="#{bundle['_nls.custo_base_papel_alocacao.last_update.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.lastUpdated}">
+							<f:convertDateTime timeZone="America/Sao_Paulo" pattern="dd/MM/yyyy HH:mm:ss" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.updateAuthor}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+									value="#{bundle['_nls.custo_base_papel_alocacao.update_author.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.updateAuthor}" />
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+									value="#{bundle['_nls.custo_base_papel_alocacao.actions.label']}" />
+						</f:facet>
+						<a4j:commandLink ajaxSingle="true" id="editOnelink"
+										 action="#{basePapelAlocacaoController.prepareEditOneCost}"
+										 reRender="custoBasePapelAlocacaoFormFields"
+										 rendered="#{item.dataInicio > basePapelAlocacaoController.custoBasePapelAlocacaoBean.historyLockDate}">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+														 target="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.toEdit}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editOnelink" value="#{bundle['_nls.hint.edit']}" />
+					</rich:column>
+
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</rich:panel>
+
+</ui:composition>
+
+</html>

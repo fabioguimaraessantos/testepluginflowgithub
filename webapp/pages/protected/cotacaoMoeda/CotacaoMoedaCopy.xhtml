@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.cotacao_moeda']} &gt; #{bundle['_nls.menu.cotacao_moeda.replace']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="cotacaoMoedaBean" />
+			<a4j:loadScript src="/js/utils.js" />
+
+			<!-- Mensagem de aviso -->
+			<h:panelGroup>
+				<h:outputText value="#{bundle['_nls.menu.cotacao_moeda.warning']}"
+							  style="color: red; font-weight: bold;" />
+			</h:panelGroup>
+
+			<h:panelGrid columns="2">
+				<h:outputLabel value="#{bundle['_nls.cotacao_moeda.periodo.label']}: "
+							  for="cotacaoCopyFrom" styleClass="labelGeneric" />
+				<h:panelGrid columns="7" cellpadding="0" cellspacing="0">
+					<a4j:outputPanel id="cotacaoCopyFrom" layout="block">
+						<rich:calendar value="#{cotacaoMoedaMediaController.bean.cotacaoCopyFrom}"
+									   locale="#{bundle['_nls.calendar.locale']}" required="true"
+									   datePattern="#{bundle['_nls.date.pattern']}"
+									   enableManualInput="true" showApplyButton="false" cellWidth="24px"
+									   cellHeight="22px" style="width:200px"
+									   label="#{bundle['_nls.cotacao_moeda.copy.from_date.label']}" />
+					</a4j:outputPanel>
+
+					<rich:spacer height="5" width="5" />
+
+					<h:outputLabel value="#{bundle['_nls.cotacao_moeda.periodo_ate.label']}: "
+								   for="cotacaoCopyUntil"
+								   styleClass="labelGeneric" />
+					<a4j:outputPanel id="cotacaoCopyUntil" layout="block">
+						<rich:calendar value="#{cotacaoMoedaMediaController.bean.cotacaoCopyUntil}"
+									   locale="#{bundle['_nls.calendar.locale']}" required="true"
+									   datePattern="#{bundle['_nls.date.pattern']}"
+									   enableManualInput="false" showApplyButton="false" cellWidth="24px"
+									   cellHeight="22px" style="width:200px"
+									   label="#{bundle['_nls.cotacao_moeda.copy.until_date.label']}" />
+					</a4j:outputPanel>
+
+					<rich:spacer height="5" width="5" />
+
+					<h:outputText value="#{bundle['_nls.date.pattern.name']}: #{bundle['_nls.date.pattern']}"
+								  style="FONT-WEIGHT: bold; FONT-STYLE: italic; COLOR: #808080;" />
+				</h:panelGrid>
+
+				<rich:spacer height="10" width="5" />
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.replace']}"
+										   styleClass="buttonGeneric"
+										   oncomplete="checkFunction()" />
+
+					</h:panelGrid>
+
+				</f:facet>
+
+			</h:panelGrid>
+
+		</h:form>
+
+		<!-- Modal Confirm -->
+		<rich:modalPanel id="confirmPanel" autosized="true" width="230">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.title.confirmation']}"
+							  style="padding-right:15px;" />
+			</f:facet>
+			<h:form>
+
+				<table width="100%">
+					<thead>
+					<tr>
+						<td colspan="2" align="left"><h:outputText
+								value="#{bundle['_nls.menu.cotacao_moeda.confirm']}"
+								styleClass="labelGeneric" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><rich:spacer height="5" /></td>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td align="left" colspan="2"><a4j:commandButton
+								value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+								action="#{cotacaoMoedaMediaController.replace}"
+								styleClass="buttonGeneric" />
+							<rich:spacer height="5" width="10" />
+							<a4j:commandButton
+									value="#{bundle['_nls.button.cancel']}"
+									styleClass="buttonGeneric"
+									oncomplete="return false;" />
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+		<!-- Modal Confirm Login-->
+		<rich:modalPanel id="confirmLogin" autosized="true" width="230">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.title.authentication']}"
+							  style="padding-right:15px;" />
+			</f:facet>
+			<h:form>
+
+				<table width="100%">
+					<thead>
+					<tr>
+						<td colspan="2" align="left"><h:outputText
+								value="#{bundle['_nls.menu.cotacao_moeda.authentication']}"
+								styleClass="labelGeneric" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><rich:spacer height="5" /></td>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td align="left">
+							<h:outputLabel value="#{bundle['_nls.menu.cotacao_moeda.password']}: "
+										   for="password" required="true"/>
+							<h:inputSecret id="password" name="password" styleClass="loginFormInput"
+										 value="#{cotacaoMoedaMediaController.bean.password}"/>
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							<h:outputLabel value="#{bundle['_nls.menu.cotacao_moeda.ticket']}: "
+										   for="ticket" required="true"/>
+
+							<h:inputText id="ticket" name="ticket" styleClass="loginFormInput"
+										 value="#{cotacaoMoedaMediaController.bean.ticket}"/>
+						</td>
+					</tr>
+					<tr>
+						<td align="left" colspan="2">
+							<a4j:commandButton value="#{bundle['_nls.button.ok']}"
+											   ajax="false"
+											   action="#{cotacaoMoedaMediaController.replace}"
+											   styleClass="buttonGeneric"/>
+							<rich:spacer height="5" width="10" />
+
+							<a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+											   styleClass="buttonGeneric" />
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+		<h:inputHidden id="paramDiasValidacaoPassword" value="#{cotacaoMoedaMediaController.PARAM_DIAS_VALIDACAO_PASSWORD}" />
+		<script type="text/javascript">
+			function checkFunction() {
+					var today = new Date();
+					var selectedDateElement = document.querySelector("[id$='cotacaoCopyUntil'] .rich-calendar-input");
+					var selectedDateElementFrom = document.querySelector("[id$='cotacaoCopyFrom'] .rich-calendar-input");
+
+					var selectedDate = new Date(selectedDateElement.value);
+					var selectedDateFrom = new Date(selectedDateElementFrom.value);
+
+					var diffInMillies = today - selectedDate;
+					var diffInMilliesFrom = today - selectedDate;
+
+					var diff = Math.floor(diffInMillies / (1000 * 60 * 60 * 24));
+					var diffFrom = Math.floor(diffInMilliesFrom / (1000 * 60 * 60 * 24));
+
+					var paramDiasValidacaoPassword = document.querySelector("[id$='paramDiasValidacaoPassword']").value;
+
+					if (diff > paramDiasValidacaoPassword || diffFrom > paramDiasValidacaoPassword) {
+						#{rich:component('confirmLogin')}.show();
+						const modalPanel = document.querySelector("[id$='confirmLogin']");
+						modalPanel.style.display = 'block';
+						modalPanel.style.visibility = 'visible';
+					} else {
+						#{rich:component('confirmPanel')}.show();
+						var confirmPanel = document.querySelector("[id$='confirmPanel']");
+        				confirmPanel.style.display = 'block';
+        				confirmPanel.style.visibility = 'visible';
+					}
+				}
+		</script>
+
+	</ui:define>
+</ui:composition>
+
+</html>

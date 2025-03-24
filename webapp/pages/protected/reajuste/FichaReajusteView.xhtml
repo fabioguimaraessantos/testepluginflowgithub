@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		#{bundle['_nls.menu.msa']} &gt; #{bundle['_nls.msa.documento_legal.entity_name']} &gt; #{bundle['_nls.ficha.reajuste.view']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<a4j:keepAlive beanName="msaBean" />
+		<a4j:keepAlive beanName="documentoLegalConfigureBean" />
+		<a4j:keepAlive beanName="documentoLegalBean" />
+
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+		<h:panelGrid columns="8">
+		
+		<h:outputText value="#{bundle['_nls.ficha.reajuste.name']}:"
+			for="nomeFichaReajuste" styleClass="labelGeneric" />
+		<rich:spacer width="5px" />
+		<h:outputText id="nomeFichaReajuste" 
+			value="#{fichaReajusteController.bean.to.nomeFichaReajuste}" />
+		
+		<rich:spacer width="15px" />
+
+		<h:outputText value="#{bundle['_nls.ficha.reajuste.index']}:"
+		    for="indexFichaReajuste" styleClass="labelGeneric" />
+		<rich:spacer width="5px" />
+		<h:outputText id="indexFichaReajuste" 
+			value="#{fichaReajusteController.bean.to.fichaReajusteIndice.nomeFichaReajusteIndice}" />
+		
+		<rich:spacer width="15px" />
+
+				<h:outputText
+					value="#{bundle['_nls.ficha.reajuste.reference.date']}:"
+					for="dataBase" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="dataBase"
+					value="#{fichaReajusteController.bean.to.dataBase}">
+					<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+				</h:outputText>
+
+				<rich:spacer width="15px" />
+
+		<h:outputText value="#{bundle['_nls.ficha.reajuste.frequency']}:"
+		    for="numeroPeriodicidade" styleClass="labelGeneric" />
+		<rich:spacer width="5px" />
+		<h:outputText id="numeroPeriodicidade" 
+			value="#{fichaReajusteController.bean.to.numeroPeriodicidade} #{bundle['_nls.ficha.reajuste.meses']}" />
+		
+		<rich:spacer width="15px" />
+
+		<h:outputText value="#{bundle['_nls.ficha.reajuste.status']}:"
+		    for="statusFichaReajuste" styleClass="labelGeneric" />
+		<rich:spacer width="5px" />
+		<h:outputText id="statusFichaReajuste" 
+			value="#{fichaReajusteController.bean.to.fichaReajusteStatus.nomeFichaReajustesStatus}" />
+
+		<rich:spacer width="15px" />
+
+		<rich:spacer width="1px" />
+		<rich:spacer width="1px" />
+		<rich:spacer width="1px" />
+
+		<rich:spacer width="15px" />
+
+		<h:outputText value="#{bundle['_nls.ficha.reajuste.clause']}:"
+		    for="textoClausula" styleClass="labelGeneric" />
+		<rich:spacer width="5px" />
+		<h:outputText id="textoClausula"
+			value="#{fichaReajusteController.bean.to.textoClausula}" />
+		
+		<rich:spacer width="15px" />
+
+		<h:outputText value="#{bundle['_nls.ficha.reajuste.obs']}:"
+		    for="textoObservacao" styleClass="labelGeneric" />
+		<rich:spacer width="5px" />
+		<h:outputText id="textoObservacao" 
+			value="#{fichaReajusteController.bean.to.textoObservacao}" />
+
+		<f:facet name="footer">
+			<a4j:commandButton action="#{msaController.prepareConfigureDocumentoLegal}"
+				value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric" />
+		</f:facet>
+
+			</h:panelGrid>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:form styleClass="noMargin">
+		<a4j:keepAlive beanName="perfilVendidoBean" />
+		<h:panelGrid columns="1">
+
+			<ui:include
+				src="/pages/protected/perfilVendido/PerfilVendidoForm.xhtml" />
+
+			<f:facet name="footer">
+				<h:panelGrid columns="2">
+					<a4j:commandButton
+						rendered="#{!msaController.perfilVendidoBean.isUpdate}"
+						action="#{msaController.createPerfilVerdido}"
+						value="#{bundle['_nls.button.add']}" styleClass="buttonGeneric" />
+
+					<a4j:commandButton
+						rendered="#{msaController.perfilVendidoBean.isUpdate}"
+						action="#{msaController.updatePerfilVendido}"
+						value="#{bundle['_nls.button.save']}" styleClass="buttonGeneric" />
+
+					<a4j:commandButton
+						rendered="#{msaController.perfilVendidoBean.isUpdate}"
+						action="#{msaController.prepareTabSaleProfile}"
+						value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric"
+						immediate="true" ajaxSingle="true" />
+				</h:panelGrid>
+			</f:facet>
+		</h:panelGrid>
+
+
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<a4j:region>
+
+			<!-- CheckBox Active Only -->
+			<h:panelGrid columns="2">
+				<h:selectBooleanCheckbox
+					value="#{msaController.bean.isCheckedSaleProfileActiveOnly}">
+					<a4j:support event="onclick"
+						action="#{msaController.filterCheckBoxListPerfilVendido}"
+						reRender="clienteTable" />
+				</h:selectBooleanCheckbox>
+				<h:outputText value="#{bundle['_nls.deal.active_only']}" />
+			</h:panelGrid>
+
+			<rich:dataTable
+				value="#{msaController.perfilVendidoBean.listaPerfilVendido}"
+				var="item" width="100%" id="clienteTable">
+
+				<!-- Column Nome Perfil Vendido -->
+				<rich:column sortBy="#{item.nomePerfilVendido}">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.perfil_vendido.nome_perfil_vendido.label']}" />
+					</f:facet>
+
+					<h:outputText id="nomePerfilVendido"
+						value="#{item.nomePerfilVendido}" />
+				</rich:column>
+
+				<!-- Column Nome do Contrato Pratica -->
+				<rich:column sortBy="#{item.contratoPratica.nomeContratoPratica}">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.menu.contrato_pratica.old.label']} 
+								#{bundle['_nls.menu.contrato_pratica.clob.label']}" />
+					</f:facet>
+					<h:outputText id="contratoPratica"
+						value="#{item.contratoPratica.nomeContratoPratica}" />
+				</rich:column>
+
+				<!-- Column Position -->
+				<rich:column sortBy="#{item.perfilPadrao.cargoPms.nomeCargoPms}">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.perfil_padrao.item.position_pmg']}" />
+					</f:facet>
+
+					<h:outputText value="#{item.perfilPadrao.cargoPms.nomeCargoPms}" />
+				</rich:column>
+
+				<!-- Column PMG -->
+				<rich:column sortBy="#{item.perfilPadrao.pmg.nomePmg}">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.perfil_vendido.PMG']}" />
+					</f:facet>
+					<h:outputText value="#{item.perfilPadrao.pmg.nomePmg}" />
+				</rich:column>
+
+				<!-- Column Base -->
+				<rich:column
+					sortBy="#{item.perfilPadrao.cidadeBase.siglaCidadeBase}"
+					style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.perfil_vendido.base']}" />
+					</f:facet>
+					<h:outputText
+						value="#{item.perfilPadrao.cidadeBase.siglaCidadeBase}" />
+				</rich:column>
+
+				<!-- Column Currency -->
+				<rich:column sortBy="#{item.moeda.nomeMoeda}"
+					style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.moeda.entity_name']}" />
+					</f:facet>
+					<h:outputText value="#{item.moeda.nomeMoeda}" />
+				</rich:column>
+
+				<!-- Column Status -->
+				<rich:column sortBy="#{item.indicadorAtivo}"
+					style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.perfil_vendido.indicador_ativo.label']}" />
+					</f:facet>
+
+					<h:outputText value="#{bundle['_nls.inactive.label']}"
+						rendered="#{item.indicadorDeleteLogico == 'S'}"
+						style="color: #708090; text-decoration: underline;" />
+
+					<a4j:commandLink action="#{msaController.changeSaleProfileStatus}"
+						value="#{item.indicadorAtivo}" id="trocaStatus"
+						reRender="clienteTable"
+						rendered="#{item.indicadorDeleteLogico != 'S'}">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{msaController.perfilVendidoBean.to}" />
+					</a4j:commandLink>
+
+					<rich:toolTip for="trocaStatus"
+						value="#{bundle['_nls.item_tabela_perfil_padrao.label.activate']}"
+						rendered="#{item.indicadorAtivo == 'Inactive'}" />
+					<rich:toolTip for="trocaStatus"
+						value="#{bundle['_nls.item_tabela_perfil_padrao.label.inactivate']}"
+						rendered="#{item.indicadorAtivo == 'Active'}" />
+
+				</rich:column>
+
+				<!-- Column Actions -->
+				<rich:column style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.perfil_vendido.action.label']}" />
+					</f:facet>
+
+
+					<!-- Botao editar do perfil vendido -->
+					<a4j:commandLink ajaxSingle="true" id="editLink"
+						action="#{msaController.prepareUpdatePerfilVendido}"
+						style="#{item.indicadorDeleteLogico == 'S' ? 'display: none;' : ''}">
+
+						<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+
+						<f:setPropertyActionListener value="#{item}"
+							target="#{msaController.perfilVendidoBean.to}" />
+
+					</a4j:commandLink>
+					<rich:toolTip for="editLink" value="#{bundle['_nls.hint.edit']}" />
+
+					<!-- Botao delete do perfil vendido -->
+					<a4j:commandLink ajaxSingle="true" id="deleteLink"
+						oncomplete="#{rich:component('deletePerfilVendidoPanel')}.show()"
+						style="#{item.indicadorDeleteLogico == 'S' ? 'display: none;' : ''}">
+
+						<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+
+						<f:setPropertyActionListener value="#{item}"
+							target="#{msaController.perfilVendidoBean.to}" />
+
+					</a4j:commandLink>
+					<rich:toolTip for="deleteLink"
+						value="#{bundle['_nls.hint.delete']}" />
+				</rich:column>
+
+				<f:facet name="footer">
+					<h:outputText value="#{bundle['_nls.msg.no_registered_item']}"
+						rendered="#{empty msaController.perfilVendidoBean.listaPerfilVendido}"
+						style="font-style: italic;" />
+				</f:facet>
+
+
+			</rich:dataTable>
+		</a4j:region>
+
+	</h:form>
+
+	<!-- Modal do delete -->
+	<rich:modalPanel id="deletePerfilVendidoPanel" autosized="true"
+		width="200">
+		<f:facet name="header">
+			<h:outputText value="#{bundle['_nls.title.confirmation']}"
+				style="padding-right:15px;" />
+		</f:facet>
+		<f:facet name="controls">
+			<h:panelGroup>
+				<h:graphicImage value="/images/icons/close.gif"
+					styleClass="hidelink" id="hidelinkDeletePerfilVendido" />
+				<rich:componentControl for="deletePerfilVendidoPanel"
+					attachTo="hidelinkDeletePerfilVendido" operation="hide"
+					event="onclick" />
+			</h:panelGroup>
+		</f:facet>
+
+		<h:outputText value="#{bundle['_nls.perfil_vendido.delete.title']}"
+			style="padding-right:15px;" />
+		<h:form>
+			<rich:spacer height="5" />
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+								action="#{msaController.removePerfilVendido}"
+								oncomplete="#{rich:component('deletePerfilVendidoPanel')}.hide();"
+								styleClass="buttonGeneric" /></td>
+						<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.cancel']}"
+								styleClass="buttonGeneric"
+								oncomplete="#{rich:component('deletePerfilVendidoPanel')}.hide();return false;" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</h:form>
+	</rich:modalPanel>
+</ui:composition>
+
+</html>

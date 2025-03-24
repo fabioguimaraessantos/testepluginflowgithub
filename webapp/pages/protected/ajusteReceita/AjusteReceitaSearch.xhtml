@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.menu.ajuste_receita']} &gt; #{bundle['_nls.menu.ajuste_receita.search']}
+   	</ui:define>
+
+	<ui:define name="bodyForm">
+
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="ajusteReceitaBean" />
+
+			<h:panelGrid columns="2">
+				<h:outputText
+					value="#{bundle['_nls.ajuste_receita.mes_ano_receita.label']}: "
+					for="anoMesReceita" styleClass="labelGeneric" />
+
+				<h:panelGrid columns="5">
+					<rich:comboBox id="monthRevenue" enableManualInput="true"
+						value="#{ajusteReceitaController.bean.validityMonthRevenue}"
+						label="#{bundle['_nls.custo_base_papel_alocacao.mes.label']}"
+						defaultLabel="#{bundle['_nls.custo_base_papel_alocacao.mes.label']}"
+						suggestionValues="#{ajusteReceitaController.bean.validityMonthList}"
+						width="55">
+					</rich:comboBox>
+
+					<rich:spacer height="5" width="3" styleClass="noMargin" />
+					<h:outputText value="/" styleClass="labelGeneric" />
+					<rich:spacer height="5" width="3" styleClass="noMargin" />
+
+					<rich:comboBox id="yearRevenue" enableManualInput="true"
+						value="#{ajusteReceitaController.bean.validityYearRevenue}"
+						label="#{bundle['_nls.custo_base_papel_alocacao.ano.label']}"
+						defaultLabel="#{bundle['_nls.custo_base_papel_alocacao.ano.label']}"
+						suggestionValues="#{ajusteReceitaController.bean.validityYearList}"
+						width="55">
+					</rich:comboBox>
+
+				</h:panelGrid>
+
+				<h:outputText
+					value="#{bundle['_nls.ajuste_receita.mes_ano_ajuste.label']}: "
+					for="anoMesAjuste" styleClass="labelGeneric" />
+
+				<h:panelGrid columns="5">
+
+					<rich:comboBox id="monthAdjust" enableManualInput="true"
+						value="#{ajusteReceitaController.bean.validityMonthAdjust}"
+						label="#{bundle['_nls.custo_base_papel_alocacao.mes.label']}"
+						defaultLabel="#{bundle['_nls.custo_base_papel_alocacao.mes.label']}"
+						suggestionValues="#{ajusteReceitaController.bean.validityMonthList}"
+						width="55">
+					</rich:comboBox>
+
+					<rich:spacer height="5" width="3" styleClass="noMargin" />
+					<h:outputText value="/" styleClass="labelGeneric" />
+					<rich:spacer height="5" width="3" styleClass="noMargin" />
+
+					<rich:comboBox id="yearAdjust" enableManualInput="true"
+						value="#{ajusteReceitaController.bean.validityYearAdjust}"
+						label="#{bundle['_nls.custo_base_papel_alocacao.ano.label']}"
+						defaultLabel="#{bundle['_nls.custo_base_papel_alocacao.ano.label']}"
+						suggestionValues="#{ajusteReceitaController.bean.validityYearList}"
+						width="55">
+					</rich:comboBox>
+
+				</h:panelGrid>
+
+				<h:outputText
+					value="#{bundle['_nls.ajuste_receita.contrato_pratica.label']}: "
+					for="contratoPraticaCombo" styleClass="labelGeneric" />
+
+				<h:panelGrid columns="1">
+
+					<rich:comboBox id="contratoPraticaCombo"
+						label="#{bundle['_nls.ajuste_receita.contrato_pratica.label']}"
+						value="#{ajusteReceitaController.bean.nomeContratoPraticaConsulta}"
+						suggestionValues="#{ajusteReceitaController.bean.contratoPraticaList}"
+						required="false" directInputSuggestions="true">
+						<pms:validateComboBox
+							map="#{ajusteReceitaController.bean.contratoPraticaMap}" />
+					</rich:comboBox>
+
+				</h:panelGrid>
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<rich:spacer height="5" />
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+							styleClass="buttonGeneric"
+							reRender="ajustesReceitaTable,errorMsgId,table"
+							limitToList="true"
+							action="#{ajusteReceitaController.findByFilter}" type="submit" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="ajusteReceitaBean" />
+			<a4j:outputPanel id="table">
+				<rich:dataTable value="#{ajusteReceitaController.bean.resultList}"
+					var="item" rows="#{systemProperties['research.size.page.result']}"
+					width="100%" id="ajustesReceitaTable"
+					rendered="#{!empty ajusteReceitaController.bean.resultList}">
+
+					<rich:column
+						sortBy="#{item.receitaDealFiscal.receitaMoeda.receita.contratoPratica.nomeContratoPratica}"
+						style="text-align: left">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.ajuste_receita.contrato_pratica.label']}" />
+						</f:facet>
+						<h:outputText
+							value="#{item.receitaDealFiscal.receitaMoeda.receita.contratoPratica.nomeContratoPratica}" />
+					</rich:column>
+
+					<rich:column
+						sortBy="#{item.receitaDealFiscal.dealFiscal.nomeDealFiscal}"
+						style="text-align: left">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.ajuste_receita.fiscal_deal.label']}" />
+						</f:facet>
+						<h:outputText
+							value="#{item.receitaDealFiscal.dealFiscal.nomeDealFiscal}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.receitaDealFiscal.receitaMoeda.receita.dataMes}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.ajuste_receita.mes_receita.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.receitaDealFiscal.receitaMoeda.receita.dataMes}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.dataMesAjuste}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.ajuste_receita.mes_ajuste.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dataMesAjuste}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column
+						sortBy="#{item.receitaDealFiscal.receitaMoeda.valorTotalMoeda}"
+						style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.ajuste_receita.original_fdeal_revenue.label']}" escape="false"/>
+						</f:facet>
+						<h:outputText
+							value="#{item.receitaDealFiscal.receitaMoeda.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.receitaDealFiscal.valorReceita}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorAjuste}"
+						style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.ajuste_receita.valor_ajuste.label']}" />
+						</f:facet>
+						<h:outputText
+							value="#{item.receitaDealFiscal.receitaMoeda.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.valorAjuste}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.composicao_tce.action.label']}" />
+						</f:facet>
+
+						<a4j:commandLink ajaxSingle="true" id="viewlink"
+							action="#{ajusteReceitaController.prepareViewReceita}"
+							reRender="ajustesReceitaTable">
+							<h:graphicImage value="/images/icons/view.png" style="border:0" />
+							<f:setPropertyActionListener value="#{item.codigoAjusteReceita}"
+								target="#{ajusteReceitaController.bean.currentRowId}" />
+						</a4j:commandLink>
+						<rich:toolTip for="viewlink" value="#{bundle['_nls.hint.view']}" />
+<!-- AQUI -->
+
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{ajusteReceitaController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

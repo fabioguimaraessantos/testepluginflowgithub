@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		#{bundle['_nls.msa.documento_legal.entity_name']} &gt; #{bundle['_nls.controle.reajuste.view']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<a4j:keepAlive beanName="controleReajusteBean" />
+		<a4j:keepAlive beanName="msaBean" />
+		<a4j:keepAlive beanName="documentoLegalConfigureBean" />
+
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+
+			<!-- informacoes de cliente e MSA -->
+			<fieldset>
+				<legend style="font-weight: bold;">#{bundle['_nls.ficha.reajuste.informacao.msa']}</legend>
+				<h:panelGrid columns="5">
+					<h:outputText value="#{bundle['_nls.cliente_pai.entity_name']}: "
+						styleClass="labelGeneric" />
+					<h:outputText value="#{controleReajusteSearchController.bean.msa.cliente.nomeCliente}" />
+					<rich:spacer width="5px" />
+					<h:outputText value="#{bundle['_nls.msa.entity_name']}: "
+						styleClass="labelGeneric" />
+					<h:outputText value="#{controleReajusteSearchController.bean.msa.nomeMsa}" />
+				</h:panelGrid>
+			</fieldset>
+			<rich:spacer height="07px" />
+
+			<rich:tabPanel immediate="true" switchType="ajax">
+			<rich:tab label="#{bundle['_nls.controle.reajuste']}" name="tabEdit">
+
+			<h:panelGrid columns="8">
+				<h:outputText value="#{bundle['_nls.controle.reajuste.expected.date']}:"
+					for="dataPrevista" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="dataPrevista" 
+					value="#{controleReajusteSearchController.bean.to.dataPrevista}">
+					<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+				</h:outputText>
+				
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.planned']}:"
+					for="percentualPrevista" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="percentualPrevista" 
+					value="#{controleReajusteSearchController.bean.to.percentualPrevista}">
+				    <f:convertNumber locale="#{bundle['locale.en_us']}"
+                        pattern="#{systemProperties['pattern.number']}" />
+                </h:outputText>
+				
+				
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.adjustment.date']}:"
+					for="dataReajuste" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="dataReajuste" 
+					value="#{controleReajusteSearchController.bean.to.dataReajuste}">
+					<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+				</h:outputText>
+				
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.actual']}:"
+					for="percentualRealizada" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="percentualRealizada"
+					value="#{controleReajusteSearchController.bean.to.percentualRealizada}">
+					<f:convertNumber locale="#{bundle['locale.en_us']}"
+						pattern="#{systemProperties['pattern.number']}" />
+				</h:outputText>
+
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.status']}:"
+					for="controleReajusteStatus" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="controleReajusteStatus" 
+					value="#{controleReajusteSearchController.bean.to.controleReajusteStatus.nomeControleReajStatus}" />
+				
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.obs']}:"
+					for="textoObservacao" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="textoObservacao" 
+					value="#{controleReajusteSearchController.bean.to.textoObservacao}" />
+
+			</h:panelGrid>
+			</rich:tab>
+
+			<rich:tab label="#{bundle['_nls.controle.reajuste.history']}"
+				action="#{controleReajusteSearchController.prepareHistory}"
+				name="tabHistory">
+
+				<ui:include
+					src="/pages/protected/reajuste/ControleReajusteSearchHistory.xhtml" />
+			</rich:tab>
+			</rich:tabPanel>
+
+			<rich:spacer height="20px" />
+
+			<a4j:commandButton action="#{controleReajusteSearchController.search}"
+				value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric" />
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

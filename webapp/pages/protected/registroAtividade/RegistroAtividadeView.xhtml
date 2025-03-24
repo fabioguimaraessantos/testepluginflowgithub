@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:outputLabel
+		value="#{bundle['_nls.registro_atividade.contrato_pratica.label']}: "
+		styleClass="labelGeneric" />
+	<h:outputText
+		value="#{registroAtividadeController.bean.to.contratoPratica.codigoContratoPratica} - #{registroAtividadeController.bean.to.contratoPratica.nomeContratoPratica}" />
+
+	<h:outputLabel
+		value="#{bundle['_nls.registro_atividade.grupo_custo.label']}: "
+		styleClass="labelGeneric" />
+	<h:outputText
+		value="#{registroAtividadeController.bean.to.grupoCusto.codigoGrupoCusto} - #{registroAtividadeController.bean.to.grupoCusto.nomeGrupoCusto}" />
+
+	<h:outputLabel
+		value="#{bundle['_nls.registro_atividade.pessoa.label']}: "
+		styleClass="labelGeneric" />
+	<h:outputText
+		value="#{registroAtividadeController.bean.to.pessoa.codigoLogin}" />
+
+	<h:outputLabel
+		value="#{bundle['_nls.registro_atividade.atividade.label']}: "
+		styleClass="labelGeneric" />
+	<h:outputText
+		value="#{registroAtividadeController.bean.to.atividade.codigoAtividade}" />
+
+	<h:outputLabel
+		value="#{bundle['_nls.registro_atividade.data_mes_chp.label']}: "
+		styleClass="labelGeneric" />
+	<h:outputText value="#{registroAtividadeController.bean.to.dataMesChp}">
+		<f:convertDateTime pattern="#{bundle['_nls.date.pattern.simple']}"
+			locale="#{bundle['locale.en_us']}" />
+	</h:outputText>
+
+	<h:outputLabel
+		value="#{bundle['_nls.registro_atividade.data_registro_atividade.label']}: "
+		styleClass="labelGeneric" />
+	<h:outputText
+		value="#{registroAtividadeController.bean.to.dataRegistroAtividade}">
+		<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}"
+			locale="#{bundle['locale.en_us']}" />
+	</h:outputText>
+
+	<h:outputLabel
+		value="#{bundle['_nls.registro_atividade.numero_horas.label']}: "
+		styleClass="labelGeneric" />
+	<h:outputText
+		value="#{registroAtividadeController.bean.to.numeroHoras}" />
+
+	<h:outputLabel
+		value="#{bundle['_nls.registro_atividade.arquivo.label']}: "
+		styleClass="labelGeneric" />
+	<h:form>
+		<h:commandLink action="#{registroAtividadeController.downloadFile}"
+			value="#{registroAtividadeController.bean.to.uploadArquivo.nomeArquivo}">
+		</h:commandLink>
+	</h:form>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

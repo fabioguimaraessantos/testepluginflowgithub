@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition>
+
+
+	<h:outputText
+		value="#{bundle['_nls.apropriacao.hora_extra.pessoa.label']}*: "
+		for="codigoLogin" styleClass="labelGeneric"></h:outputText>
+	<a4j:region renderRegionOnly="true">
+		<h:inputText id="codigoLogin" style=" width : 150px;"
+			validator="#{apropriacaoHoraExtraController.validatePessoa}"
+			label="#{bundle['_nls.apropriacao.hora_extra.pessoa.label']}"
+			value="#{apropriacaoHoraExtraController.bean.to.pessoa.codigoLogin}"
+			required="true"
+			rendered="#{!apropriacaoHoraExtraController.bean.editItem}">
+
+			<rich:suggestionbox for="codigoLogin" var="result"
+				suggestionAction="#{apropriacaoHoraExtraController.autoCompletePessoa}">
+				<h:column>
+					<h:outputText value="#{result.codigoLogin}" />
+				</h:column>
+			</rich:suggestionbox>
+		</h:inputText>
+		<h:outputText
+			value="#{apropriacaoHoraExtraController.bean.to.pessoa.codigoLogin}"
+			rendered="#{apropriacaoHoraExtraController.bean.editItem}" />
+	</a4j:region>
+
+	<h:outputText
+		value="#{bundle['_nls.apropriacao.hora_extra.data.label']}*: "
+		for="mesInicio" styleClass="labelGeneric" />
+	<h:panelGrid columns="5" cellpadding="0" cellspacing="0">
+		<rich:comboBox id="mesInicio" enableManualInput="false"
+			value="#{apropriacaoHoraExtraController.bean.monthBeg}"
+			label="#{bundle['_nls.mes.label']}"
+			defaultLabel="#{bundle['_nls.mes.label']}"
+			suggestionValues="#{dateBean.monthList}" width="55" required="true"
+			rendered="#{!apropriacaoHoraExtraController.bean.editItem}">
+		</rich:comboBox>
+		<h:outputText value="#{apropriacaoHoraExtraController.bean.monthBeg}"
+			rendered="#{apropriacaoHoraExtraController.bean.editItem}" />
+
+		<rich:spacer height="5" width="5" />
+		<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+		<rich:spacer height="5" width="5" />
+
+		<rich:comboBox id="anoInicio" enableManualInput="false"
+			value="#{apropriacaoHoraExtraController.bean.yearBeg}"
+			label="#{bundle['_nls.ano.label']}"
+			defaultLabel="#{bundle['_nls.ano.label']}"
+			suggestionValues="#{dateBean.yearList}" width="55" required="true"
+			rendered="#{!apropriacaoHoraExtraController.bean.editItem}">
+		</rich:comboBox>
+		<h:outputText value="#{apropriacaoHoraExtraController.bean.yearBeg}"
+			rendered="#{apropriacaoHoraExtraController.bean.editItem}" />
+	</h:panelGrid>
+
+	<h:outputText
+		value="#{bundle['_nls.apropriacao.hora_extra.valor.label']}*: "
+		for="valor" styleClass="labelGeneric" />
+	<h:inputText id="valor" size="15" maxlength="10"
+		label="#{bundle['_nls.apropriacao.hora_extra.valor.label']}"
+		value="#{apropriacaoHoraExtraController.bean.to.valorHoraExtra}"
+		required="true">
+		<f:validateLength maximum="10" />
+		<f:convertNumber locale="#{bundle['locale.en_us']}"
+			maxFractionDigits="2" type="number"
+			pattern="#{systemProperties['pattern.number']}" />
+		<rich:jQuery query="numeric()" timing="onload" selector="#valor" />
+	</h:inputText>
+
+	<h:outputText
+		value="#{bundle['_nls.apropriacao.hora_extra.moeda.label']}*: "
+		for="moeda" styleClass="labelGeneric" />
+	<rich:comboBox id="moeda"
+		label="#{bundle['_nls.apropriacao.hora_extra.moeda.label']}"
+		value="#{apropriacaoHoraExtraController.bean.to.moeda.nomeMoeda}"
+		suggestionValues="#{apropriacaoHoraExtraController.bean.moedaList}"
+		required="true" directInputSuggestions="true">
+		<pms:validateComboBox
+			map="#{apropriacaoHoraExtraController.bean.moedaMap}" />
+	</rich:comboBox>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+</ui:composition>
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+  <ui:define name="titleForm">
+    #{bundle['_nls.menu.city']} &gt; #{bundle['_nls.menu.city.company_base_city']} &gt;
+    #{bundle['_nls.menu.city.company_base_city.search']}
+  </ui:define>
+
+  <ui:define name="bodyForm">
+    <rich:spacer height="0" width="560" styleClass="noMargin"/>
+    <h:form styleClass="noMargin">
+      <a4j:loadScript src="/js/jquery.alphanumeric.js"/>
+      <a4j:loadScript src="/js/jquery.meio.mask.js"/>
+
+      <a4j:keepAlive beanName="cidadeBaseFilialBean"/>
+      <h:panelGrid id="cidadeBaseFilialForm" columns="2" width="63%">
+        <ui:include src="/pages/protected/cidadebasefilial/CidadeBaseFilialForm.xhtml">
+          <ui:param name="finalChar" value="#{cidadeBaseFilialController.bean.update ? '*' : ''}"/>
+          <ui:param name="isRequired" value="#{cidadeBaseFilialController.bean.update}"/>
+          <ui:param name="isComboDisabled" value="false"/>
+        </ui:include>
+
+        <f:facet name="footer">
+          <h:panelGrid columns="5" cellpadding="0" cellspacing="0">
+            <a4j:commandButton value="#{bundle['_nls.button.search']}"
+                               action="#{cidadeBaseFilialController.search}" styleClass="buttonGeneric"
+                               rendered="#{!cidadeBaseFilialController.bean.update}"/>
+
+            <a4j:commandButton value="#{bundle['_nls.button.save']}"
+                               action="#{cidadeBaseFilialController.toggleEditModalOpen}" styleClass="buttonGeneric"
+                               rendered="#{cidadeBaseFilialController.bean.update}"/>
+            <rich:spacer height="5" width="5" rendered="#{cidadeBaseFilialController.bean.update}"/>
+            <a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+                               action="#{cidadeBaseFilialController.cancelUpdate}" styleClass="buttonGeneric"
+                               immediate="true" rendered="#{cidadeBaseFilialController.bean.update}"/>
+
+            <rich:spacer height="5" width="5"/>
+            <a4j:commandButton value="#{bundle['_nls.button.clear']}" onclick="clearCidadeBaseFilialForm();"
+                               immediate="true"
+                               action="#{cidadeBaseFilialController.clearSearchPage}" styleClass="buttonGeneric"
+                               reRender="cidadeBaseFilialForm" limitToList="true"/>
+          </h:panelGrid>
+        </f:facet>
+      </h:panelGrid>
+    </h:form>
+
+    <rich:spacer height="5" styleClass="noMargin"/>
+
+    <a4j:outputPanel id="cidadeBaseFilialPanel">
+      <h:form styleClass="noMargin">
+        <a4j:keepAlive beanName="cidadeBaseFilialBean"/>
+        <rich:dataTable value="#{cidadeBaseFilialController.bean.resultList}"
+                        var="item" rows="#{systemProperties['research.size.page.result']}"
+                        width="100%" id="cidadeBaseFilialTable" rowKeyVar="row"
+                        rendered="#{!empty cidadeBaseFilialController.bean.resultList}">
+
+          <rich:column sortBy="#{item.empresaMatriz.nomeEmpresa}">
+            <f:facet name="header">
+              <h:outputText value="#{bundle['_nls.cidade_base_filial.combo_empresa_matriz.label']}"/>
+            </f:facet>
+            <h:outputText value="#{item.empresaMatriz.nomeEmpresa}"/>
+          </rich:column>
+
+          <rich:column sortBy="#{item.id.empresa.nomeEmpresa}">
+            <f:facet name="header">
+              <h:outputText value="#{bundle['_nls.cidade_base_filial.combo_empresa.label']}"/>
+            </f:facet>
+            <h:outputText value="#{item.id.empresa.nomeEmpresa}"/>
+          </rich:column>
+
+          <rich:column sortBy="#{item.empresaFilial.nomeEmpresa}">
+            <f:facet name="header">
+              <h:outputText value="#{bundle['_nls.cidade_base_filial.combo_empresa_filial.label']}"/>
+            </f:facet>
+            <h:outputText value="#{item.empresaFilial.nomeEmpresa}"/>
+          </rich:column>
+
+          <rich:column sortBy="#{item.id.cidadeBase.nomeCidadeBase}">
+            <f:facet name="header">
+              <h:outputText value="#{bundle['_nls.cidade_base_filial.combo_cidade_base.label']}"/>
+            </f:facet>
+            <h:outputText value="#{item.id.cidadeBase.nomeCidadeBase}"/>
+          </rich:column>
+
+          <sec:ifAnyGranted roles="BOF.CITY_BASE_CO:ED, BOF.CITY_BASE_CO:DE">
+            <rich:column style="text-align: center;">
+              <f:facet name="header">
+                <h:outputText value="#{bundle['_nls.cidade_base_filial.action.label']}"/>
+              </f:facet>
+              <sec:ifAnyGranted roles="BOF.CITY_BASE_CO:ED">
+                <a4j:commandLink ajaxSingle="true" id="editlink"
+                                 action="#{cidadeBaseFilialController.prepareUpdate}"
+                                 reRender="cidadeBaseFilialTable">
+                  <h:graphicImage value="/images/icons/edit.gif" style="border:0"/>
+                  <f:setPropertyActionListener value="#{item}"
+                                               target="#{cidadeBaseFilialController.bean.to}"/>
+                  <f:setPropertyActionListener value="#{item.id}"
+                                               target="#{cidadeBaseFilialController.bean.currentRowId}"/>
+                </a4j:commandLink>
+                <rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}"/>
+              </sec:ifAnyGranted>
+
+              <sec:ifAnyGranted roles="BOF.CITY_BASE_CO:DE">
+                <a4j:commandLink ajaxSingle="true" id="deletelink"
+                                 action="#{cidadeBaseFilialController.toggleDeleteModalOpen}"
+                                 reRender="cidadeBaseFilialTable">
+                  <h:graphicImage value="/images/icons/delete.gif" style="border:0"/>
+                  <f:setPropertyActionListener value="#{item.id}"
+                                               target="#{cidadeBaseFilialController.bean.currentRowId}"/>
+                </a4j:commandLink>
+                <rich:toolTip for="deletelink" value="#{bundle['_nls.hint.delete']}"/>
+              </sec:ifAnyGranted>
+            </rich:column>
+          </sec:ifAnyGranted>
+
+          <f:facet name="footer">
+            <rich:datascroller renderIfSinglePage="false"
+                               maxPages="#{systemProperties['research.size.page.maxpages']}"
+                               page="#{cidadeBaseFilialController.bean.currentPageId}"/>
+          </f:facet>
+        </rich:dataTable>
+      </h:form>
+    </a4j:outputPanel>
+
+    <ui:include src="/pages/protected/cidadebasefilial/CidadeBaseFilialEditModal.xhtml"/>
+    <ui:include src="/pages/protected/cidadebasefilial/CidadeBaseFilialDeleteModal.xhtml"/>
+
+    <script type="text/javascript">
+      // Lista de objetos que contém o ID do elemento HTML (combobox) e a chave do resourceBundle cujo valor é o placeholder do combobox.
+      const comboboxes = [
+        {
+          'elementId': 'comboEmpresaMatriz',
+          'placeholderResourceBundleKey': ''
+        },
+        {
+          'elementId': 'comboEmpresa',
+          'placeholderResourceBundleKey': ''
+        },
+        {
+          'elementId': 'comboEmpresaFilial',
+          'placeholderResourceBundleKey': ''
+        },
+        {
+          'elementId': 'comboCidadeBase',
+          'placeholderResourceBundleKey': ''
+        }
+      ];
+
+      function clearCidadeBaseFilialForm() {
+        for(let combobox of comboboxes) {
+          clearCombobox(combobox.elementId, combobox.placeholderResourceBundleKey);
+        }
+      }
+
+      function clearCombobox(elementId, resourceBundleLabel) {
+        const element = document.querySelectorAll(`[id$=\${elementId}]`)[0];
+        const elementValue = element.getElementsBySelector(`[id$=\${elementId}comboboxValue]`)[0];
+        const elementField = element.getElementsBySelector(`[id$=\${elementId}comboboxField]`)[0];
+
+        if (elementField.value != resourceBundleLabel) {
+          elementValue.removeAttribute('value');
+          elementField.setAttribute('value', resourceBundleLabel);
+          elementField.classList.replace('rich-combobox-font-inactive', 'rich-combobox-font-disabled');
+          elementField.classList.replace('rich-combobox-input-inactive', 'rich-combobox-input-disabled');
+        }
+      }
+    </script>
+
+  </ui:define>
+</ui:composition>
+
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.menu.chargeback.software']} &gt; #{bundle['_nls.menu.chargeback.software.add']}
+   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="chargebackBean" />
+
+			<h:panelGrid columns="2">
+				<ui:include
+					src="/pages/protected/chargebackPessoa/ChbackPessForm.xhtml" />
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.save']}"
+							styleClass="buttonGeneric"
+							action="#{chargebackController.createChbackPess}"
+							reRender="errorMsgId" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:modalPanel id="reactivateChbackPessPanel" autosized="true" width="450"
+						 showWhenRendered="#{chargebackController.bean.showConfirmReactivateModal}">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.title.confirmation']}" style="padding-right:15px;" />
+			</f:facet>
+			<h:form>
+				<table width="100%">
+					<tbody>
+					<tr>
+						<td colspan="2">
+							<h:outputText value="#{bundle['_nls.chback_pess.msg.confirm.reactivate']}" style="padding-right:15px;" />
+						</td>
+					</tr>
+					<tr>
+						<td align="center" width="50%">
+							<a4j:commandButton value="#{bundle['_nls.button.yes']}" ajaxSingle="true"
+											   action="#{chargebackController.reactivateChbackPessoa}"
+											   oncomplete="#{rich:component('reactivateChbackPessPanel')}.hide();"
+											   styleClass="buttonGeneric">
+							</a4j:commandButton>
+						</td>
+						<td align="center" width="50%">
+							<a4j:commandButton limitToList="true"
+											   value="#{bundle['_nls.button.no']}" styleClass="buttonGeneric"
+											   action="#{chargebackController.cancelReactivationChbackPessoa}"
+											   oncomplete="#{rich:component('reactivateChbackPessPanel')}.hide(); return false;" />
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+		<rich:modalPanel id="loginsNotCommitedPanel" autosized="true" width="550"
+						 showWhenRendered="#{chargebackController.bean.hasLoginsNotCommited}">
+			<f:facet name="header">
+				<h:outputText value="Warning" style="padding-right:15px;" />
+			</f:facet>
+			<h:form>
+				<table width="100%">
+					<tbody>
+					<tr>
+						<td colspan="2">
+							<h:outputText value="Some logins were not committed due to some factors. For more details, click in download logins." style="padding-right:15px;" />
+						</td>
+					</tr>
+					<tr>
+						<td align="center" width="50%">
+							<h:commandButton value="Download logins"  action="#{chargebackController.downloadNonCommitedLogins}" style="float: left" />
+						</td>
+						<td align="center" width="50%">
+							<a4j:commandButton value="Close"  action="#{chargebackController.cancelLoginsNotCommitedChback}" style="float: right"
+											   styleClass="buttonGeneric" />
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+		<ui:include src="/pages/protected/chargebackPessoa/chbackListPessModal.xhtml" />
+
+	</ui:define>
+</ui:composition>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<c:set var="ctxPath"
+	   value="#{facesContext.externalContext.requestContextPath}"
+	scope="request" />
+<!-- Seta o valor do id da tag BODY, utilizado no css -->
+<c:if
+	test="#{facesContext.externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME'] == null}">
+	<c:set var="bodyValue" value="body-login" scope="request" />
+</c:if>
+<head>
+<title><ui:insert name="title">title</ui:insert></title>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta name="robots" content="noindex" />
+<link rel="stylesheet" href="${ctxPath}/css/styles.css" type="text/css"></link>
+<link rel="stylesheet" href="${ctxPath}/css/global.css" type="text/css"></link>
+<!--[if lte IE 6]>
+			<script type="text/javascript" src="js/iepngfix.js"></script>
+		<![endif]-->
+
+<style type="text/css">
+table.scrollTableMap {
+	border-collapse: inherit;
+	border-width: 0px 1px 1px 0px;
+}
+
+table.scrollTableMap th,table.scrollTableMap td {
+	padding: 4px;
+}
+
+table.scrollTableMap tbody {
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+</style>
+
+<!--[if IE]>
+		    <style type="text/css">
+		        div.scrollTableDiv {
+		            position: relative;
+		            height: 360px;
+		            width: 660px;
+		            overflow-y: scroll;
+		            overflow-x: hidden;
+		            border: solid;
+		            border-width: 0px 0px 1px 0px;
+		        }
+		        div.scrollTableDiv table {
+		            border-width: 1px 1px 0px 0px;
+		        }
+		        div.scrollTableDiv thead tr {
+		            position: absolute;
+		            top: expression(this.offsetParent.scrollTop);
+		        }
+		        div.scrollTableDiv tbody {
+		            height: auto;
+		        }
+		        div.scrollTableDiv table tbody tr:first-child td {
+		            padding: 29px 4px 4px 4px;
+		        }
+		    </style>
+		<![endif]-->
+
+
+<style>
+.pic {
+	margin-bottom: -4px;
+	margin-right: 2px;
+}
+
+.search .rich-menu-item-hover {
+	background-color: transparent;
+	border-color: transparent;
+}
+</style>
+
+
+
+
+
+
+<link rel="SHORTCUT ICON" href="${ctxPath}/favicon.ico"></link>
+<a4j:loadScript
+	src="resource:///org/richfaces/renderkit/html/scripts/jquery/jquery.js" />
+<a4j:loadScript src="/js/jquery.fixedtableheader.min.js" />
+
+<!--Start of Zopim Live Chat Script-->
+<script type="text/javascript">
+window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
+d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
+_.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute("charset","utf-8");
+$.src="//v2.zopim.com/?3VumTw0Zws6hpUN9PSeatFZlH7AKAut0";z.t=+new Date;$.
+type="text/javascript";e.parentNode.insertBefore($,e)
+$zopim(function () {
+       $zopim.livechat.setLanguage('en-US');
+       $zopim.livechat.setGreetings('Welcome to PMS! If you have any question, let me know!');
+       $zopim.livechat.addTags('pms');
+		$zopim.livechat.departments.filter('PMS');
+		$zopim.livechat.departments.setVisitorDepartment('PMS');
+		$zopim.livechat.theme.setColor('#BED6F8');
+		$zopim.livechat.bubble.setColor('#BED6F8');
+		//$zopim.livechat.badge.setColor('#BED6F8');
+		//$zopim.livechat.window.setColor('#BED6F8');
+		$zopim.livechat.window.setPosition('br');
+		$zopim.livechat.button.setPosition('br');
+		$zopim.livechat.theme.reload();
+   });
+})(document,"script");
+</script>
+<!--End of Zopim Live Chat Script-->
+
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"
+	id="${bodyValue}">
+
+<div id="container"><!-- Reservado para o conteudo do Header --> <ui:insert
+	name="header"></ui:insert> <!-- Reservado para o conteudo do formulario de login -->
+<ui:insert name="formLogin"></ui:insert> <!-- Reservado para as telas do sistema -->
+<div id="content"><ui:insert name="content"></ui:insert></div>
+<!-- Footer da aplicacao -->
+<div id="footer">
+<p>#{bundle['_nls.footer.copyright']}</p>
+</div>
+</div>
+
+</body>
+</html>
