@@ -1,0 +1,18 @@
+<assembly>
+	<id>config</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>src/main/config/pms</directory>
+			<outputDirectory>/pms</outputDirectory>
+			<includes>
+				<include>config.xml</include>
+				<include>config.properties</include>
+				<include>log4j2.xml</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>

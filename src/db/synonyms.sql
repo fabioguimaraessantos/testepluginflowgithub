@@ -1,0 +1,5 @@
+create or replace synonym VEN_ITEMPEDIDOVENDA
+  for VEN_ITEMPEDIDOVENDA@LN_MGWEB.CIT;
+  
+create or replace synonym VEN_PEDIDOVENDA
+  for VEN_PEDIDOVENDA@LN_MGWEB.CIT;

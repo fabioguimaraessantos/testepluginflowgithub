@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+	<Set name="maxFormContentSize" type="int">600000</Set>
+	<New id="pmsdb" class="org.mortbay.jetty.plus.naming.Resource">
+		<Arg></Arg>
+		<Arg>jdbc/pmsDS</Arg>
+		<Arg>
+			<New class="org.apache.commons.dbcp.BasicDataSource">
+				<!-- DEV -->
+<!--				<Set name="driverClassName">oracle.jdbc.OracleDriver</Set>-->
+<!--				<Set name="url">jdbc:oracle:thin:@//172.20.152.200:1521/DEV.privatesub.vcnitdev.oraclevcn.com</Set>-->
+<!--				<Set name="username">MGMT_APP</Set>-->
+<!--				<Set name="password">Dz5FsUbPDxJ3</Set>-->
+
+				<!-- HDEV -->
+				<Set name="driverClassName">oracle.jdbc.OracleDriver</Set>
+				<Set name="url">jdbc:oracle:thin:@//172.20.152.200:1521/DEV.privatesub.vcnitdev.oraclevcn.com</Set>
+				<Set name="username">PMS20</Set>
+				<Set name="password">pms20_ora</Set>
+			</New>
+		</Arg>
+	</New>
+</Configure>

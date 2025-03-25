@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location"><value>classpath:pms/config.properties</value></property>
+    </bean>
+    
+	<!-- Configuracoes do DataSource de Teste -->
+	<bean id="defaultDS" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@oneiros.cit:1521:adm" />
+		<!-- Banco de testes: JUnit -->
+		<property name="username" value="pms_tst" />
+		<property name="password" value="pms_tst_ora" />
+	</bean>
+
+</beans>
+
+
