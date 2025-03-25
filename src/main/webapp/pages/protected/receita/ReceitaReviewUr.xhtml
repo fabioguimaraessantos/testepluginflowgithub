@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.receita']} &gt; #{bundle['_nls.menu.receita.research_review_ur']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+
+		<h:panelGrid columns="2">
+			<h:outputLabel
+				value="#{bundle['_nls.receita.review_ur.titulo.label']} "
+				styleClass="labelGeneric" />
+			<h:outputLabel
+				value="#{receitaController.mapaAlocacaoBean.to.textoTitulo}" />
+
+			<h:outputLabel
+				value="#{bundle['_nls.receita.review_ur.contract_lob.label']} "
+				styleClass="labelGeneric" />
+			<h:outputLabel
+				value="#{receitaController.mapaAlocacaoBean.to.contratoPratica.nomeContratoPratica}" />
+
+			<h:outputLabel
+				value="#{bundle['_nls.receita.review_ur.date.label']} "
+				styleClass="labelGeneric" />
+			<h:outputLabel
+				value="#{receitaController.mapaAlocacaoBean.validityMonthBeg}/#{receitaController.mapaAlocacaoBean.validityYearBeg}" />
+		</h:panelGrid>
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form>
+			<a4j:commandButton value="#{bundle['_nls.button.back']}"
+				action="#{receitaController.backFromReviewUr}"
+				styleClass="buttonGeneric"
+				rendered="#{!receitaController.mapaAlocacaoBean.isRemove}" />
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="receitaBean" />
+			<a4j:keepAlive beanName="mapaAlocacaoBean" />
+
+			<a4j:loadScript src="/js/utils.js" />
+
+
+			<rich:panel
+				rendered="#{receitaController.mapaAlocacaoBean.isViewReviewUr == false}">
+				<h:panelGrid columns="18" cellpadding="0" cellspacing="0">
+
+					<h:outputText
+						value="#{bundle['_nls.receita.review_ur.cause.label']}: "
+						styleClass="labelGeneric" />
+
+					<rich:spacer height="5" width="5" />
+
+					<rich:comboBox id="causa" enableManualInput="false"
+						label="#{bundle['_nls.receita.review_ur.cause.label']}"
+						value="#{receitaController.mapaAlocacaoBean.explicacaoDesvioApply}"
+						defaultLabel="#{receitaController.mapaAlocacaoBean.explicacaoDesvioDefault.nomeMotivoDesvio}"
+						suggestionValues="#{receitaController.mapaAlocacaoBean.explicacoesDesvio}"
+						directInputSuggestions="true">
+					</rich:comboBox>
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandButton value="#{bundle['_nls.button.apply']}"
+						action="#{receitaController.applyExplicacao}"
+						styleClass="buttonGeneric" reRender="receitaTable"
+						limitToList="true" />
+
+					<rich:spacer height="5" width="5" />
+
+				</h:panelGrid>
+			</rich:panel>
+
+			<rich:spacer height="5" width="10" />
+
+			<a4j:region renderRegionOnly="true">
+				<rich:dataTable
+					value="#{receitaController.mapaAlocacaoBean.itensExtratificacaoUr}"
+					var="item" width="100%" id="receitaTable" rowKeyVar="row">
+
+
+					<rich:column
+						rendered="#{receitaController.mapaAlocacaoBean.isViewReviewUr == false}">
+						<f:facet name="header">
+							<input type="checkbox"
+								onclick="javascript: checkUncheckAll(this);" />
+						</f:facet>
+						<div align="center"><h:selectBooleanCheckbox
+							value="#{item.isSelected}"
+							rendered="#{item.numeroFteReceitado - item.numeroFteAlocado lt 0}" /></div>
+
+					</rich:column>
+
+					<rich:column sortable="true" sortBy="#{item.pessoa.codigoLogin}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.item_receita.codigo_login_pessoa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.pessoa.codigoLogin}" />
+					</rich:column>
+
+					<rich:column sortable="true" sortBy="#{item.numeroFteAlocado}"
+						style="text-align: right">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita.review_ur.fte_allocated.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.numeroFteAlocado}">
+							<f:convertNumber minFractionDigits="2" pattern="0.00" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortable="true" sortBy="#{item.numeroFteReceitado}"
+						style="text-align: right">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita.review_ur.fte_revenued.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.numeroFteReceitado}">
+							<f:convertNumber minFractionDigits="2" pattern="0.00" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortable="true"
+						sortBy="#{item.numeroFteReceitado - item.numeroFteAlocado}"
+						style="text-align: right">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita.review_ur.difference.label']}" />
+						</f:facet>
+						<h:outputText
+							value="#{item.numeroFteReceitado - item.numeroFteAlocado}">
+							<f:convertNumber minFractionDigits="2" pattern="0.00" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita.review_ur.cause.label']}" />
+						</f:facet>
+						<div align="center"><rich:comboBox id="causa"
+							enableManualInput="false"
+							label="#{bundle['_nls.receita.review_ur.cause.label']}"
+							value="#{item.explicacaoDesvio.nomeMotivoDesvio}"
+							defaultLabel="#{receitaController.mapaAlocacaoBean.explicacaoDesvioDefault.nomeMotivoDesvio}"
+							suggestionValues="#{receitaController.mapaAlocacaoBean.explicacoesDesvio}"
+							directInputSuggestions="true"
+							rendered="#{item.numeroFteReceitado - item.numeroFteAlocado lt 0 and receitaController.mapaAlocacaoBean.isViewReviewUr == false}"
+							valueChangeListener="#{receitaController.editMotivo}">
+
+							<a4j:support event="onselect" reRender="receitaTable"
+								limitToList="true">
+								<f:param name="login" id="login"
+									value="#{item.pessoa.codigoLogin}" />
+							</a4j:support>
+						</rich:comboBox> <h:outputText value="#{item.explicacaoDesvio.nomeMotivoDesvio}"
+							rendered="#{item.numeroFteReceitado - item.numeroFteAlocado lt 0 and receitaController.mapaAlocacaoBean.isViewReviewUr == true}" />
+						</div>
+
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:columnGroup>
+							<rich:column
+								rendered="#{receitaController.mapaAlocacaoBean.isViewReviewUr == false}">
+							</rich:column>
+							<rich:column>Total</rich:column>
+							<rich:column style="text-align: right">
+								<h:outputText
+									value="#{receitaController.mapaAlocacaoBean.totalAlocado}">
+									<f:convertNumber minFractionDigits="2" pattern="0.00" />
+								</h:outputText>
+							</rich:column>
+							<rich:column style="text-align: right">
+								<h:outputText
+									value="#{receitaController.mapaAlocacaoBean.totalReceitado}">
+									<f:convertNumber minFractionDigits="2" pattern="0.00" />
+								</h:outputText>
+							</rich:column>
+							<rich:column style="text-align: right">
+								<h:outputText
+									value="#{receitaController.mapaAlocacaoBean.totalDifference}">
+									<f:convertNumber minFractionDigits="2" pattern="0.00" />
+								</h:outputText>
+							</rich:column>
+							<rich:column>
+							</rich:column>
+						</rich:columnGroup>
+					</f:facet>
+
+				</rich:dataTable>
+			</a4j:region>
+
+			<rich:spacer height="20" styleClass="noMargin" />
+			<a4j:outputPanel id="buttons"
+				rendered="#{receitaController.mapaAlocacaoBean.isViewReviewUr == false}">
+				<a4j:commandButton value="#{bundle['_nls.button.save']}"
+					action="#{receitaController.saveReviewUr}"
+					styleClass="buttonGeneric"
+					rendered="#{receitaController.mapaAlocacaoBean.isUpdateReviewUr == false}"
+					reRender="buttons" />
+				<a4j:commandButton value="#{bundle['_nls.button.save']}"
+					action="#{receitaController.saveEditReviewUr}"
+					styleClass="buttonGeneric"
+					rendered="#{receitaController.mapaAlocacaoBean.isUpdateReviewUr == true}" />
+			</a4j:outputPanel>
+
+			<a4j:outputPanel id="buttonsRemove"
+				rendered="#{receitaController.mapaAlocacaoBean.isRemove}">
+				<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+					<a4j:commandButton value="#{bundle['_nls.button.delete']}"
+						styleClass="buttonGeneric"
+						action="#{receitaController.removeEstratificacaoUr}" />
+					<rich:spacer height="5" width="5" />
+					<a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+						styleClass="buttonGeneric" action="receita_research_review_ur"
+						immediate="true" />
+				</h:panelGrid>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

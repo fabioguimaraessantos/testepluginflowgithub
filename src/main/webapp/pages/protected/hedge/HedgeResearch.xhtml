@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.hedge']} &gt; #{bundle['_nls.menu.hedge.research']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="2">
+				<h:outputText value="#{bundle['_nls.hedge.data_mes.label']}: "
+					for="dataMes" styleClass="labelGeneric"></h:outputText>
+				<h:panelGrid columns="3" border="0" cellspacing="0" id="dataMes">
+					<rich:comboBox validator="#{xssValidator.validate}"
+						id="month" label="#{bundle['_nls.mes.label']}"
+						value="#{hedgeController.bean.month}"
+						directInputSuggestions="true"
+						suggestionValues="#{dateBean.monthList}"
+						defaultLabel="#{bundle['_nls.mes.label']}" width="60">
+					</rich:comboBox>
+					<h:outputText value="/"></h:outputText>
+					<rich:comboBox validator="#{xssValidator.validate}"
+						id="year" label="#{bundle['_nls.ano.label']}"
+						value="#{hedgeController.bean.year}" directInputSuggestions="true"
+						suggestionValues="#{dateBean.yearList}"
+						defaultLabel="#{bundle['_nls.ano.label']}" width="60">
+					</rich:comboBox>
+				</h:panelGrid>
+
+				<h:outputText for="moeda" styleClass="labelGeneric"
+					value="#{bundle['_nls.hedge.moeda.label']}: " />
+				<rich:comboBox validator="#{xssValidator.validate}"
+					id="moeda" width="128"
+					label="#{bundle['_nls.hedge.moeda.label']}"
+					value="#{hedgeController.bean.filter.moeda.nomeMoeda}"
+					suggestionValues="#{hedgeController.bean.moedaList}"
+					defaultLabel="#{bundle['_nls.all.label']}"
+					directInputSuggestions="true">
+
+					<pms:validateComboBox map="#{hedgeController.bean.moedaMap}" />
+				</rich:comboBox>
+
+				<rich:spacer height="5" />
+				<rich:spacer height="5" />
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+							styleClass="buttonGeneric"
+							reRender="hedgeTable,errorMsgId,hedgePanel" limitToList="true"
+							action="#{hedgeController.findByFilter}" type="submit" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="hedgeBean" />
+			<a4j:outputPanel id="hedgePanel">
+				<rich:dataTable value="#{hedgeController.bean.resultList}"
+					rendered="#{!empty hedgeController.bean.resultList}"
+					rows="#{systemProperties['research.size.page.result']}"
+					id="hedgeTable" width="100%" var="item">
+
+					<rich:column sortBy="#{item.dataMes}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.hedge.data_mes.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dataMes}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.moeda.nomeMoeda}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.hedge.moeda.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.moeda.nomeMoeda}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorHedge}" style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.hedge.valor.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.valorHedge}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.hedge.action.label']}" />
+						</f:facet>
+						<a4j:commandLink ajaxSingle="true" id="editlink"
+							action="#{hedgeController.prepareUpdateHedge}"
+							reRender="hedgeTable">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{hedgeController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+
+						<a4j:commandLink ajaxSingle="true" id="deletelink"
+							reRender="removeHedgePanel" limitToList="true"
+							oncomplete="#{rich:component('removeHedgePanel')}.show();">
+
+							<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+
+							<f:setPropertyActionListener value="#{item}"
+								target="#{hedgeController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="deletelink"
+							value="#{bundle['_nls.hint.delete']}" />
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{hedgeController.bean.currentPage}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+
+		<ui:include src="/pages/protected/hedge/HedgeRemoveModal.xhtml" />
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

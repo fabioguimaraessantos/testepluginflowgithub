@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+	<a4j:keepAlive beanName="msaBean" />
+
+	<h:outputText for="nomeMsa" styleClass="labelGeneric"
+		value="#{bundle['_nls.msa.nome_msa.label']}*:">
+	</h:outputText>
+	<h:inputText validator="#{xssValidator.validate}"
+		value="#{msaController.bean.to.nomeMsa}"
+		label="#{bundle['_nls.msa.nome_msa.label']}"
+		id="nomeMsa" required="true" size="70" maxlength="99">
+		<f:validateLength
+			minimum="#{systemProperties['form.input.length.minimum']}"
+			maximum="99" />
+	</h:inputText>
+
+	<h:outputText value="#{bundle['_nls.msa.cliente_msa.label']}*:"
+		for="codigoCliente" styleClass="labelGeneric" />
+	<rich:comboBox id="codigoCliente"
+		label="#{bundle['_nls.msa.cliente_msa.label']}"
+		value="#{msaController.bean.to.cliente.nomeCliente}"
+		suggestionValues="#{msaController.bean.clienteList}"
+		required="true" directInputSuggestions="true"
+		validator="#{msaController.validateCliente}">
+		<f:validator validatorId="xssValidator"/>
+	</rich:comboBox>
+
+	<h:outputText value="#{bundle['_nls.msa.industry_type_msa.label']}*:"
+				  for="industry" styleClass="labelGeneric" />
+	<rich:comboBox id="industry"
+				   label="#{bundle['_nls.msa.industry_type_msa.label']}"
+				   value="#{msaController.bean.industrySelect.selected}"
+				   suggestionValues="#{msaController.bean.industrySelect.list}"
+				   required="true" directInputSuggestions="true">
+	</rich:comboBox>
+
+	<h:outputText value="#{bundle['_nls.msa.bmdn_msa.label']}*:"
+				  for="code" styleClass="labelGeneric" />
+	<rich:comboBox id="code"
+				   label="#{bundle['_nls.msa.bmdn_msa.label']}"
+				   value="#{msaController.bean.bmDnSelect.selected}"
+				   suggestionValues="#{msaController.bean.bmDnSelect.list}"
+				   required="true" directInputSuggestions="true">
+	</rich:comboBox>
+
+	<h:outputText value="#{bundle['_nls.msa.status_msa.label']}*:"
+		for="statusMsa" styleClass="labelGeneric" />
+	<rich:comboBox validator="#{xssValidator.validate}"
+		id="statusMsa" required="true"
+		enableManualInput="false"
+		label="#{bundle['_nls.msa.status_msa.label']}"
+		value="#{msaController.bean.to.indicadorStatus}"
+		directInputSuggestions="true" converter="StageMsaConverter"
+		rendered="#{msaController.bean.isUpdate}">
+
+		<f:selectItem itemValue="PR" />
+		<f:selectItem itemValue="VD" />
+		<f:selectItem itemValue="A" />
+		<f:selectItem itemValue="I" />
+	</rich:comboBox>
+
+	<rich:comboBox validator="#{xssValidator.validate}"
+		id="statusMsaCreate" required="true"
+		enableManualInput="false"
+		rendered="#{!msaController.bean.isUpdate}"
+		label="#{bundle['_nls.msa.status_msa.label']}"
+		value="#{msaController.bean.to.indicadorStatus}"
+		directInputSuggestions="true" converter="StageMsaConverter">
+
+		<f:selectItem itemValue="PR" />
+		<f:selectItem itemValue="VD" />
+	</rich:comboBox>
+
+	<h:outputText value="#{bundle['_nls.msa.tipo_fatura']}: "
+		styleClass="labelGeneric" />
+	<rich:comboBox validator="#{xssValidator.validate}"
+		value="#{msaController.bean.to.indicadorTipoFatura}"
+		label="#{bundle['_nls.msa.tipo_fatura']}"
+		converter="TipoFaturamentoMsaTBConverter"
+		directInputSuggestions="true">
+		<f:selectItem itemValue="ND" />
+		<f:selectItem itemValue="NF" />
+	</rich:comboBox>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+</html>

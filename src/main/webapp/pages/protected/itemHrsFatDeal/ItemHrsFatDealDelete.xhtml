@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<rich:modalPanel id="deleteItemHrsFatDealPanel" autosized="true" width="200">
+        <f:facet name="header">
+            <h:outputText value="#{bundle['_nls.item_hrs_fat_deal.delete.title']}" style="padding-right:15px;" />
+        </f:facet>
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="/images/icons/close.gif" styleClass="hidelink" id="hidelinkDeleteItemHrsFatDeal" />
+                <rich:componentControl for="deleteItemHrsFatDealPanel" attachTo="hidelinkDeleteItemHrsFatDeal" operation="hide" event="onclick" />
+            </h:panelGroup>
+        </f:facet>
+        <h:form>
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td align="center" width="50%">
+                			<a4j:commandButton value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+                    				action="#{horasFaturadasDealController.deleteItemHrsFatDeal}"
+                    				oncomplete="#{rich:component('deleteItemHrsFatDealPanel')}.hide();"
+                    				limitToList="true" reRender="deleteItemHrsFatDealPanel,itemHrsFatDealTable" 
+                    				styleClass="buttonGeneric"/>
+                        </td>
+                        <td align="center" width="50%">
+                			<a4j:commandButton value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric"
+                    			oncomplete="#{rich:component('deleteItemHrsFatDealPanel')}.hide();return false;"
+                    			limitToList="true" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </h:form>
+</rich:modalPanel>
+
+
+</html>    

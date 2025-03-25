@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- $ Id: DreProcessosFechamentoByLogin.xhtml $ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.menu.fechamento']} &gt; #{bundle['_nls.menu.dre_processos_fechamento_by_login']}
+   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<div class="process-execution" style="display: none;"></div>
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="dreProcessosFechamentoByLoginBean" />
+				<h:panelGrid columns="1"
+					rendered="#{dreProcessosByLoginController.bean.screenNumber == 1}">
+					<h:panelGrid columns="4">
+					<h:outputText
+	                    value="#{bundle['_nls.dre_processos_fechamento.data_mes.label']}*: "
+	                    for="dataMes" styleClass="labelGeneric" />
+	
+						<rich:comboBox validator="#{xssValidator.validate}"
+							id="mesInicio" enableManualInput="false"
+							value="#{dreProcessosByLoginController.bean.monthBeg}"
+							label="#{bundle['_nls.mes.label']}"
+							defaultLabel="#{bundle['_nls.mes.label']}"
+							suggestionValues="#{dateBean.monthList}" width="55"
+							required="true"
+						    disabled="#{dreProcessosByLoginController.isITSupport}">
+						</rich:comboBox>
+
+						<h:outputText style="margin: 0; padding: 0;" value="/" styleClass="labelGeneric"></h:outputText>
+	
+						<rich:comboBox validator="#{xssValidator.validate}"
+							id="anoInicio" enableManualInput="false"
+							value="#{dreProcessosByLoginController.bean.yearBeg}"
+							label="#{bundle['_nls.ano.label']}"
+							defaultLabel="#{bundle['_nls.ano.label']}"
+							suggestionValues="#{dateBean.yearList}" width="55" required="true"
+							disabled="#{dreProcessosByLoginController.isITSupport}">
+						</rich:comboBox>
+					</h:panelGrid>
+					<h:panelGrid columns="3">
+						<a4j:region renderRegionOnly="true" id="region">
+							<h:outputText
+								value="#{bundle['_nls.dre_processos_fechamento.login.label']}*: "
+								styleClass="labelGeneric" />
+
+							<h:inputText
+								value="#{dreProcessosByLoginController.bean.to.codigoLogin}"
+								id="loginProcesso"
+								validator="#{dreProcessosByLoginController.validateDuplicatedLogin}"
+								label="#{bundle['_nls.dre_processos_fechamento.login.label']}"
+								disabled="#{dreProcessosByLoginController.isITSupport}">
+								<f:validator validatorId="xssValidator"/>
+
+								<rich:suggestionbox for="loginProcesso" var="result"
+									suggestionAction="#{dreProcessosByLoginController.autoCompleteRecurso}">
+									<h:column>
+										<h:outputText value="#{result.codigoMnemonico}" />
+									</h:column>
+								</rich:suggestionbox>
+							</h:inputText>
+						</a4j:region>
+
+						<a4j:commandButton
+							action="#{dreProcessosByLoginController.addPersonLoginList}"
+							value="#{bundle['_nls.button.add']}"
+							styleClass="buttonGeneric" reRender="lista"
+							disabled="#{dreProcessosByLoginController.isITSupport}"/>
+					</h:panelGrid>
+					<rich:spacer height="15" />
+				<rich:dataTable
+						value="#{dreProcessosByLoginController.bean.pessoas}" var="item"
+						width="100%" id="lista">
+					<rich:column style="width:400px;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.dre_processos_fechamento.login.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.codigoLogin}" />
+					</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle['_nls.action.label']}" />
+							</f:facet>
+	
+							<a4j:commandLink ajaxSingle="true" id="deleteLink"
+								reRender="lista"
+								action="#{dreProcessosByLoginController.removePersonLoginList}"
+								immediate="true" limitToList="true"
+								disabled="#{dreProcessosByLoginController.isITSupport}">
+
+								<h:graphicImage value="/images/icons/delete.gif" style="border:0"/>
+								<f:setPropertyActionListener value="#{item}"
+									target="#{dreProcessosByLoginController.bean.pessoa}" />
+							</a4j:commandLink>
+							<rich:toolTip for="deleteLink"
+								value="#{bundle['_nls.hint.delete']}" />
+						</rich:column>
+
+				</rich:dataTable>
+				
+				<rich:spacer height="15" />
+				
+				<a4j:commandButton
+					action="#{dreProcessosByLoginController.processResourceValidation}" 
+					value="#{bundle['_nls.button.process']}"
+					styleClass="buttonGeneric action-button"
+					disabled="#{dreProcessosByLoginController.isITSupport}">
+				</a4j:commandButton>
+			</h:panelGrid>
+
+			<h:panelGrid columns="1"
+				rendered="#{dreProcessosByLoginController.bean.screenNumber == 2}">
+				<h:outputText
+					value="#{bundle['_nls.dre_log_fechamento.register_pl_he_costs.label']}"
+					styleClass="labelGeneric" />
+				<h:outputText value="(#{bundle['_nsl.msg.warn.take_fill_minuts']})" />
+
+				<rich:spacer height="5" />
+
+				<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+					<a4j:commandButton id="btnOk"
+						value="#{bundle['_nls.button.register']}"
+						action="#{dreProcessosByLoginController.processDutyHoursAndOvertime}"
+						styleClass="buttonSpecific" onclick="this.disabled=true"
+                        disabled="#{dreProcessosByLoginController.isITSupport}">
+					</a4j:commandButton>
+					<rich:spacer height="5" width="10" />
+					<a4j:commandButton action="#{dreProcessosByLoginController.cancel}"
+						id="btnCancel" value="#{bundle['_nls.button.cancel']}"
+						styleClass="buttonGeneric"
+                        disabled="#{dreProcessosByLoginController.isITSupport}"/>
+				</h:panelGrid>
+			</h:panelGrid>
+
+			<h:panelGrid columns="1"
+				rendered="#{dreProcessosByLoginController.bean.screenNumber == 3}">
+				<h:outputText
+					value="#{bundle['_nls.dre_log_fechamento.consolidate_dre.label']}"
+					styleClass="labelGeneric" />
+
+				<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+					<a4j:commandButton
+						action="#{dreProcessosByLoginController.processSetExchangeRates}"
+						value="#{bundle['_nls.button.consolidate']}"
+						styleClass="buttonSpecific"
+						disabled="#{dreProcessosByLoginController.isITSupport}"/>
+					<rich:spacer height="5" width="10" />
+					<a4j:commandButton action="#{dreProcessosByLoginController.cancel}"
+						value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric"
+                        disabled="#{dreProcessosByLoginController.isITSupport}"/>
+				</h:panelGrid>
+			</h:panelGrid>
+		</h:form>
+		<script>
+		   jQuery(".buttonGeneric").click(function() {
+               jQuery(".process-execution").show();
+           });
+		   jQuery(".buttonSpecific").click(function() {
+               jQuery(".process-execution").show();
+           });
+        </script>
+	</ui:define>
+</ui:composition>
+</html>

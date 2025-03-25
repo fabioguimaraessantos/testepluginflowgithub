@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<rich:modalPanel id="removeItResourcePanel" autosized="true" width="200">
+        <f:facet name="header">
+            <h:outputText value="#{bundle['_nls.title.confirmation']}" style="padding-right:15px;" />
+        </f:facet>
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="/images/icons/close.gif" styleClass="hidelink" id="hideChbPessPerPesslinkDeleteAll" />
+                <rich:componentControl for="removeItResourcePanel" attachTo="hideChbPessPerPesslinkDeleteAll" 
+                		operation="hide" event="onclick" />
+            </h:panelGroup>
+        </f:facet>
+        <h:form>
+            <table width="100%">
+                <tbody>
+                	<tr>
+                		<td colspan="2">
+                			<h:outputText value="#{bundle['_nls.title.delete_all']}" style="padding-right:15px;" />
+                		</td>
+                	</tr>
+                    <tr>
+                        <td align="center" width="50%">
+                			<a4j:commandButton value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+                    				action="#{chargebackController.removeAllSelectedRowPerPessoa}"
+                    				oncomplete="#{rich:component('removeItResourcePanel')}.hide();"
+                    				reRender="removeItResourcePanel,chargebackTable,chargebackPessTable,errorMsgId" 
+                    				limitToList="true" styleClass="buttonGeneric"/>
+                        </td>
+                        <td align="center" width="50%">
+                			<a4j:commandButton limitToList="true"
+                				value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric"
+                    			oncomplete="#{rich:component('removeItResourcePanel')}.hide(); return false;" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </h:form>
+</rich:modalPanel>
+
+
+</html>

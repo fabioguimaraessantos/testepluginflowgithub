@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition>
+
+	<!-- Formulario -->
+
+	<h:panelGrid columns="4">
+
+		<h:outputText value="#{bundle['_nls.travel_budget.label.name']}*: "
+			styleClass="labelGeneric" />
+		<h:inputText size="30"
+			value="#{orcDespesaClController.bean.to.orcamentoDespesa.nomeOrcDespesa}" immediate="true"
+			required="true" label="#{bundle['_nls.travel_budget.label.name']}"
+			disabled="#{orcDespesaClController.bean.isITSupport}" />
+
+		<rich:spacer width="1" />
+		<rich:spacer width="1" />
+
+		<h:outputText value="#{bundle['_nls.travel.budget.label.moeda']}*: "
+			styleClass="labelGeneric" />
+		<rich:comboBox required="true"
+			suggestionValues="#{orcDespesaClController.bean.listaMoedaCombobox}"
+			value="#{orcDespesaClController.bean.moedaSelecionda}"
+			label="#{bundle['_nls.travel.budget.label.moeda']}"
+			disabled="#{orcDespesaClController.bean.isITSupport}">
+		</rich:comboBox>
+
+		<h:outputText value="#{bundle['_nls.travel_budget.label.value']}*: "
+			styleClass="labelGeneric" />
+		<h:inputText id="valor"
+			value="#{orcDespesaClController.bean.to.orcamentoDespesa.valorOrcado}"
+			required="true" label="#{bundle['_nls.travel_budget.label.value']}"
+			disabled="#{orcDespesaClController.bean.isITSupport}">
+			<rich:jQuery selector="#valor"
+				query="setMask('#{bundle['jquery.monetary.pattern']}')"
+				timing="onload" />
+			<f:convertNumber locale="#{bundle['locale.en_us']}"
+				pattern="#{systemProperties['pattern.number']}" />
+		</h:inputText>
+
+
+		<h:outputText value="#{bundle['_nls.travel_budget.label.date']}*: "
+			styleClass="labelGeneric" />
+		<rich:calendar
+			value="#{orcDespesaClController.bean.to.orcamentoDespesa.dataInicio}"
+			locale="#{bundle['_nls.calendar.locale']}" required="true"
+			datePattern="#{bundle['_nls.date.pattern']}" enableManualInput="true"
+			showApplyButton="false" style="width:150px"
+			label="#{bundle['_nls.travel_budget.label.date']}"
+			disabled="#{orcDespesaClController.bean.isITSupport}"/>
+		<h:outputText value="#{bundle['_nls.travel.budget.label.until']}*: "
+			styleClass="labelGeneric" />
+		<rich:calendar
+			value="#{orcDespesaClController.bean.to.orcamentoDespesa.dataFim}"
+			locale="#{bundle['_nls.calendar.locale']}" required="true"
+			datePattern="#{bundle['_nls.date.pattern']}" enableManualInput="true"
+			showApplyButton="false" style="width:150px"
+			label="#{bundle['_nls.travel.budget.label.until']}"
+			disabled="#{orcDespesaClController.bean.isITSupport}"/>
+
+		<h:outputText
+			value="#{bundle['_nls.travel.budget.label.tipo_fatura']}: "
+			styleClass="labelGeneric" rendered="true" />
+		<rich:comboBox
+			value="#{orcDespesaClController.bean.to.indicadorTipoFatura}"
+			label="#{bundle['_nls.travel.budget.label.tipo_fatura']}"
+			converter="TipoFaturamentoMsaTBConverter"
+			disabled="#{orcDespesaClController.bean.isITSupport}">
+			<f:selectItem itemValue="ND" />
+			<f:selectItem itemValue="NF" />
+		</rich:comboBox>
+
+	</h:panelGrid>
+
+
+	<!-- Reembolso -->
+	<!-- Orc Extra -->
+	<a4j:region>
+		<h:panelGrid columns="2">
+			<h:outputText
+				value="#{bundle['_nls.travel.budget.label.reembolso']}: "
+				styleClass="labelGeneric" />
+			<h:selectBooleanCheckbox styleClass="noMargin"
+				value="#{orcDespesaClController.bean.isOrcDespesaClReembolsavel}"
+				disabled="#{orcDespesaClController.bean.isITSupport}">
+				<a4j:support event="onclick"
+						action="#{orcDespesaClController.prepareInvoiceTypeCombobox}"
+						reRender="invoiceTypeCombo, errorMsgId" limitToList="true" />
+			</h:selectBooleanCheckbox>
+			<sec:ifAnyGranted roles="BUS.CLIENT.TRAVEL_BUDGET.EXTRA:ED, BUS.CLIENT.TRAVEL_BUDGET.EXTRA:VW">
+				<h:outputText value="#{bundle['_nls.travel.budget.label.extra']}: "
+					styleClass="labelGeneric" />
+				<h:selectBooleanCheckbox styleClass="noMargin"
+					value="#{orcDespesaClController.bean.isOrcDespesaExtra}"
+					disabled="#{orcDespesaClController.bean.isITSupport}"/>
+			</sec:ifAnyGranted>
+		</h:panelGrid>
+	</a4j:region>
+
+	<rich:spacer height="8" />
+
+	<!-- PickList -->
+	<h:panelGrid columns="1" id="teste">
+		<h:outputText value="#{bundle['_nls.travel.budget.label.clobs']}: "
+			styleClass="labelGeneric" />
+		<rich:pickList targetListWidth="400" sourceListWidth="400"
+			listsHeight="120" label="#{bundle['_nls.travel.budget.label.clobs']}"
+			value="#{orcDespesaClController.bean.grantedCLobPickList}"
+			required="true"
+		    disabled="#{orcDespesaClController.bean.isITSupport}">
+			<f:selectItems
+				value="#{orcDespesaClController.bean.contratoPraticaPickList}" />
+		</rich:pickList>
+	</h:panelGrid>
+</ui:composition>
+</html>

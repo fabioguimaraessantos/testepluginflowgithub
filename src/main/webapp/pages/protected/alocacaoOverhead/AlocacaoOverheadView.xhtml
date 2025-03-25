@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:outputText value="#{bundle['_nls.alocacao_overhead.pessoa.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel
+		value="#{alocacaoOverheadController.bean.to.pessoa.codigoLogin}"
+		for="codigoLogin" />
+
+	<h:outputText
+		value="#{bundle['_nls.alocacao_overhead.tipo_overhead.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel
+		value="#{alocacaoOverheadController.bean.to.tipoOverhead.nomeTipoOverhead}"
+		for="nomeTipoOverhead" />
+
+	<h:outputText
+		value="#{bundle['_nls.alocacao_overhead.data_inicio.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{alocacaoOverheadController.bean.to.dataInicio}"
+		for="dataInicio">
+		<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}"
+			locale="#{bundle['locale.en_us']}" />
+	</h:outputLabel>
+
+	<h:outputText
+		value="#{bundle['_nls.alocacao_overhead.data_fim.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel value="#{alocacaoOverheadController.bean.to.dataFim}"
+		for="dataFim">
+		<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}"
+			locale="#{bundle['locale.en_us']}" />
+	</h:outputLabel>
+
+	<h:outputText
+		value="#{bundle['_nls.alocacao_overhead.indicador_status.label']}"
+		styleClass="labelGeneric"></h:outputText>
+	<h:outputLabel
+		value="#{alocacaoOverheadController.bean.to.indicadorStatus}"
+		for="indicadorStatus" converter="AlocacaoOverheadConverter" />
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

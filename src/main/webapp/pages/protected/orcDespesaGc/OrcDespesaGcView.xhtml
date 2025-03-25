@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+    <ui:define name="titleForm">
+        #{bundle['_nls.title.travel.budget']} &gt; #{bundle['_nls.travel_budget.label.view']}
+    </ui:define>
+
+    <ui:define name="bodyForm">
+        <rich:spacer height="0" width="560" styleClass="noMargin" />
+        <!-- Informacoes do Travel Budget -->
+        <h:form>
+            <h:panelGrid columns="2">
+
+                <h:outputText value="#{bundle['_nls.title.travel.budget']}: "
+                              styleClass="labelGeneric" />
+                <h:outputLabel
+                        value="#{orcDespesaGcController.bean.to.orcamentoDespesa.nomeOrcDespesa}" />
+
+                <h:outputText value="#{bundle['_nls.travel.budget.label.tb_purpose']}"
+                              styleClass="labelGeneric" />
+
+                <h:outputText value="#{orcDespesaGcController.bean.to.orcamentoDespesa.tbPurpose}" converter="TBPurposeConverter" />
+
+                <h:outputText value="#{bundle['_nls.travel.budget.label.moeda']}: "
+                              styleClass="labelGeneric" />
+                <h:outputText
+                        value="#{orcDespesaGcController.bean.to.orcamentoDespesa.moeda.siglaMoeda}">
+                </h:outputText>
+
+                <h:outputText value="#{bundle['_nls.travel_budget.label.value']}: "
+                              styleClass="labelGeneric" />
+                <h:outputText
+                        value="#{orcDespesaGcController.bean.to.orcamentoDespesa.valorOrcado}">
+                    <f:convertNumber locale="#{bundle['locale.en_us']}"
+                                     pattern="#{systemProperties['pattern.number']}" />
+                </h:outputText>
+
+                <h:outputText
+                        value="#{bundle['_nls.travel.budget.label.data_inicio']}: "
+                        styleClass="labelGeneric" />
+                <h:outputLabel
+                        value="#{orcDespesaGcController.bean.to.orcamentoDespesa.dataInicio}">
+                    <f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+                </h:outputLabel>
+
+                <h:outputText
+                        value="#{bundle['_nls.travel.budget.label.data_fim']}: "
+                        styleClass="labelGeneric" />
+                <h:outputLabel value="#{orcDespesaGcController.bean.to.orcamentoDespesa.dataFim}">
+                    <f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+                </h:outputLabel>
+
+            </h:panelGrid>
+        </h:form>
+
+        <rich:spacer height="5" />
+
+        <h:form>
+            <a4j:commandButton
+                    action="#{orcDespesaGcController.prepareOrcDespesaGc}"
+                    value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric"
+                    immediate="true" />
+        </h:form>
+
+        <rich:spacer height="10" />
+
+    </ui:define>
+
+</ui:composition>
+
+</html>

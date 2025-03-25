@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.perfil_padrao.configure']}
+   	</ui:define>
+
+
+	<ui:define name="bodyForm">
+		<a4j:keepAlive beanName="itemTabPerPadraoBean" />
+		<a4j:loadScript src="/js/jquery.meio.mask.js" />
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<!-- Detalhes da price table -->
+		<h:panelGrid columns="5">
+			<h:outputText
+				value="#{bundle['_nls.item_tabela_preco.tabela_preco.label']}:"
+				styleClass="labelGeneric" />
+			<h:outputText
+				value="#{tabelaPerfilPadraoController.bean.to.nomeTabPerfilPadrao}" />
+			<rich:spacer width="5" />
+			<h:outputText value="#{bundle['_nls.tipo_contrato.moeda.label']}:"
+				styleClass="labelGeneric" />
+			<h:outputText
+				value="#{tabelaPerfilPadraoController.bean.to.moeda.nomeMoeda}" />
+
+		</h:panelGrid>
+		<h:panelGrid columns="5">
+			<h:outputText
+				value="#{bundle['_nls.cpcl.data_inicio_vigencia.label']}:"
+				styleClass="labelGeneric">
+
+			</h:outputText>
+			<h:outputText
+				value="#{tabelaPerfilPadraoController.bean.to.dataInicio}">
+				<f:convertDateTime pattern="MMM/yyyy" />
+			</h:outputText>
+
+			<rich:spacer width="20px" />
+
+			<h:outputText value="#{bundle['_nls.cpcl.data_fim_vigencia.label']}:"
+				styleClass="labelGeneric" />
+			<h:outputText value="#{tabelaPerfilPadraoController.bean.to.dataFim}">
+				<f:convertDateTime pattern="MMM/yyyy" />
+			</h:outputText>
+		</h:panelGrid>
+
+		<rich:spacer height="15px" />
+
+		<!-- Formulario add item -->
+		<h:form>
+			<sec:ifAnyGranted roles="BUS.DEFAULT_PRICE_TABLE:CR">
+				<h:panelGrid columns="6">
+
+
+					<h:outputText
+						value="#{bundle['_nls.perfil_padrao.item.position_pmg']}*: "
+						styleClass="labelGeneric" />
+					<rich:comboBox id="cargoCombo"
+						label="#{bundle['_nls.perfil_padrao.item.position_pmg']}"
+						suggestionValues="#{tabelaPerfilPadraoController.bean.listaCargoCombobox}"
+						value="#{tabelaPerfilPadraoController.beanItemTabPerPadrao.cargo}"
+						width="200" required="true">
+
+					</rich:comboBox>
+
+					<rich:spacer width="15px" />
+					<rich:spacer width="0px" />
+
+					<h:outputText value="#{bundle['_nls.perfil_padrao.item.pmg']}*: "
+						styleClass="labelGeneric" />
+					<rich:comboBox id="pmgCombo"
+						label="#{bundle['_nls.perfil_padrao.item.pmg']}"
+						suggestionValues="#{tabelaPerfilPadraoController.bean.listaPmgCombobox}"
+						value="#{tabelaPerfilPadraoController.beanItemTabPerPadrao.pmg}"
+						required="true">
+					</rich:comboBox>
+
+
+					<h:outputText value="#{bundle['_nls.perfil_padrao.item.base']}*: "
+						styleClass="labelGeneric" />
+					<rich:comboBox id="baseCombo"
+						label="#{bundle['_nls.perfil_padrao.item.base']}"
+						suggestionValues="#{tabelaPerfilPadraoController.bean.listaCidadeBaseCombobox}"
+						value="#{tabelaPerfilPadraoController.beanItemTabPerPadrao.base}"
+						required="true">
+
+					</rich:comboBox>
+
+
+					<rich:spacer width="15px" />
+
+					<h:outputText
+						value="#{bundle['_nls.perfil_padrao.item.rateHour']}*: "
+						styleClass="labelGeneric" />
+					<h:outputText value="#{tabelaPerfilPadraoController.bean.moeda}" />
+					<h:inputText
+						value="#{tabelaPerfilPadraoController.beanItemTabPerPadrao.valor}"
+						id="valor" required="true">
+						<rich:jQuery selector="#valor"
+							query="setMask('#{bundle['jquery.monetary.pattern']}')"
+							timing="onload" />
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:inputText>
+				</h:panelGrid>
+			</sec:ifAnyGranted>
+			<rich:spacer height="15px" />
+
+			<h:panelGrid columns="2">
+				<a4j:commandButton action="#{tabelaPerfilPadraoController.prepareAdd}"
+					value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric"
+					immediate="true" />
+				<sec:ifAnyGranted roles="BUS.DEFAULT_PRICE_TABLE:ED">
+				<a4j:commandButton
+					action="#{tabelaPerfilPadraoController.createItemTabPerPadrao}"
+					value="#{bundle['_nls.button.add']}" styleClass="buttonGeneric"
+					reRender="lista" />
+				</sec:ifAnyGranted>
+			</h:panelGrid>
+
+
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="itemTabPerPadraoBean" />
+
+			<rich:dataTable
+				value="#{tabelaPerfilPadraoController.beanItemTabPerPadrao.listaItemTabPerPadrao}"
+				var="item" id="lista" width="100%"
+				rows="#{systemProperties['research.size.page.result']}"
+				rowKeyVar="row">
+
+				<rich:column sortBy="#{item.perfilPadrao.cargoPms.nomeCargoPms}"
+					style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.perfil_padrao.item.position_pmg']}" />
+					</f:facet>
+
+					<h:outputText value="#{item.perfilPadrao.cargoPms.nomeCargoPms}" />
+				</rich:column>
+
+				<rich:column
+					sortBy="#{item.perfilPadrao.pmg.nomePmg}"
+					style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.perfil_padrao.item.pmg']}" />
+					</f:facet>
+
+					<h:outputText value="#{item.perfilPadrao.pmg.nomePmg}" />
+				</rich:column>
+
+				<rich:column
+					sortBy="#{item.perfilPadrao.cidadeBase.siglaCidadeBase}"
+					style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.perfil_padrao.item.base']}" />
+					</f:facet>
+
+					<h:outputText
+						value="#{item.perfilPadrao.cidadeBase.siglaCidadeBase}" />
+				</rich:column>
+
+				<rich:column sortBy="#{item.valorPrecoPadrao}"
+					style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText
+							value="#{bundle['_nls.perfil_padrao.item.rateHour.default']}" />
+					</f:facet>
+					<h:outputLabel value="#{tabelaPerfilPadraoController.bean.moeda}" />
+					<h:inputText value="#{item.valorPrecoPadrao}"
+						label="#{bundle['_nls.perfil_padrao.item.rateHour.default']}"
+						id="valorPrecoPadrao" dir="RTL" style="width: 60px">
+						<rich:jQuery selector="#valorPrecoPadrao"
+							query="setMask('#{bundle['jquery.monetary.pattern']}')"
+							timing="onload" />
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:inputText>
+
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.actions.label']}" />
+					</f:facet>
+					<sec:ifAnyGranted roles="BUS.DEFAULT_PRICE_TABLE:ED">
+					<!-- Botao delete da tabela -->
+					<a4j:commandLink ajaxSingle="true" id="deleteLink"
+						oncomplete="#{rich:component('deleteItemPanel')}.show()">
+						<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+						<f:setPropertyActionListener value="#{item}"
+							target="#{tabelaPerfilPadraoController.beanItemTabPerPadrao.to}" />
+					</a4j:commandLink>
+					<rich:toolTip for="deleteLink"
+						value="#{bundle['_nls.hint.delete']}" />
+					</sec:ifAnyGranted>
+				</rich:column>
+
+
+
+
+				<f:facet name="footer">
+					<rich:datascroller renderIfSinglePage="false"
+						maxPages="#{systemProperties['research.size.page.maxpages']}"
+						page="#{tabelaPerfilPadraoController.beanItemTabPerPadrao.currentPageId}" />
+				</f:facet>
+			</rich:dataTable>
+			<rich:spacer height="25px" />
+			<sec:ifAnyGranted roles="BUS.DEFAULT_PRICE_TABLE:ED">
+				<a4j:commandButton value="#{bundle['_nls.button.save']}"
+					reRender="lista" action="#{tabelaPerfilPadraoController.updateList}"
+					styleClass="buttonGeneric" />
+			</sec:ifAnyGranted>
+		</h:form>
+
+
+		<!-- Modal do delete -->
+		<rich:modalPanel id="deleteItemPanel" autosized="true"
+			width="200">
+			<f:facet name="header">
+				<h:outputText value="#{bundle['_nls.title.confirmation']}"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="hidelinkDeleteItemPanel" />
+					<rich:componentControl for="deleteItemPanel"
+						attachTo="deleteItemPanel" operation="hide"
+						event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+
+			<h:outputText value="Delete this item of Default Price Table?"
+				style="padding-right:15px;" />
+			<h:form>
+				<rich:spacer height="5" />
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+								action="#{tabelaPerfilPadraoController.deleteItemTabPerPadrao}"
+								oncomplete="#{rich:component('deleteItemPanel')}.hide();"
+								styleClass="buttonGeneric" /></td>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.cancel']}"
+								styleClass="buttonGeneric"
+								action="#{tabelaPerfilPadraoController.prepareItemTabelaPerfilPadrao}"
+								oncomplete="#{rich:component('deleteItemPanel')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

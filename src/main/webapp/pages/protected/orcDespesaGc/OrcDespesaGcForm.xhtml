@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<!-- Formulario -->
+
+	<h:panelGrid columns="4">
+		<h:outputText
+				value="#{bundle['_nls.travel_budget.label.name']}*: "
+				styleClass="labelGeneric" />
+		<h:inputText
+				size="30"
+				value="#{orcDespesaGcController.bean.to.orcamentoDespesa.nomeOrcDespesa}"
+				immediate="true"
+				required="true" label="#{bundle['_nls.travel_budget.label.name']}"
+				disabled="#{orcDespesaGcController.bean.isITSupport || orcDespesaGcController.bean.disabledTravelBudget}"/>
+
+		<rich:spacer width="1" />
+		<rich:spacer width="1" />
+
+		<h:outputText
+				value="#{bundle['_nls.travel.budget.label.moeda']}*: "
+			    styleClass="labelGeneric" />
+		<rich:comboBox
+				required="true"
+				suggestionValues="#{orcDespesaGcController.bean.listaMoedaCombobox}"
+				disabled="#{orcDespesaGcController.bean.disabledTravelBudget}"
+				value="#{orcDespesaGcController.bean.moeda}" label="#{bundle['_nls.travel.budget.label.moeda']}">
+		</rich:comboBox>
+
+		<h:outputText
+				value="#{bundle['_nls.travel_budget.label.value']}*: "
+				styleClass="labelGeneric" />
+		<h:inputText
+				id="valor"
+				value="#{orcDespesaGcController.bean.to.orcamentoDespesa.valorOrcado}"
+				required="true" label="#{bundle['_nls.travel_budget.label.value']}"
+				disabled="#{orcDespesaGcController.bean.isITSupport || orcDespesaGcController.bean.disabledTravelBudget}">
+			<rich:jQuery
+					selector="#valor"
+					query="setMask('#{bundle['jquery.monetary.pattern']}')"
+					timing="onload" />
+			<f:convertNumber
+					locale="#{bundle['locale.en_us']}"
+					pattern="#{systemProperties['pattern.number']}" />
+		</h:inputText>
+
+		<h:outputText
+				value="#{bundle['_nls.travel_budget.label.date']}*: "
+				styleClass="labelGeneric" />
+		<rich:calendar
+				value="#{orcDespesaGcController.bean.to.orcamentoDespesa.dataInicio}"
+				locale="#{bundle['_nls.calendar.locale']}"
+				required="true"
+				datePattern="#{bundle['_nls.date.pattern']}"
+				enableManualInput="true"
+				showApplyButton="false" style="width:150px"
+				label="#{bundle['_nls.travel_budget.label.date']}"
+				disabled="#{orcDespesaGcController.bean.isITSupport || orcDespesaGcController.bean.disabledTravelBudget}"/>
+
+		<h:outputText
+				value="#{bundle['_nls.travel.budget.label.until']}*: "
+				styleClass="labelGeneric" />
+		<rich:calendar
+				value="#{orcDespesaGcController.bean.to.orcamentoDespesa.dataFim}"
+				locale="#{bundle['_nls.calendar.locale']}"
+				required="true"
+				datePattern="#{bundle['_nls.date.pattern']}"
+				enableManualInput="true"
+				showApplyButton="false"
+				style="width:150px"
+				label="#{bundle['_nls.travel.budget.label.until']}"
+				disabled="#{orcDespesaGcController.bean.isITSupport || orcDespesaGcController.bean.disabledTravelBudget}"/>
+
+		<h:outputText
+				value="#{bundle['_nls.travel.budget.label.tb_purpose']}*: "
+				styleClass="labelGeneric" />
+		<h:panelGroup>
+			<rich:comboBox
+					required="true"
+					enableManualInput="false"
+					value="#{orcDespesaGcController.bean.to.orcamentoDespesa.tbPurpose}"
+					label="#{bundle['_nls.travel.budget.label.tb_purpose']}"
+					directInputSuggestions="true"
+					converter="TBPurposeConverter" style="padding:2px;float:left;"
+					disabled="#{orcDespesaGcController.bean.isITSupport || orcDespesaGcController.bean.disabledTravelBudget}">
+				<f:selectItem itemValue="GE" />
+				<f:selectItem itemValue="BE" />
+			</rich:comboBox>
+			<rich:toolTip
+					for="tbPurposeInfo">#{bundle['_nls.travel.budget.tb.purpose.tooltip']}
+			</rich:toolTip>
+			<h:graphicImage
+					id="tbPurposeInfo"
+					value="/images/icons/info.gif"
+					style="border:0;padding:5px;"/>
+		</h:panelGroup>
+
+	</h:panelGrid>
+
+	<rich:spacer height="8" />
+</ui:composition>
+</html>

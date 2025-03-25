@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:rich="http://richfaces.org/rich"
+	  xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		#{bundle['_nls.travel.budget.delegation.menu.titulo']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<a4j:keepAlive beanName="orcDespesaDelegacaoBean" />
+
+		<h:form>
+			<rich:dataTable width="100%" id="lista"
+							value="#{orcDespesaDelegacaoController.bean.listOrcamentoDespesaRow}"
+							var="item" rowKeyVar="row">
+
+				<rich:column sortBy="#{item.orcDespesa.nomeOrcDespesa}"
+							 style="text-align: left;">
+					<f:facet name="header">
+						<h:outputText
+								value="#{bundle['_nls.travel_budget.label.name']}"/>
+					</f:facet>
+					<h:outputText value="#{item.orcDespesa.nomeOrcDespesa}" />
+				</rich:column>
+
+				<rich:column sortBy="#{item.orcDespesa.tpOrcDesp}"
+							 style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText
+								value="#{bundle['_nls.travel.budget.delegation.type']}" />
+					</f:facet>
+					<h:outputText value="#{item.orcDespesa.tpOrcDesp}" converter="TipoOrcDespesaConverter"/>
+				</rich:column>
+
+				<rich:column sortBy="#{item.nomeClientOrCostgroup}"
+							 style="text-align: left;">
+					<f:facet name="header">
+						<h:outputText
+								value="#{bundle['_nls.travel.budget.delegation.client_costGroup']}" />
+					</f:facet>
+					<h:outputText value="#{item.nomeClientOrCostgroup}"/>
+				</rich:column>
+
+
+				<rich:column sortBy="#{item.orcDespesa.dataInicio}">
+					<f:facet name="header">
+						<h:outputText
+								value="#{bundle['_nls.travel.budget.label.data_inicio']}" />
+					</f:facet>
+					<h:outputText value="#{item.orcDespesa.dataInicio}">
+						<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column sortBy="#{item.orcDespesa.dataFim}">
+					<f:facet name="header">
+						<h:outputText
+								value="#{bundle['_nls.travel.budget.label.data_fim']}" />
+					</f:facet>
+					<h:outputText value="#{item.orcDespesa.dataFim}">
+						<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+					</h:outputText>
+				</rich:column>
+
+
+				<rich:column style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText
+								value="#{bundle['_nls.travel.budget.label.actions']}" />
+					</f:facet>
+
+					<!-- Botao WhiteList -->
+					<a4j:commandLink id="whiteListLink"
+									 action="#{orcDespesaDelegacaoController.prepareWhiteList}">
+						<h:graphicImage value="/images/icons/white_list.png" height="16px"
+										width="16px" />
+						<f:setPropertyActionListener value="#{item.orcDespesa}"
+													 target="#{orcDespesaDelegacaoController.bean.to}" />
+					</a4j:commandLink>
+					<rich:toolTip for="whiteListLink"
+								  value="#{bundle['_nls.travel.budget.label.white_list']}" />
+
+					<!-- Botao Follow -->
+					<a4j:commandLink ajaxSingle="true" id="followLink"
+									 action="#{orcDespesaDelegacaoController.followGrupoCusto}"
+									 rendered="#{orcDespesaDelegacaoController.bean.mapFollowGrupoCusto[item.orcDespesa.orcDespesaGcs[0].grupoCusto.codigoGrupoCusto] == null &amp;&amp;
+									  			 item.orcDespesa.tpOrcDesp == 'GC'}">
+						<h:graphicImage value="/images/icons/follow_gray.png" />
+						<f:setPropertyActionListener value="#{item.orcDespesa.codigoOrcaDespesa}"
+													 target="#{orcDespesaDelegacaoController.bean.currentRowId}" />
+					</a4j:commandLink>
+					<rich:toolTip for="followClLink"
+								  value="GC" />
+
+					<a4j:commandLink ajaxSingle="true" id="followClLink"
+									 action="#{orcDespesaDelegacaoController.followGrupoCusto}"
+									 rendered="#{orcDespesaDelegacaoController.bean.mapFollowGrupoCusto[item.orcDespesa.orcDespesaCls[0].orcamentoDespesa.codigoOrcaDespesa] == null &amp;&amp;
+									  			 item.orcDespesa.tpOrcDesp == 'CL'}">
+						<h:graphicImage value="/images/icons/follow_gray.png" />
+						<f:setPropertyActionListener value="#{item.orcDespesa.codigoOrcaDespesa}"
+													 target="#{orcDespesaDelegacaoController.bean.currentRowId}" />
+					</a4j:commandLink>
+					<rich:toolTip for="followLink"
+								  value="CL" />
+
+					<!-- Botao Unfollow -->
+					<a4j:commandLink ajaxSingle="true" id="unfollowLink"
+									 action="#{orcDespesaDelegacaoController.unfollowGrupoCusto}"
+									 rendered="#{orcDespesaDelegacaoController.bean.mapFollowGrupoCusto[item.orcDespesa.orcDespesaGcs[0].grupoCusto.codigoGrupoCusto] != null &amp;&amp;
+									  			 item.orcDespesa.tpOrcDesp == 'GC'}">
+						<h:graphicImage url="/images/icons/follow.png"
+										onmouseover="onMouseOver(this);" onmouseout="onMouseOut(this);" />
+						<f:setPropertyActionListener value="#{item.orcDespesa.codigoOrcaDespesa}"
+													 target="#{orcDespesaDelegacaoController.bean.currentRowId}"/>
+					</a4j:commandLink>
+					<rich:toolTip for="unfollowClLink"
+								  value="#{bundle['_nls.hint.unfollow']}" />
+
+					<a4j:commandLink ajaxSingle="true" id="unfollowClLink"
+									 action="#{orcDespesaDelegacaoController.unfollowGrupoCusto}"
+									 rendered="#{orcDespesaDelegacaoController.bean.mapFollowGrupoCusto[item.orcDespesa.orcDespesaCls[0].orcamentoDespesa.codigoOrcaDespesa] != null &amp;&amp;
+									  			 item.orcDespesa.tpOrcDesp == 'CL'}">
+						<h:graphicImage url="/images/icons/follow.png"
+										onmouseover="onMouseOver(this);" onmouseout="onMouseOut(this);" />
+						<f:setPropertyActionListener value="#{item.orcDespesa.codigoOrcaDespesa}"
+													 target="#{orcDespesaDelegacaoController.bean.currentRowId}"/>
+					</a4j:commandLink>
+					<rich:toolTip for="unfollowLink"  value="#{bundle['_nls.hint.unfollow']}" />
+
+				</rich:column>
+				<f:facet name="footer">
+					<h:outputText value="No Travel Budgets"
+								  rendered="#{empty orcDespesaDelegacaoController.bean.listOrcamentoDespesaRow}"
+								  style="font-style: italic;" />
+				</f:facet>
+
+
+
+			</rich:dataTable>
+
+
+
+
+		</h:form>
+
+
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

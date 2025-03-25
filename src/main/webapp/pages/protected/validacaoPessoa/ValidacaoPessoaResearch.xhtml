@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.validacao_pessoa.mapa_alocacao']} &gt; #{bundle['_nls.menu.validacao_pessoa.my_managed']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:loadScript src="/js/utils.js" />
+
+			<h:panelGrid columns="5">
+				<h:outputText value="#{bundle['_nls.mes.label']}*: "
+					styleClass="labelGeneric" />
+				<rich:spacer height="5" width="5" />
+				<rich:comboBox id="mes" required="true"
+					label="#{bundle['_nls.mes.label']}"
+					value="#{validacaoPessoaController.bean.selectedMonthDate}"
+					suggestionValues="#{validacaoPessoaController.bean.dataMesList}"
+					directInputSuggestions="true" width="80">
+				</rich:comboBox>
+				<rich:spacer height="5" width="5" />
+				<a4j:commandButton value="#{bundle['_nls.button.search']}"
+					styleClass="buttonGeneric" reRender="validacaoTable"
+					action="#{validacaoPessoaController.findAllMyManagedByDataMes}"
+					type="submit" />
+			</h:panelGrid>
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<a4j:keepAlive beanName="validacaoPessoaBean" />
+			<a4j:outputPanel id="validacaoPanel">
+				<rich:dataTable
+					value="#{validacaoPessoaController.bean.rowResultList}" var="item"
+					rendered="#{!empty validacaoPessoaController.bean.rowResultList}"
+					width="100%" id="validacaoTable">
+					<rich:column style="text-align: center;" width="50">
+						<f:facet name="header">
+							<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+								<a4j:region>
+									<h:outputLabel value="#{bundle['_nls.all.label']}"
+										styleClass="linkGeneric"
+										onclick="javascript: checkAllCheckbox();" />
+									<rich:spacer height="5" width="5" />
+									<h:outputText value="/" styleClass="labelGeneric" />
+									<rich:spacer height="5" width="5" />
+									<h:outputLabel value="#{bundle['_nls.none.label']}"
+										styleClass="linkGeneric"
+										onclick="javascript: uncheckAllCheckbox();" />
+								</a4j:region>
+							</h:panelGrid>
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{item.isSelected}" />
+					</rich:column>
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.validado.label']}" />
+						</f:facet>
+						<h:graphicImage rendered="#{item.isMesValidado}"
+							value="/images/icons/passed.gif" style="border:0" />
+
+					</rich:column>
+					<rich:column sortBy="#{item.pessoa.codigoLogin}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.codigo_login.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.pessoa.codigoLogin}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.percentualAlocado}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.percentual_alocado.label']}" />
+						</f:facet>
+						<h:outputText rendered="#{item.isMesValidado}"
+							value="#{item.percentualAlocado}" converter="PercentConverter" />
+						<h:outputText rendered="#{!item.isMesValidado}"
+							value="#{item.percentualAlocado}" converter="PercentConverter"
+							styleClass="colorRed" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.percentualDisponivelMes}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.percentual_alocavel.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.percentualDisponivelMes}"
+							converter="PercentConverter" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.indStatusPessGrupoCusto}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.indicador_status.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.indStatusPessGrupoCusto}"
+							converter="PessoaGrupoCustoConverter" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.pessoa.dataMesValidado}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.data_mes_validado.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.pessoa.dataMesValidado}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}"
+								locale="#{bundle['locale.en_us']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.action.label']}" />
+						</f:facet>
+
+						<a4j:commandLink ajaxSingle="false" id="editlink"
+							action="#{validacaoPessoaController.prepareManage}"
+							reRender="validacaoTable">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{validacaoPessoaController.bean.row}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+
+					</rich:column>
+
+					<f:facet name="footer">
+						<h:panelGrid columns="5" cellpadding="0" cellspacing="0">
+							<a4j:commandButton
+								action="#{validacaoPessoaController.validateAll}"
+								limitToList="true" reRender="validacaoTable,errorMsgId"
+								value="#{bundle['_nls.button.validate']}"
+								styleClass="buttonGeneric"
+								rendered="#{empty validacaoPessoaController.bean.delegatedResultList}" />
+
+							<rich:spacer width="5" styleClass="noMargin"
+								rendered="#{empty validacaoPessoaController.bean.delegatedResultList}" />
+
+							<a4j:commandButton
+								action="#{validacaoPessoaController.removeValidateAll}"
+								limitToList="true" reRender="validacaoTable,errorMsgId"
+								value="#{bundle['_nls.button.remove_validation']}"
+								styleClass="buttonGeneric" style=" width : 111px;"
+								rendered="#{empty validacaoPessoaController.bean.delegatedResultList}" />
+
+							<h:outputText
+								value="#{bundle['_nls.pessoa.delegated_to_me.label']}"
+								rendered="#{!empty validacaoPessoaController.bean.delegatedResultList}" />
+						</h:panelGrid>
+					</f:facet>
+				</rich:dataTable>
+				<rich:dataTable
+					value="#{validacaoPessoaController.bean.delegatedResultList}"
+					var="itemDelegated" width="100%" id="validacaoTableDelegated"
+					rendered="#{!empty validacaoPessoaController.bean.delegatedResultList}">
+
+					<rich:column style="text-align: center;" width="50">
+						<h:selectBooleanCheckbox value="#{itemDelegated.isSelected}" />
+					</rich:column>
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.validado.label']}" />
+						</f:facet>
+						<h:graphicImage rendered="#{itemDelegated.isMesValidado}"
+							value="/images/icons/passed.gif" style="border:0" />
+
+					</rich:column>
+					<rich:column sortBy="#{itemDelegated.pessoa.codigoLogin}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.codigo_login.label']}" />
+						</f:facet>
+						<h:outputText value="#{itemDelegated.pessoa.codigoLogin}" />
+					</rich:column>
+
+					<rich:column sortBy="#{itemDelegated.pessoa.codigoLoginMgr}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.pessoa.login_mgr.label']}" />
+						</f:facet>
+						<h:outputText value="#{itemDelegated.pessoa.codigoLoginMgr}" />
+					</rich:column>
+
+					<rich:column sortBy="#{itemDelegated.percentualAlocado}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.percentual_alocado.label']}" />
+						</f:facet>
+						<h:outputText rendered="#{itemDelegated.isMesValidado}"
+							value="#{itemDelegated.percentualAlocado}"
+							converter="PercentConverter" />
+						<h:outputText rendered="#{!itemDelegated.isMesValidado}"
+							value="#{itemDelegated.percentualAlocado}"
+							converter="PercentConverter" styleClass="colorRed" />
+					</rich:column>
+
+					<rich:column sortBy="#{itemDelegated.percentualDisponivelMes}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.percentual_alocavel.label']}" />
+						</f:facet>
+						<h:outputText value="#{itemDelegated.percentualDisponivelMes}"
+							converter="PercentConverter" />
+					</rich:column>
+
+					<rich:column sortBy="#{itemDelegated.indStatusPessGrupoCusto}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.indicador_status.label']}" />
+						</f:facet>
+						<h:outputText value="#{itemDelegated.indStatusPessGrupoCusto}"
+							converter="PessoaGrupoCustoConverter" />
+					</rich:column>
+
+					<rich:column sortBy="#{itemDelegated.pessoa.dataMesValidado}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.data_mes_validado.label']}" />
+						</f:facet>
+						<h:outputText value="#{itemDelegated.pessoa.dataMesValidado}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}"
+								locale="#{bundle['locale.en_us']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.validacao_pessoa.action.label']}" />
+						</f:facet>
+
+						<a4j:commandLink ajaxSingle="false" id="editLinkDelegate"
+							action="#{validacaoPessoaController.prepareManage}"
+							reRender="validacaoTable">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{itemDelegated}"
+								target="#{validacaoPessoaController.bean.row}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editLinkDelegate"
+							value="#{bundle['_nls.hint.edit']}" />
+
+					</rich:column>
+
+					<f:facet name="footer">
+						<h:panelGrid columns="5" cellpadding="0" cellspacing="0"
+							rendered="#{!empty validacaoPessoaController.bean.delegatedResultList}">
+							<a4j:commandButton
+								action="#{validacaoPessoaController.validateAll}"
+								limitToList="true"
+								reRender="validacaoTable,errorMsgId,validacaoTableDelegated"
+								value="#{bundle['_nls.button.validate']}"
+								styleClass="buttonGeneric" />
+
+							<rich:spacer width="5" styleClass="noMargin" />
+
+							<a4j:commandButton
+								action="#{validacaoPessoaController.removeValidateAll}"
+								limitToList="true"
+								reRender="validacaoTable,errorMsgId,validacaoTableDelegated"
+								value="#{bundle['_nls.button.remove_validation']}"
+								styleClass="buttonGeneric" style=" width : 111px;" />
+						</h:panelGrid>
+					</f:facet>
+
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

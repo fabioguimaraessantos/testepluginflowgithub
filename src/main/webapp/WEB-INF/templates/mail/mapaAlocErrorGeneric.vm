@@ -1,0 +1,8 @@
+<html>
+	<body>
+		${time}<br />
+		<br />
+		An error occurred. But do not worry, there is no reason for panic!<br />
+		${message}
+	<body>
+</html>

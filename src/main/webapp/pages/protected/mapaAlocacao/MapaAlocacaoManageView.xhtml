@@ -1,0 +1,467 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+			<h:outputLabel
+				value="#{bundle['_nls.menu.mapa_alocacao']} &gt; #{bundle['_nls.menu.mapa_alocacao.view']}"
+				rendered="#{!mapaAlocacaoController.bean.isRemove}" />
+			<h:outputLabel
+				value="#{bundle['_nls.menu.mapa_alocacao']} &gt; #{bundle['_nls.menu.mapa_alocacao.delete']}"
+				rendered="#{mapaAlocacaoController.bean.isRemove}" />
+		</h:panelGrid>
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+
+			<table>
+				<tr>
+					<td><h:panelGrid columns="2">
+							<h:outputLabel
+								value="#{bundle['_nls.mapa_alocacao.titulo.label']}"
+								styleClass="labelGeneric" />
+							<h:outputLabel
+								value="#{mapaAlocacaoController.bean.to.textoTitulo}" />
+
+							<h:outputLabel
+								value="#{bundle['_nls.mapa_alocacao.contrato_pratica.label']}"
+								styleClass="labelGeneric" />
+							<h:outputLabel
+								value="#{mapaAlocacaoController.bean.to.contratoPratica.nomeContratoPratica}" />
+
+							<h:outputLabel
+								value="#{bundle['_nls.mapa_alocacao.indicador_versao.label']}"
+								styleClass="labelGeneric" />
+							<h:outputLabel
+								value="#{mapaAlocacaoController.bean.to.indicadorVersao}"
+								converter="VersionMapaAlocacaoConverter" />
+
+							<h:outputLabel
+								value="#{bundle['_nls.mapa_alocacao.vigencia.label']}"
+								styleClass="labelGeneric" />
+							<h:panelGrid columns="9" cellpadding="0" cellspacing="0">
+								<h:outputText
+									value="#{mapaAlocacaoController.bean.validityMonthBeg}" />
+								<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+								<h:outputText
+									value="#{mapaAlocacaoController.bean.validityYearBeg}" />
+
+								<rich:spacer height="5" width="5" />
+
+								<h:outputLabel
+									value="#{bundle['_nls.mapa_alocacao.vigencia.until.label']}"
+									styleClass="labelGeneric" />
+
+								<rich:spacer height="5" width="5" />
+
+								<h:outputText
+									value="#{mapaAlocacaoController.bean.validityMonthEnd}" />
+								<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+								<h:outputText
+									value="#{mapaAlocacaoController.bean.validityYearEnd}" />
+							</h:panelGrid>
+						</h:panelGrid></td>
+					<td width="110px"></td>
+					<td>
+						<div
+							style="max-height: 150px; overflow: auto; background-color: #FAE6B0">
+							<rich:panel style="background-color: #CFCFCF">
+								<h:panelGrid columns="4">
+
+									<div
+										style="background-color: #C6E2FF; width: 10px; height: 10px;"></div>
+									<h:outputText
+										value="#{bundle['_nls.perfil_vendido.legend.logical_delete']}" />
+
+									<div
+										style="background-color: #FFDAB9; width: 10px; height: 10px;"></div>
+									<h:outputText
+										value="#{bundle['_nls.mapa_alocacao.legenda.celula_vermelha']}"
+										style="padding-right:15px;" />
+
+									<div
+										style="background-color: rgb(255, 255, 210); width: 10px; height: 10px;"></div>
+									<h:outputText
+										value="#{bundle['_nls.mapa_alocacao.legenda.celula_amarela']}"
+										style="padding-right:15px;" />
+
+									<h:outputText value="0.5" style="color: red;" />
+									<h:outputText
+										value="#{bundle['_nls.mapa_alocacao.legenda.numero_vermelho']}"
+										style="padding-right:15px;" />
+
+									<h:outputText value="0.5" style="color: blue;" />
+									<h:outputText
+										value="#{bundle['_nls.mapa_alocacao.legenda.numero_azul']}"
+										style="padding-right:15px;" />
+
+								</h:panelGrid>
+							</rich:panel>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<h:panelGrid columns="2">
+				<rich:spacer height="5" />
+				<rich:spacer height="5" />
+
+				<f:facet name="footer">
+					<h:panelGrid columns="10" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.delete']}"
+							styleClass="buttonGeneric"
+							oncomplete="#{rich:component('deleteMapaAlocacaoPanel')}.show()"
+							rendered="#{mapaAlocacaoController.bean.isRemove}" />
+						<rich:spacer height="5" width="5"
+							rendered="#{mapaAlocacaoController.bean.isRemove}" />
+
+						<a4j:commandButton value="#{bundle['_nls.button.back']}"
+							styleClass="buttonGeneric"
+							action="#{mapaAlocacaoController.backViewMapaAlocacao}"
+							immediate="true" />
+						<rich:spacer height="5" width="5" />
+
+						<!-- ****** Botao DashBoard ****** -->
+						<a4j:commandButton
+							value="#{bundle['_nls.mapa_alocacao.button.dashboard']}"
+							style=" width : 90px;"
+							action="#{mapaAlocacaoController.prepareFinancials}"
+							styleClass="buttonGeneric"
+							rendered="#{!mapaAlocacaoController.bean.isRemove}">
+							<f:setPropertyActionListener value="manageView"
+								target="#{mapaAlocacaoController.bean.redirectPage}" />
+						</a4j:commandButton>
+						<rich:spacer height="5" width="5" />
+						<!-- ******************************* -->
+
+						<!-- ****** Botoes Lock\Unlock do MapaAlocacao ****** -->
+						<a4j:commandButton ajaxSingle="false"
+							value="#{bundle['_nls.hint.lock']}"
+							action="#{mapaAlocacaoController.lockMapaAlocacao}"
+							styleClass="buttonGeneric"
+							rendered="#{!mapaAlocacaoController.bean.isRemove}">
+
+							<f:setPropertyActionListener
+								value="#{mapaAlocacaoController.bean.to.codigoMapaAlocacao}"
+								target="#{mapaAlocacaoController.bean.currentRowId}" />
+						</a4j:commandButton>
+						<rich:spacer height="5" width="5" />
+						<!-- ************************************************ -->
+
+						<!-- ****** Botoes Follow\Unfollow do MapaAlocacao ****** -->
+						<a4j:commandButton ajaxSingle="false"
+							value="#{bundle['_nls.hint.follow']}"
+							action="#{mapaAlocacaoController.followMapaAlocacao}"
+							styleClass="buttonGeneric"
+							rendered="#{mapaAlocacaoController.bean.mapFollow[mapaAlocacaoController.bean.to.codigoMapaAlocacao] == null}">
+						</a4j:commandButton>
+						<a4j:commandButton ajaxSingle="false"
+							value="#{bundle['_nls.hint.following']}"
+							action="#{mapaAlocacaoController.unfollowMapaAlocacao}"
+							styleClass="buttonGeneric"
+							rendered="#{mapaAlocacaoController.bean.mapFollow[mapaAlocacaoController.bean.to.codigoMapaAlocacao] != null}"
+							title="#{bundle['_nls.hint.unfollow']}">
+						</a4j:commandButton>
+						<!-- ************************************************ -->
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<!-- ****** Botoes Tag ****** -->
+			<rich:panel style="padding:0" headerClass="outpanelHeader">
+				<f:facet name="header"></f:facet>
+
+				<h:panelGrid columns="6" cellpadding="0" cellspacing="0">
+					<h:outputText
+						value="#{bundle['_nls.mapa_alocacao.etiqueta.label']}: "
+						for="etiqueta" styleClass="labelGeneric" />
+
+					<rich:spacer height="5" width="5" />
+
+					<rich:comboBox id="etiqueta"
+						label="#{bundle['_nls.mapa_alocacao.etiqueta.label']}"
+						value="#{mapaAlocacaoController.bean.nomeEtiquetaSelected}"
+						suggestionValues="#{mapaAlocacaoController.bean.etiquetaList}"
+						directInputSuggestions="true" enableManualInput="false">
+					</rich:comboBox>
+
+					<rich:spacer height="5" width="5" />
+
+					<a4j:commandLink ajaxSingle="false" id="filterEtiquetalink"
+						action="#{mapaAlocacaoController.filterEtiqueta}">
+						<h:graphicImage width="16" height="16"
+							value="/images/icons/filter.gif" style="border:0" />
+					</a4j:commandLink>
+					<rich:toolTip for="filterEtiquetalink"
+						value="#{bundle['_nls.hint.filter']}" />
+				</h:panelGrid>
+			</rich:panel>
+			<!-- ******************************* -->
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<a4j:keepAlive beanName="mapaAlocacaoBean" />
+			<a4j:region>
+				<h:panelGrid columns="1" cellpadding="0" cellspacing="0" border="0"
+					width="100%">
+
+					<a4j:outputPanel id="alocacaoTable">
+						<table border="1" class="dr-table rich-table tbl" width="100%">
+							<thead class="dr-table-thead">
+								<tr class="dr-table-header rich-table-header">
+									<th class="dr-table-headercell rich-table-headercell"
+										colspan="6"><h:outputLabel
+											value="#{bundle['_nls.mapa_alocacao.alocacao.label']}" /></th>
+									<a4j:repeat
+										value="#{mapaAlocacaoController.bean.to.fatorUrMeses}"
+										var="fatorUrMes">
+										<th class="dr-table-subheadercell rich-table-subheadercell">
+											<h:outputText value="#{fatorUrMes.dataMes}">
+												<f:convertDateTime pattern="yyyy" />
+											</h:outputText>
+										</th>
+									</a4j:repeat>
+								</tr>
+							</thead>
+							<thead class="dr-table-thead">
+								<tr class="dr-table-subheader rich-table-subheader">
+									<th class="dr-subtable-cell rich-subtable-cell" align="left"
+										colspan="6" />
+									<a4j:repeat
+										value="#{mapaAlocacaoController.bean.to.fatorUrMeses}"
+										var="fatorUrMes">
+										<th class="dr-table-subheadercell rich-table-subheadercell">
+											<h:outputText value="#{fatorUrMes.dataMes}">
+												<f:convertDateTime pattern="MMM" />
+											</h:outputText>
+										</th>
+									</a4j:repeat>
+								</tr>
+								<tr class="dr-table-subheader rich-table-subheader">
+									<th align="center"
+										class="dr-table-subheadercell rich-table-subheadercell">
+										<a4j:commandLink action="#{mapaAlocacaoController.columnSort}"
+											reRender="alocacaoTable" limitToList="true"
+											styleClass="colunmSortLink">
+											<span class="dr-table-sortable-header">
+												#{bundle['_nls.mapa_alocacao.recurso.label']} <h:graphicImage
+													value="/images/icons/column_sort.gif" style="border:0"
+													styleClass="dr-table-header-sort-img rich-sort-icon" />
+											</span>
+											<f:setPropertyActionListener value="1"
+												target="#{mapaAlocacaoController.bean.alocacaoRow.comparableField}" />
+
+										</a4j:commandLink>
+									</th>
+									<th align="center"
+										class="dr-table-subheadercell rich-table-subheadercell">
+										<a4j:commandLink action="#{mapaAlocacaoController.columnSort}"
+											reRender="alocacaoTable" limitToList="true"
+											styleClass="colunmSortLink">
+
+											<span class="dr-table-sortable-header">
+												#{bundle['_nls.mapa_alocacao.base.label']} <h:graphicImage
+													value="/images/icons/column_sort.gif" style="border:0"
+													styleClass="dr-table-header-sort-img rich-sort-icon" />
+											</span>
+											<f:setPropertyActionListener value="2"
+												target="#{mapaAlocacaoController.bean.alocacaoRow.comparableField}" />
+										</a4j:commandLink>
+									</th>
+									<th align="center"
+										class="dr-table-subheadercell rich-table-subheadercell">
+										<a4j:commandLink action="#{mapaAlocacaoController.columnSort}"
+											reRender="alocacaoTable" limitToList="true"
+											styleClass="colunmSortLink">
+											<span class="dr-table-sortable-header">
+												#{bundle['_nls.mapa_alocacao.perfil_vendido.label']} <h:graphicImage
+													value="/images/icons/column_sort.gif" style="border:0"
+													styleClass="dr-table-header-sort-img rich-sort-icon" />
+											</span>
+											<f:setPropertyActionListener value="3"
+												target="#{mapaAlocacaoController.bean.alocacaoRow.comparableField}" />
+										</a4j:commandLink>
+									</th>
+									<th align="center"
+										class="dr-table-subheadercell rich-table-subheadercell">
+										<a4j:commandLink action="#{mapaAlocacaoController.columnSort}"
+											reRender="alocacaoTable" limitToList="true"
+											styleClass="colunmSortLink">
+											<span class="dr-table-sortable-header">
+												#{bundle['_nls.mapa_alocacao.estagio.label']} <h:graphicImage
+													value="/images/icons/column_sort.gif" style="border:0"
+													styleClass="dr-table-header-sort-img rich-sort-icon" />
+											</span>
+											<f:setPropertyActionListener value="4"
+												target="#{mapaAlocacaoController.bean.alocacaoRow.comparableField}" />
+										</a4j:commandLink>
+									</th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"><h:outputLabel
+											value="#{bundle['_nls.mapa_alocacao.lista_etiqueta.label']}" /></th>
+									<th class="dr-table-subheadercell rich-table-subheadercell"><h:outputLabel
+											value="#{bundle['_nls.mapa_alocacao.valor_ur.label']}" /></th>
+
+									<a4j:repeat
+										value="#{mapaAlocacaoController.bean.to.fatorUrMeses}"
+										var="fatorUrMes">
+										<th class="dr-subtable-cell rich-subtable-cell"><h:outputText
+												style="width: 33px;" dir="RTL"
+												value="#{fatorUrMes.percentualFatorUr}" /></th>
+									</a4j:repeat>
+								</tr>
+
+							</thead>
+
+							<tbody>
+								<tr style="background-color: #CCCCCC;">
+									<td class="dr-subtable-cell rich-subtable-cell" align="center">
+										<h:outputLabel value="#{bundle['_nls.total.label']}"
+											styleClass="labelGeneric" />
+									</td>
+									<td class="dr-subtable-cell rich-subtable-cell" colspan="4"></td>
+									<td class="dr-subtable-cell rich-subtable-cell" align="center">
+										<h:outputText value="#{mapaAlocacaoController.bean.totalUr}"
+											styleClass="labelGeneric">
+											<f:convertNumber locale="#{bundle['locale.en_us']}"
+												pattern="#{systemProperties['pattern.number']}" />
+										</h:outputText>
+									</td>
+									<a4j:repeat
+										value="#{mapaAlocacaoController.bean.totalValuesList}"
+										var="total">
+										<td class="dr-subtable-cell rich-subtable-cell" align="center">
+											<h:outputText value="#{total}" styleClass="labelGeneric">
+												<f:convertNumber locale="#{bundle['locale.en_us']}"
+													pattern="#{systemProperties['pattern.number']}" />
+											</h:outputText>
+										</td>
+									</a4j:repeat>
+								</tr>
+								<a4j:repeat
+									value="#{mapaAlocacaoController.bean.alocacaoRowList}"
+									var="item">
+									<!-- ****** Region View ****** -->
+									<a4j:region rendered="#{item.isView}">
+										<tr>
+											<td class="dr-subtable-cell rich-subtable-cell"><h:outputText
+													value="#{item.alocacao.recurso.codigoMnemonico}"
+													styleClass="#{item.styleClass}" /></td>
+											<td class="dr-subtable-cell rich-subtable-cell"
+												align="center"><h:outputText
+													value="#{item.alocacao.cidadeBase.siglaCidadeBase}" /></td>
+											<td class="dr-subtable-cell rich-subtable-cell" style="#{item.alocacao.perfilVendido.indicadorDeleteLogico == 'S' ? 'background-color: #C6E2FF;' : ''}"><h:outputText
+													value="#{item.alocacao.perfilVendido.nomePerfilVendido}" />
+											</td>
+											<td class="dr-subtable-cell rich-subtable-cell"
+												align="center"><h:outputText
+													value="#{item.alocacao.indicadorEstagio}"
+													converter="StageAlocacaoConverter" /></td>
+											<td class="dr-subtable-cell rich-subtable-cell"><h:outputText
+													id="etiquetaAlocacaolabel"
+													value="#{item.etiquetaNamesPart}" /> <rich:toolTip
+													for="etiquetaAlocacaolabel" value="#{item.etiquetaNames}" /></td>
+											<td class="dr-subtable-cell rich-subtable-cell"
+												align="center"><h:outputLabel
+													value="#{item.alocacao.valorUr}" /></td>
+											<a4j:repeat value="#{item.alocacaoCellList}" var="subitem">
+												<a4j:region rendered="#{subitem.rendered}">
+													<td class="dr-subtable-cell rich-subtable-cell"
+														align="center" style="#{subitem.flagIndicadorAtivo? 'background-color : #FFDAB9;':'background-color : white;'}"><h:outputLabel
+															value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+															styleClass="superAlocationColor"
+															rendered="#{subitem.flagIndicadorAlocacao == 1}" /> <h:outputLabel
+															value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+															styleClass="subAlocationColor"
+															rendered="#{subitem.flagIndicadorAlocacao == -1}" /> <h:outputLabel
+															value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+															rendered="#{subitem.flagIndicadorAlocacao == 0}" /></td>
+												</a4j:region>
+
+												<a4j:region rendered="#{!subitem.rendered}">
+													<td
+														class="dr-subtable-cell rich-subtable-cell inactiveColor"
+														align="center"><h:outputLabel
+															value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+															styleClass="superAlocationColor"
+															rendered="#{subitem.flagIndicadorAlocacao == 1}" /> <h:outputLabel
+															value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+															styleClass="subAlocationColor"
+															rendered="#{subitem.flagIndicadorAlocacao == -1}" /> <h:outputLabel
+															value="#{subitem.alocacaoPeriodo.percentualAlocacaoPeriodo}"
+															rendered="#{subitem.flagIndicadorAlocacao == 0}" /></td>
+												</a4j:region>
+											</a4j:repeat>
+										</tr>
+									</a4j:region>
+									<!-- ********** / isView ********** -->
+									<!-- ******************************* -->
+								</a4j:repeat>
+							</tbody>
+							<!-- ****** TFOOT ****** -->
+							<tfoot class="dr-table-thead">
+								<tr class="dr-table-subheader rich-table-subheader">
+									<td style="border-bottom: 1px solid #C0C0C0"
+										class="dr-table-subheadercell rich-table-subheadercell"
+										colspan="6"></td>
+									<a4j:repeat
+										value="#{mapaAlocacaoController.bean.to.fatorUrMeses}"
+										var="fatorUrMes">
+										<th class="dr-table-subheadercell rich-table-subheadercell">
+											<h:outputText value="#{fatorUrMes.dataMes}">
+												<f:convertDateTime pattern="MMM" />
+											</h:outputText>
+										</th>
+									</a4j:repeat>
+								</tr>
+								<tr class="dr-table-header rich-table-header">
+									<td class="dr-table-headercell rich-table-headercell"
+										colspan="6"></td>
+									<a4j:repeat
+										value="#{mapaAlocacaoController.bean.to.fatorUrMeses}"
+										var="fatorUrMes">
+										<th class="dr-table-headercell rich-table-headercell"><h:outputText
+												value="#{fatorUrMes.dataMes}">
+												<f:convertDateTime pattern="yyyy" />
+											</h:outputText></th>
+									</a4j:repeat>
+								</tr>
+							</tfoot>
+						</table>
+
+						<script type="text/javascript">
+							
+							jQuery(document).ready(function() {
+								
+							jQuery('.tbl').fixedtableheader({
+						    highlightclass: 'rowhlite'
+						   });
+						});
+						</script>
+
+					</a4j:outputPanel>
+
+					<rich:spacer height="5" />
+
+				</h:panelGrid>
+			</a4j:region>
+		</h:form>
+
+		<ui:include
+			src="/pages/protected/mapaAlocacao/MapaAlocacaoDelete.xhtml" />
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

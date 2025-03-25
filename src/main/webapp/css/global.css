@@ -1,0 +1,298 @@
+html, body{
+	height: 100%;
+}
+
+body{
+	margin:0;
+	padding:0;
+	background:#ffffff;
+}
+body#body-login{
+	background:#e5ecf7;
+}
+div#container{
+	margin:0 auto;
+	position: relative;
+	min-height: 100%;
+	height: auto;
+}
+html>body #container {
+	height: auto;
+}
+
+div#container div#header{
+	background:url(../images/bg-header.jpg) repeat-x;
+	width:100%;
+	height:41px;
+}
+
+div#container div#header div#header-details {
+	width:990px;
+	height:57px;
+	background:url(../images/bg-header-details.png) no-repeat;
+	behavior: url("css/iepngfix.htc");	
+}
+div#container div#header div#header-details div#logotype-cit{
+	float:left;
+	background:url(../images/logo-cit.png) no-repeat;
+	behavior: url("css/iepngfix.htc");		
+	display:inline;
+	width:48px;
+	height:28px;
+	margin:5px 30px 0 44px;
+
+}
+div#container div#header div#header-details div#logotype{
+	background: url(../images/logo-pms.png) no-repeat;
+	behavior: url("css/iepngfix.htc");		
+	width:306px;
+	height:26px;
+	display:block;
+	float:left;
+	margin:4px 0 0 0;
+}
+div#container div#header div#header-details div#logotype a{
+	text-indent:-10000em;
+	display:block;
+}
+div#container div#header div#header-details div#logout{
+	float:right;
+	width:75px;
+	height:28px;
+	margin:8px 0 0 0;
+}
+div#container div#header div#header-details div#user{
+	margin:12px 20px 0 0;
+	float:right;
+}
+div#container div#header div#header-details div#user p{
+	font:normal 10px Arial, Helvetica, sans-serif;
+	margin:0;
+	padding:0;
+}
+div#container div#header div#header-details div#logout p{
+	background: url(../images/bg-button.png) no-repeat;
+	behavior: url("css/iepngfix.htc");		
+	width:62px;
+	height:20px;
+	margin:0;
+	padding:0;
+	text-align:center;	
+}
+div#container div#header div#header-details div#logout p a{
+	font:normal 10px Arial, Helvetica, sans-serif;
+	text-decoration:none;
+	height: 20px;
+	line-height: 20px;
+	color:#525252;
+}
+div#container div#header div#header-details div#logout p a:hover{
+	text-decoration:underline;
+}
+
+div#container div#content p{
+	margin:0;
+	padding:0;
+}
+div#container div#footer{
+	background:url(../images/bg-footer.jpg) repeat-x;
+	width:100%;
+	height:30px;
+	margin:0;
+	display:block;
+	position: absolute;
+	bottom: 0;	
+}
+div#container div#footer p{
+	margin:0;
+	padding:8px 0 0 0;
+	line-height: 28px;	
+	display:block;
+	font:normal 10px Arial, Verdana, sans-serif;
+	text-align:center;
+}
+
+.align-top > tbody tr td {
+    vertical-align: top;
+}
+
+.align-top > tbody tr td > table > tbody > tr td {
+    vertical-align: middle;
+}
+.dr-table-subheadercell {
+    white-space: pre-wrap;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+/* Login - Begin */
+body#body-login div#container div#login{
+	background:url(../images/bg-login.png) no-repeat;
+	_background-image:none;	
+	_filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="images/bg-login.png", sizingMethod="image");
+	width:409px;
+	height:204px;
+	position:absolute;
+	margin-top:-142px;
+	margin-left:-204px;	
+	top:50%;
+	left:50%;
+}
+body#body-login div#container div#login div#left{
+	float:left;
+	display:inline;
+	width:155px;
+	margin:20px 0 0 20px;
+}
+
+body#body-login div#container div#login div#right{
+	float:right;
+	width:190px;
+	display:inline;	
+	margin:20px 20px 0 0;
+	padding-left:20px;
+	background: url(../images/sep-border.png) no-repeat;
+	behavior: url("css/iepngfix.htc");		
+}
+body#body-login div#container div#login div#left div#logotype{
+	background:url(../images/logo-pms-login.png) no-repeat;
+	behavior: url("css/iepngfix.htc");		
+	width:143px;
+	height:64px;
+	display:inline;
+	clear:both;
+	float:left;
+	margin:20px 0 0 0;
+}
+body#body-login div#container div#login div#left div#logotype p{
+	text-indent:-10000em;
+	display:block;
+	width:143px;
+	height:43px;
+	margin:0;
+	padding:0;
+}
+body#body-login div#container div#login div#left div#logotype-cit{
+	background:url(../images/logo-cit.png) no-repeat;
+	behavior: url("css/iepngfix.htc");		
+	width:51px;
+	height:29px;
+	display:inline;
+	clear:both;
+	float:left;
+	margin:30px 0 0 0;	
+}
+body#body-login div#container div#login div#left div#logotype-cit p{
+	text-indent:-10000em;
+	display:block;
+	width:51px;
+	height:29px;
+	margin:0;
+	padding:0;
+}
+
+body#body-login div#container div#login div#right form{
+	margin:0 auto;
+	padding:0;
+}
+body#body-login div#container div#login div#right fieldset.login-form{
+	clear:both;
+	border:none;
+	padding:0;
+	margin:0 auto;
+	float:none;
+	display:block;
+}
+body#body-login div#container div#login div#right fieldset.login-form h2{
+	margin:0;
+	padding:0;
+	text-align:right;
+	font:bold 13px Arial, Verdana, sans-serif;
+}
+body#body-login div#container div#login div#right fieldset.login-form div.message{
+	height:40px;
+	margin-top:10px;
+}
+body#body-login div#container div#login div#right fieldset.login-form p{
+	font:bold 12px Arial, Verdana, sans-serif;
+	clear:both;
+	padding:0;
+	margin:0;
+	text-align:left;
+	height:28px;
+}
+body#body-login div#container div#login div#right fieldset.login-form div.message p{
+	font:normal 12px Arial, Verdana, sans-serif;
+	margin:0;
+	padding:0;
+	display:block;
+	height:auto;
+}
+body#body-login div#container div#login div#right fieldset.login-form p label{
+	font:bold 11px Arial, Verdana, sans-serif;
+	float:left;
+	display:block;
+	width:50px;
+	text-align:right;
+	padding-top:3px;
+}
+
+.loginFormInput {
+	color: #000;
+	padding: 2px;
+	background: #e6edf7;
+	border: 1px solid #7f9db9;
+	float:right;
+	width:120px;
+	font:normal 11px Arial, Verdana, sans-serif;
+}
+/*body#body-login div#container div#login div#right fieldset.login-form input {
+	color: #000;
+	padding: 2px;
+	background: #e6edf7;
+	border: 1px solid #7f9db9;
+	float:right;
+	width:120px;
+	font:normal 11px Arial, Verdana, sans-serif;
+}*/
+body#body-login div#container div#login div#right fieldset.login-form div#button{
+	float:right;
+	margin:0;
+	padding:0;
+	width:48px;
+}
+body#body-login div#container div#login div#right fieldset.login-form div#button p{
+	background: url(../images/bg-button-ok.png) no-repeat;
+	behavior: url("css/iepngfix.htc");		
+	width:48px;
+	height:28px;
+	margin:0;
+	padding:0;
+	float:right;
+}
+body#body-login div#container div#login div#right fieldset.login-form div#button p input{
+	font:normal 11px Arial, Helvetica, sans-serif;
+	text-decoration:none;
+	width:48px;	
+	height: 28px;
+	line-height: 28px;
+	color:#525252;
+	background:transparent;
+	border:none;
+	text-align:center;
+	float:none;
+	margin:0;
+	padding:0;
+	cursor: pointer;	
+}
+body#body-login div#container div#login div#right fieldset.login-form div#button p a:hover{
+	text-decoration:underline;
+}
+body#body-login div#container div#login div#right fieldset.login-form p a{
+	font:bold 12px Arial, Verdana, sans-serif;
+	text-decoration:none;
+}
+
+/* Login - End */

@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition>
+
+	<h:outputText
+		value="#{bundle['_nls.registro_atividade.contrato_pratica.label']}: "
+		for="contratoPratica" styleClass="labelGeneric" />
+	<a4j:region>
+		<a4j:outputPanel id="comboContratoPratica">
+			<rich:comboBox id="contratoPratica"
+				label="#{bundle['_nls.registro_atividade.contrato_pratica.label']}"
+				value="#{registroAtividadeController.bean.to.contratoPratica.nomeContratoPratica}"
+				disabled="#{registroAtividadeController.bean.to.grupoCusto.nomeGrupoCusto != null and registroAtividadeController.bean.to.grupoCusto.nomeGrupoCusto != ''}"
+				suggestionValues="#{registroAtividadeController.bean.contratoPraticaList}"
+				directInputSuggestions="true"
+				validator="#{registroAtividadeController.setContratoPratica}">
+				<pms:validateComboBox
+					map="#{registroAtividadeController.bean.contratoPraticaMap}" />
+				<a4j:support event="onchange" reRender="comboGrupoCusto"
+					limitToList="true" />
+				<a4j:support event="onselect" reRender="comboGrupoCusto"
+					limitToList="true" />
+			</rich:comboBox>
+		</a4j:outputPanel>
+	</a4j:region>
+
+	<h:outputText
+		value="#{bundle['_nls.registro_atividade.grupo_custo.label']}: "
+		for="grupoCusto" styleClass="labelGeneric" />
+	<a4j:region>
+		<a4j:outputPanel id="comboGrupoCusto">
+			<rich:comboBox id="grupoCusto"
+				disabled="#{registroAtividadeController.bean.to.contratoPratica.nomeContratoPratica != null and registroAtividadeController.bean.to.contratoPratica.nomeContratoPratica != ''}"
+				label="#{bundle['_nls.registro_atividade.grupo_custo.label']}"
+				value="#{registroAtividadeController.bean.to.grupoCusto.nomeGrupoCusto}"
+				suggestionValues="#{registroAtividadeController.bean.grupoCustoList}"
+				directInputSuggestions="true"
+				validator="#{registroAtividadeController.setGrupoCusto}">
+				<pms:validateComboBox
+					map="#{registroAtividadeController.bean.grupoCustoMap}" />
+				<a4j:support event="onchange" reRender="comboContratoPratica"
+					limitToList="true" />
+				<a4j:support event="onselect" reRender="comboContratoPratica"
+					limitToList="true" />
+			</rich:comboBox>
+		</a4j:outputPanel>
+	</a4j:region>
+
+	<h:outputText
+		value="#{bundle['_nls.registro_atividade.pessoa.label']}*: "
+		for="codigoLogin" styleClass="labelGeneric"></h:outputText>
+	<a4j:region renderRegionOnly="true" id="codigoLoginRegion">
+		<h:inputText id="codigoLogin" style=" width : 150px;"
+			validator="#{registroAtividadeController.validatePessoa}"
+			label="#{bundle['_nls.registro_atividade.pessoa.label']}"
+			immediate="true" required="true"
+			value="#{registroAtividadeController.bean.to.pessoa.codigoLogin}">
+
+			<rich:suggestionbox for="codigoLogin" var="result"
+				suggestionAction="#{registroAtividadeController.autoCompletePessoa}">
+				<h:column>
+					<h:outputText value="#{result.codigoLogin}" />
+				</h:column>
+			</rich:suggestionbox>
+		</h:inputText>
+	</a4j:region>
+
+	<h:outputText
+		value="#{bundle['_nls.registro_atividade.atividade.label']}*: "
+		for="atividade" styleClass="labelGeneric" />
+	<rich:comboBox id="atividade"
+		label="#{bundle['_nls.registro_atividade.atividade.label']}"
+		value="#{registroAtividadeController.bean.to.atividade.nomeAtividade}"
+		suggestionValues="#{registroAtividadeController.bean.atividadeList}"
+		required="true" directInputSuggestions="true">
+		<pms:validateComboBox
+			map="#{registroAtividadeController.bean.atividadeMap}" />
+	</rich:comboBox>
+
+	<h:outputText
+		value="#{bundle['_nls.registro_atividade.data_registro_atividade.label']}*: "
+		for="dataRegistroAtividade" styleClass="labelGeneric" />
+	<a4j:outputPanel id="dataRegistroAtividade" layout="block">
+		<rich:calendar
+			value="#{registroAtividadeController.bean.to.dataRegistroAtividade}"
+			locale="#{bundle['_nls.calendar.locale']}" popup="true"
+			enableManualInput="true"
+			datePattern="#{bundle['_nls.calendar.pattern']}"
+			showApplyButton="false" cellWidth="24px" cellHeight="22px"
+			style="width:200px" required="true"
+			label="#{bundle['_nls.registro_atividade.data_registro_atividade.label']}" />
+	</a4j:outputPanel>
+
+	<h:outputText
+		value="#{bundle['_nls.registro_atividade.numero_horas.label']}*: "
+		for="numeroHoras" styleClass="labelGeneric" />
+	<h:inputText id="numeroHoras" size="15" maxlength="10"
+		label="#{bundle['_nls.registro_atividade.numero_horas.label']}"
+		value="#{registroAtividadeController.bean.to.numeroHoras}"
+		required="true">
+		<f:validateLength maximum="10" />
+		<f:convertNumber locale="#{bundle['locale.en_us']}"
+			maxFractionDigits="1" type="number"
+			pattern="#{systemProperties['pattern.number']}" />
+		<rich:jQuery query="numeric()" timing="onload" selector="#numeroHoras" />
+	</h:inputText>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+</ui:composition>
+
+</html>

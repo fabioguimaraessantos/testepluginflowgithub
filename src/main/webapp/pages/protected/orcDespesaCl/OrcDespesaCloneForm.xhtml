@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags">
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+    <ui:define name="titleForm">
+        #{orcDespesaCloneController.bean.toCl != null ?  bundle['_nls.menu.cliente_pai'] : bundle['_nls.menu.grupo_custo']} &gt; #{bundle['_nls.title.travel.budget']}
+    </ui:define>
+
+    <ui:define name="bodyForm">
+
+        <rich:spacer height="0" width="560" styleClass="noMargin"/>
+        <a4j:keepAlive beanName="orcDespesaCloneBean"/>
+        <a4j:loadScript src="/js/jquery.meio.mask.js"/>
+        <a4j:loadScript src="/js/inplace.input.custom.tb.grupo.custo.js"/>
+
+        <h:form styleClass="noMargin">
+            <h:panelGrid columns="2" rendered="#{orcDespesaCloneController.bean.toCl != null}">
+                <h:outputText value="#{bundle['_nls.travel_budget.label.client']}: " styleClass="labelGeneric"/>
+                <h:outputText value="#{orcDespesaCloneController.bean.toCl.cliente.nomeCliente}"/>
+            </h:panelGrid>
+            <h:panelGrid columns="2" rendered="#{orcDespesaCloneController.bean.toGc != null}">
+                <h:outputText value="#{bundle['_nls.travel_budget.label.cost_group']}: " styleClass="labelGeneric"/>
+                <h:outputText
+                        value="#{orcDespesaCloneController.bean.toCl != null ? orcDespesaCloneController.bean.toCl.orcamentoDespesa.nomeOrcDespesa : orcDespesaCloneController.bean.toGc.grupoCusto.nomeGrupoCusto}"/>
+            </h:panelGrid>
+
+            <h:panelGrid columns="2">
+                <h:outputText value="#{bundle['_nls.travel_budget.label.clone']}: " styleClass="labelGeneric"/>
+                <h:outputText value="#{orcDespesaCloneController.bean.orcDespesaToCloneName}"/>
+            </h:panelGrid>
+
+            <!-- Formulario -->
+
+            <h:panelGrid columns="4">
+                <h:outputText value="#{bundle['_nls.travel_budget.label.name']}*: " styleClass="labelGeneric"/>
+                <h:inputText size="30" value="#{orcDespesaCloneController.bean.to.nomeOrcDespesa}" required="true"
+                             label="#{bundle['_nls.travel_budget.label.name']}"/>
+
+                <rich:spacer width="1"/>
+                <rich:spacer width="1"/>
+
+                <h:outputText value="#{bundle['_nls.travel.budget.label.moeda']}*: " styleClass="labelGeneric"/>
+                <rich:comboBox required="true" suggestionValues="#{orcDespesaCloneController.bean.moedaStringList}"
+                               value="#{orcDespesaCloneController.bean.moedaSelecionda}"
+                               label="#{bundle['_nls.travel.budget.label.moeda']}">
+                </rich:comboBox>
+
+            <h:outputText value="#{bundle['_nls.travel_budget.label.value']}*: " styleClass="labelGeneric" />
+            <h:inputText id="valor" value="#{orcDespesaCloneController.bean.to.valorOrcado}"
+                         required="true" label="#{bundle['_nls.travel_budget.label.value']}">
+                <rich:jQuery selector="#valor" timing="onload" query="setMask('#{bundle['jquery.monetary.pattern']}')" />
+                <f:convertNumber locale="#{bundle['locale.en_us']}" pattern="#{systemProperties['pattern.number']}" />
+            </h:inputText>
+
+
+            <h:outputText value="#{bundle['_nls.travel_budget.label.date']}*: " styleClass="labelGeneric" />
+            <rich:calendar
+                    value="#{orcDespesaCloneController.bean.to.dataInicio}"
+                    locale="#{bundle['_nls.calendar.locale']}" required="true"
+                    datePattern="#{bundle['_nls.date.pattern']}" enableManualInput="true"
+                    showApplyButton="false" style="width:150px"
+                    label="#{bundle['_nls.travel_budget.label.date']}" />
+            <h:outputText value="#{bundle['_nls.travel.budget.label.until']}*: "  styleClass="labelGeneric" />
+            <rich:calendar
+                    value="#{orcDespesaCloneController.bean.to.dataFim}"
+                    locale="#{bundle['_nls.calendar.locale']}" required="true"
+                    datePattern="#{bundle['_nls.date.pattern']}" enableManualInput="true"
+                    showApplyButton="false" style="width:150px"
+                    label="#{bundle['_nls.travel.budget.label.until']}" />
+            <h:outputText value="#{bundle['_nls.travel.budget.label.tb_purpose']}: "
+                          rendered="#{orcDespesaCloneController.bean.toGc != null}"
+                          styleClass="labelGeneric" />
+            <h:panelGroup>
+                <rich:comboBox required="true"
+                               rendered="#{orcDespesaCloneController.bean.toGc != null}"
+                               enableManualInput="false"
+                               value="#{orcDespesaCloneController.bean.toGc.orcamentoDespesa.tbPurpose}"
+                               label="#{bundle['_nls.travel.budget.label.tb_purpose']}"
+                               directInputSuggestions="true"
+                               converter="TBPurposeConverter" style="padding:2px;float:left;">
+                    <f:selectItem itemValue="GE" />
+                    <f:selectItem itemValue="BE" />
+                </rich:comboBox>
+                <rich:toolTip rendered="#{orcDespesaCloneController.bean.toGc != null}"
+                              for="tbPurposeInfo">#{bundle['_nls.travel.budget.tb.purpose.tooltip']}</rich:toolTip>
+                <h:graphicImage id="tbPurposeInfo"
+                                rendered="#{orcDespesaCloneController.bean.toGc != null}"
+                                value="/images/icons/info.gif" style="border:0;padding:5px;" />
+            </h:panelGroup>
+        </h:panelGrid>
+
+
+            <!--  tbPurpose | Reembolsavel | Orc Extra-->
+            <a4j:region>
+                <h:panelGrid columns="4" rendered="#{orcDespesaCloneController.bean.toGc != null}">
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2" rendered="#{orcDespesaCloneController.bean.toCl != null}">
+                    <h:outputText value="#{bundle['_nls.travel.budget.label.tipo_fatura']}: " styleClass="labelGeneric"
+                                  rendered="true"/>
+                    <rich:comboBox
+                            value="#{orcDespesaCloneController.bean.toCl.indicadorTipoFatura}"
+                            label="#{bundle['_nls.travel.budget.label.tipo_fatura']}"
+                            converter="TipoFaturamentoMsaTBConverter">
+                        <f:selectItem itemValue="ND"/>
+                        <f:selectItem itemValue="NF"/>
+                    </rich:comboBox>
+                </h:panelGrid>
+                <h:panelGrid columns="2" rendered="#{orcDespesaCloneController.bean.toCl != null}">
+                    <h:selectBooleanCheckbox styleClass="noMargin"
+                                             value="#{orcDespesaCloneController.bean.isOrcDespesaClReembolsavel}">
+                        <a4j:support event="onclick"
+                                     action="#{orcDespesaClController.prepareInvoiceTypeCombobox}"
+                                     reRender="invoiceTypeCombo, errorMsgId" limitToList="true"/>
+                    </h:selectBooleanCheckbox>
+                    <h:outputText value="#{bundle['_nls.travel.budget.label.reembolso']} " styleClass="labelGeneric"/>
+                    <sec:ifAnyGranted roles="BUS.CLIENT.TRAVEL_BUDGET.EXTRA:ED, BUS.CLIENT.TRAVEL_BUDGET.EXTRA:VW">
+                        <h:selectBooleanCheckbox styleClass="noMargin"
+                                                 disabled="#{orcDespesaClController.bean.isITSupport}"
+                                                 value="#{orcDespesaCloneController.bean.isOrcDespesaExtra}"/>
+                        <h:outputText value="#{bundle['_nls.travel.budget.label.extra']} " styleClass="labelGeneric"/>
+                    </sec:ifAnyGranted>
+                </h:panelGrid>
+            </a4j:region>
+
+            <rich:spacer height="8"/>
+
+            <!-- PickList -->
+            <h:panelGrid columns="1" id="grantedClobs" rendered="#{orcDespesaCloneController.bean.toCl != null}">
+                <h:outputText value="#{bundle['_nls.travel.budget.label.clobs']}: " styleClass="labelGeneric"/>
+                <rich:pickList targetListWidth="400" sourceListWidth="400" imediate="true"
+                               listsHeight="120" label="#{bundle['_nls.travel.budget.label.clobs']}"
+                               value="#{orcDespesaCloneController.bean.grantedCLobPickList}">
+                    <f:selectItems value="#{orcDespesaCloneController.bean.contratoPraticaPickList}"/>
+                </rich:pickList>
+            </h:panelGrid>
+
+            <rich:spacer height="8"/>
+
+            <!-- Copy Checkboxes  -->
+            <a4j:region>
+                <h:panelGrid columns="2">
+                    <h:selectBooleanCheckbox styleClass="noMargin"
+                                             value="#{orcDespesaCloneController.bean.isCopyWhiteList}"/>
+                    <h:outputText value="#{bundle['_nls.travel.budget.label.copy_whitelist']} "
+                                  styleClass="labelGeneric"/>
+
+                    <h:selectBooleanCheckbox styleClass="noMargin"
+                                             value="#{orcDespesaCloneController.bean.isCopyWhiteListDelegation}"/>
+                    <h:outputText value="#{bundle['_nls.travel.budget.label.copy_whitelistdelegation']} "
+                                  styleClass="labelGeneric"/>
+
+                    <h:selectBooleanCheckbox styleClass="noMargin"
+                                             value="#{orcDespesaCloneController.bean.isCopyFollow}"/>
+                    <h:outputText value="#{bundle['_nls.travel.budget.label.copy_follow']} " styleClass="labelGeneric"/>
+                </h:panelGrid>
+            </a4j:region>
+
+            <rich:spacer height="8"/>
+
+
+            <h:panelGrid columns="2">
+                <a4j:commandButton action="#{orcDespesaGcController.backToOrcDespesaGcManage}"
+                                   value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric"
+                                   immediate="true" rendered="#{orcDespesaCloneController.bean.toGc != null}"/>
+                <a4j:commandButton action="#{orcDespesaClController.backToOrcDespesaCl}"
+                                   value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric"
+                                   immediate="true" rendered="#{orcDespesaCloneController.bean.toCl != null}"/>
+                <a4j:commandButton
+                        value="#{bundle['_nls.travel.budget.button.clone']}"
+                        styleClass="buttonGeneric"
+                        action="#{orcDespesaCloneController.createOrcDespesaCloned}"/>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

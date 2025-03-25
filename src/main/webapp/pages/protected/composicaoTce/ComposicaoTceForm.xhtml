@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" 
+	xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition>
+
+	<h:outputLabel value="#{bundle['_nls.composicao_tce.pessoa.label']}*: "
+		for="codigoLogin" styleClass="labelGeneric" />
+	<a4j:region renderRegionOnly="true" id="codigoLoginRegion">
+		<h:inputText id="codigoLogin" styleClass="fieldAutoCompl"
+			validator="#{composicaoTceController.validatePessoa}"
+			label="#{bundle['_nls.composicao_tce.pessoa.label']}"
+			immediate="true" required="true"
+			value="#{composicaoTceController.bean.to.pessoa.codigoLogin}">
+
+			<rich:suggestionbox for="codigoLogin" var="result"
+				suggestionAction="#{composicaoTceController.autoCompletePessoa}">
+				<h:column>
+					<h:outputText value="#{result.codigoLogin}" />
+				</h:column>
+			</rich:suggestionbox>
+		</h:inputText>
+	</a4j:region>
+
+	<h:outputLabel
+		value="#{bundle['_nls.composicao_tce.data_mes.label']}*: "
+		for="dataMes" styleClass="labelGeneric" />
+	<h:panelGrid columns="5" cellpadding="0" cellspacing="0"
+		rendered="#{!composicaoTceController.bean.isUpdate}">
+		<rich:comboBox id="mesInicio" enableManualInput="false"
+			value="#{composicaoTceController.bean.monthBeg}"
+			label="#{bundle['_nls.mes.label']}"
+			defaultLabel="#{bundle['_nls.mes.label']}"
+			suggestionValues="#{dateBean.monthList}" width="55" required="true">
+		</rich:comboBox>
+
+		<rich:spacer height="5" width="5" />
+		<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+		<rich:spacer height="5" width="5" />
+
+		<rich:comboBox id="anoInicio" enableManualInput="false"
+			value="#{composicaoTceController.bean.yearBeg}"
+			label="#{bundle['_nls.ano.label']}"
+			defaultLabel="#{bundle['_nls.ano.label']}"
+			suggestionValues="#{dateBean.yearList}" width="55" required="true">
+		</rich:comboBox>
+	</h:panelGrid>
+	<h:outputText value="#{composicaoTceController.bean.to.dataMes}"
+		rendered="#{composicaoTceController.bean.isUpdate}">
+		<f:convertDateTime pattern="#{bundle['_nls.date.pattern.simple']}"
+			locale="#{bundle['locale.en_us']}" />
+	</h:outputText>
+
+	<h:outputLabel value="#{bundle['_nls.composicao_tce.moeda.label']}: "
+		for="moeda" styleClass="labelGeneric" />
+	<rich:comboBox id="moeda"
+		label="#{bundle['_nls.composicao_tce.moeda.label']}"
+		value="#{composicaoTceController.bean.to.moeda.nomeMoeda}"
+		suggestionValues="#{composicaoTceController.bean.moedaList}"
+		required="true" directInputSuggestions="true">
+		<pms:validateComboBox map="#{composicaoTceController.bean.moedaMap}" />
+	</rich:comboBox>
+
+	<h:outputLabel
+		value="#{bundle['_nls.composicao_tce.valor_salario.label']}: "
+		for="valorSalario" styleClass="labelGeneric" />
+	<h:inputText id="valorSalario" size="8" maxlength="8"
+		label="#{bundle['_nls.composicao_tce.valor_salario.label']}"
+		value="#{composicaoTceController.bean.to.valorSalario}">
+		<f:validateLength maximum="8" />
+		<f:convertNumber locale="#{bundle['locale.en_us']}"
+			maxFractionDigits="2" pattern="#{systemProperties['pattern.number']}" />
+		<rich:jQuery query="setMask('#{bundle['jquery.monetary.pattern']}')"
+			timing="onload" selector="#valorSalario" />
+	</h:inputText>
+
+	<h:outputLabel
+		value="#{bundle['_nls.composicao_tce.valor_beneficios.label']}: "
+		for="valorBeneficios" styleClass="labelGeneric" />
+	<h:inputText id="valorBeneficios" size="8" maxlength="8"
+		label="#{bundle['_nls.composicao_tce.valor_beneficios.label']}"
+		value="#{composicaoTceController.bean.to.valorBeneficios}">
+		<f:validateLength maximum="8" />
+		<f:convertNumber locale="#{bundle['locale.en_us']}"
+			maxFractionDigits="2" pattern="#{systemProperties['pattern.number']}" />
+		<rich:jQuery query="setMask('#{bundle['jquery.monetary.pattern']}')"
+			timing="onload" selector="#valorBeneficios" />
+	</h:inputText>
+
+	<h:outputLabel
+		value="#{bundle['_nls.composicao_tce.num_horas_jornada.label']}: "
+		for="numeroHorasJornada" styleClass="labelGeneric" />
+	<h:inputText id="numeroHorasJornada" size="3" maxlength="3"
+		label="#{bundle['_nls.composicao_tce.num_horas_jornada.label']}"
+		value="#{composicaoTceController.bean.to.numeroHorasJornada}">
+		<f:validateLength maximum="3" />
+		<rich:jQuery query="numeric('')" timing="onload"
+			selector="#numeroHorasJornada" />
+	</h:inputText>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:composition>
+
+        <h:form styleClass="noMargin" id="formTabPriceTable">
+            <a4j:jsFunction id="selectedTabPriceTable" name="selectedTabPriceTable" action="#{msaController.prepareComponentTabPanelHistory}" rendered="#{not empty msaController.tabelaPrecoBean.selectedTab}" />
+        </h:form>
+
+        <rich:tabPanel immediate="true" switchType="ajax" id="tabPriceTablePanel">
+
+            <rich:tab label="#{bundle['_nls.main.label']}"
+                      name="tabPriceTableForm" id="tabPriceTableForm">
+
+                <div style="overflow: auto; background-color: #FAE6B0">
+                    <rich:panel style="background-color: #CFCFCF">
+                        <h:panelGrid columns="2">
+                            <h:outputText value="#{bundle['_nls.label.note']}:"
+                                          styleClass="labelGeneric" style="font-style: italic;"/>
+                            <h:outputText
+                                    value="#{bundle['_nls.label.persistencia_automatica']}"
+                                    style="font-style: italic;"/>
+                        </h:panelGrid>
+                    </rich:panel>
+                </div>
+
+                <h:panelGroup rendered="#{msaController.msaContratoBean.isPriceTableEditorLogin}">
+                    <ui:include src="/pages/protected/tabelaPreco/TabelaPreco.xhtml"/>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{!msaController.msaContratoBean.isPriceTableEditorLogin}">
+                    <ui:include src="/pages/protected/tabelaPreco/TabelaPrecoView.xhtml"/>
+                </h:panelGroup>
+
+            </rich:tab>
+
+            <rich:tab label="#{bundle['_nls.history.label']}" action="#{msaController.prepareTabPriceTableHistory}"
+                      name="tabPriceTableHistoryForm" id="tabPriceTableHistoryForm">
+
+                <ui:include src="/pages/protected/tabelaPrecoHistorico/Historico.xhtml"/>
+
+            </rich:tab>
+
+        </rich:tabPanel>
+
+        <f:verbatim rendered="${not empty msaController.tabelaPrecoBean.selectedTab}"><script>selectedTabPriceTable();</script></f:verbatim>
+    </ui:composition>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+    <style>
+        .rich-fileupload-anc {display: none;}
+    </style>
+
+    <rich:modalPanel id="confirmParentCompanyChange" autosized="true" width="350" height="200"
+                     showWhenRendered="#{(empresaController.bean.isParentFieldsFulfilled || empresaController.bean.isBranchFieldsFulfilled)}">
+
+        <f:facet name="header">
+            <h:outputText value="Confirmation" style="padding-right:15px;" />
+        </f:facet>
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="/images/icons/close.gif" styleClass="hidelink" id="hidelinkParentCompanyChange" />
+                <rich:componentControl for="confirmParentCompanyChange" attachTo="hidelinkParentCompanyChange" operation="hide" event="onclick" />
+            </h:panelGroup>
+        </f:facet>
+
+        <h:panelGroup style="padding: 20px;">
+            <a4j:region renderRegionOnly="false">
+                <legend> <h:outputText value="#{bundle['_nls.empresa.modal.erase_fields_message']}"  /> </legend>
+
+                <rich:spacer height="15" />
+
+                <legend> <h:outputText rendered="#{empresaBean.isParentFieldsFulfilled}" value="&#34;#{bundle['_nls.empresa.codigo_empresa_erp.label']}&#34;;" /> </legend>
+                <legend> <h:outputText rendered="#{empresaBean.isParentFieldsFulfilled}" value="&#34;#{bundle['_nls.empresa.codigo_erp_projeto_padrao.label']}&#34;." /> </legend>
+                <legend> <h:outputText rendered="#{empresaBean.isBranchFieldsFulfilled}" value="&#34;#{bundle['_nls.empresa.codigo_erp_filial.label']}&#34;;" /> </legend>
+                <legend> <h:outputText rendered="#{empresaBean.isBranchFieldsFulfilled}" value="&#34;#{bundle['_nls.empresa.codigo_erp_centro_de_custo.label']}&#34;;" /> </legend>
+                <legend> <h:outputText rendered="#{empresaBean.isBranchFieldsFulfilled}" value="&#34;#{bundle['_nls.empresa.codigo_erp_projeto_ide.label']}&#34;;" /> </legend>
+                <legend> <h:outputText rendered="#{empresaBean.isBranchFieldsFulfilled}" value="&#34;#{bundle['_nls.empresa.indicador_exibicao_msa_contrato.label']}&#34;." /> </legend>
+
+                <rich:spacer height="15" />
+
+                <legend> <h:outputText value="#{bundle['_nls.empresa.modal.erase_fields_confirmation']}"  /> </legend>
+
+                <rich:spacer height="5" />
+
+                <table width="100%">
+                    <tbody>
+                        <tr>
+                            <td align="right" width="50%">
+                                <a4j:commandButton value="Cancel" action="#{empresaController.cancelEmpresaPaiSelected}" style="margin: 15px;"
+                                                   styleClass="buttonGeneric" reRender="panelGridERP" limitToList="true" ajaxSingle="true" oncomplete="#{rich:component('confirmParentCompanyChange')}.hide()" />
+                            </td>
+                            <td align="left" width="50%">
+                                <a4j:commandButton value="Continue" action="#{empresaController.continueEmpresaPaiSelected}" style="margin: 15px;"
+                                                   styleClass="buttonGeneric" reRender="panelGridERP" limitToList="true" ajaxSingle="true" oncomplete="#{rich:component('confirmParentCompanyChange')}.hide()" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </a4j:region>
+        </h:panelGroup>
+
+    </rich:modalPanel>
+</html>

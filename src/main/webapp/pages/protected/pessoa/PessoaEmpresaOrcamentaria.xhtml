@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+    <ui:define name="titleForm">
+        #{bundle['_nls.menu.pessoa']} &gt; #{bundle['_nls.menu.pessoa.authority']}
+    </ui:define>
+
+    <h:form styleClass="noMargin" id="empresaOrcamentariaForm">
+        <a4j:keepAlive beanName="pessoaBean"/>
+
+        <table align="center">
+            <tr align="center">
+
+                <td></td>
+                <td align="center"><h:outputText styleClass="labelGeneric"
+                                                 value="#{bundle['_nls.pefil_sistema.avaliable.label']}"/></td>
+                <td width="90"></td>
+                <td align="center"><h:outputText styleClass="labelGeneric"
+                                                 value="#{bundle['_nls.pefil_sistema.granted.label']}"/></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <rich:pickList targetListWidth="150"
+                                   sourceListWidth="150"
+                                   value="#{pessoaController.bean.empresasOrcamentariasAtribuidas}">
+
+                        <f:selectItems value="#{pessoaController.bean.empresasOrcamentarias}"/>
+                    </rich:pickList>
+                </td>
+            </tr>
+            <tr align="right">
+                <td colspan="4" align="right">
+                    <a4j:commandButton
+                            value="#{bundle['_nls.button.save']}" styleClass="buttonGeneric"
+                            action="#{pessoaController.updatePessoaEmpresaOrcamentaria}"
+                            reRender="empresaOrcamentariaForm,errorMsgId" limitToList="true"/>
+                </td>
+            </tr>
+        </table>
+    </h:form>
+
+</ui:composition>
+
+</html>

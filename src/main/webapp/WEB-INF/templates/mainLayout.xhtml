@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"
+>
+
+<ui:composition>
+	<script type="text/javascript">
+		var focused;  
+		function disableButtons() {
+			focused = jQuery(':focus');
+			jQuery('input[type=input], input').addClass('disabled-btn');
+			jQuery('a, td').addClass('disabled-link');
+		}
+		function enableButtons() {
+		     jQuery('input[type=input], input').removeClass('disabled-btn');
+		     jQuery('a, td').removeClass('disabled-link');
+		     if(focused) {
+			     $(focused).focus();
+			     focused = null;
+			 }
+		}
+	</script>
+
+	<a4j:status id="panelStatus" onstart="disableButtons()"
+		onstop="enableButtons()">
+		<f:facet name="start">
+			<h:panelGrid columns="2"
+				style=" position:fixed; top: 50%; left: 50%; z-index:999;">
+				<h:graphicImage value="/images/ajaxLoad.gif" />
+			</h:panelGrid>
+		</f:facet>
+	</a4j:status>
+
+	<table cellpadding="0" cellspacing="5">
+		<tr style="height: 100%; vertical-align: top">
+			<td id="menu" width="200px"><ui:insert name="menuArea">menuArea</ui:insert>
+			</td>
+			<td id="workArea"><ui:insert name="workArea">workArea</ui:insert>
+			</td>
+		</tr>
+	</table>
+
+</ui:composition>
+
+</html>

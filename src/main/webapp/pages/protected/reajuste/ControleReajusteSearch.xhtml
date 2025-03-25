@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		#{bundle['_nls.menu.msa']} &gt; #{bundle['_nls.msa.documento_legal.entity_name']} &gt; #{bundle['_nls.controle.reajuste.view']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<a4j:keepAlive beanName="controleReajusteSearchBean" />
+
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="5">
+				<h:outputText value="#{bundle['_nls.controle.reajuste.date']}*: "
+					for="mesHorasFat" styleClass="labelGeneric" />
+				<rich:calendar
+					value="#{controleReajusteSearchController.bean.dateFrom}"
+					locale="#{bundle['_nls.calendar.locale']}" required="true"
+					datePattern="#{bundle['_nls.calendar.pattern']}"
+					showApplyButton="false" cellWidth="24px" cellHeight="22px"
+					style="width:200px"
+					label="#{bundle['_nls.controle.reajuste.date']}" />
+
+				<rich:spacer width="5px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.until']}*"
+					styleClass="labelGeneric" />
+				<rich:calendar
+					value="#{controleReajusteSearchController.bean.dateTo}"
+					locale="#{bundle['_nls.calendar.locale']}" required="true"
+					datePattern="#{bundle['_nls.calendar.pattern']}"
+					showApplyButton="false" cellWidth="24px" cellHeight="22px"
+					label="#{bundle['_nls.controle.reajuste.until']}"
+					style="width:200px" />
+
+				<h:outputText
+					value="#{bundle['_nls.controle.reajuste.profit.center.type']}: "
+					for="profitCenterType" styleClass="labelGeneric" />
+				<rich:comboBox id="profitCenterType"
+					label="#{bundle['_nls.controle.reajuste.profit.center.type']}"
+					value="#{controleReajusteSearchController.bean.naturezaSelected}"
+					suggestionValues="#{controleReajusteSearchController.bean.naturezaList}"
+					valueChangeListener="#{controleReajusteSearchController.prepareCentroLucroCombo}"
+					immediate="true" directInputSuggestions="true"
+					validator="#{controleReajusteSearchController.validateNaturezaCentroLucro}">
+
+					<a4j:support event="onselect" reRender="profitCenter"
+						limitToList="true" immediate="true" />
+				</rich:comboBox>
+
+				<rich:spacer width="5px" />
+
+				<h:outputText
+					value="#{bundle['_nls.controle.reajuste.profit.center']}: "
+					for="profitCenter" styleClass="labelGeneric" />
+				<rich:comboBox id="profitCenter"
+					label="#{bundle['_nls.controle.reajuste.profit.center']}"
+					value="#{controleReajusteSearchController.bean.centroLucroSelected}"
+					suggestionValues="#{controleReajusteSearchController.bean.centrosLucro}"
+					valueChangeListener="#{controleReajusteSearchController.prepareClienteAndMsaCombo}"
+					immediate="true" directInputSuggestions="true"
+					validator="#{controleReajusteSearchController.validateCentroLucro}">
+
+					<a4j:support event="onselect" reRender="client, msa"
+						limitToList="true" immediate="true" />
+				</rich:comboBox>
+
+				<h:outputText value="#{bundle['_nls.menu.cliente_pai']}: "
+					for="client" styleClass="labelGeneric" />
+				<rich:comboBox id="client"
+					label="#{bundle['_nls.menu.cliente_pai']}"
+					value="#{controleReajusteSearchController.bean.clienteSelected}"
+					suggestionValues="#{controleReajusteSearchController.bean.clientes}"
+					directInputSuggestions="true"
+					validator="#{controleReajusteSearchController.validateCliente}">
+				</rich:comboBox>
+
+				<rich:spacer width="5px" />
+
+				<h:outputText value="#{bundle['_nls.menu.msa']}: " for="msa"
+					styleClass="labelGeneric" />
+				<rich:comboBox id="msa" label="#{bundle['_nls.menu.msa']}"
+					value="#{controleReajusteSearchController.bean.msaSelected}"
+					suggestionValues="#{controleReajusteSearchController.bean.msaList}"
+					directInputSuggestions="true"
+					validator="#{controleReajusteSearchController.validateMsa}">
+				</rich:comboBox>
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.status']}: " for="statusReajuste"
+					styleClass="labelGeneric" />
+				<rich:comboBox id="statusReajuste" label="#{bundle['_nls.controle.reajuste.status']}"
+					value="#{controleReajusteSearchController.bean.searchStatusSelected}"
+					suggestionValues="#{controleReajusteSearchController.bean.status}"
+					directInputSuggestions="true">
+				</rich:comboBox>
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+							styleClass="buttonGeneric" reRender="controleReajusteTable"
+							action="#{controleReajusteSearchController.search}" type="submit" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="controleReajusteSearchBean" />
+			<rich:dataTable
+				value="#{controleReajusteSearchController.bean.controlesReajuste}"
+				rendered="#{!empty controleReajusteSearchController.bean.controlesReajuste}"
+				id="controleReajusteTable" var="item" width="100%">
+
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column>
+							<h:outputText value="#{bundle['_nls.reajuste.client']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{bundle['_nls.menu.msa']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{bundle['_nls.ficha.reajuste']}" />
+						</rich:column>
+						<rich:column>
+                            <h:outputText value="#{bundle['_nls.ficha.reajuste.reference.date']}" />
+                        </rich:column>
+                        <rich:column>
+                            <h:outputText value="#{bundle['_nls.ficha.reajuste.index']}" />
+                        </rich:column>
+                        <rich:column>
+                            <h:outputText value="#{bundle['_nls.ficha.reajuste.frequency']}" />
+                        </rich:column>
+                        <rich:column>
+							<h:outputText value="#{bundle['_nls.controle.reajuste.expected.date']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{bundle['_nls.controle.reajuste.adjustment.date']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{bundle['_nls.controle.reajuste.planned']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{bundle['_nls.controle.reajuste.actual']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{bundle['_nls.controle.reajuste.status']}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{bundle['_nls.actions.label']}" />
+						</rich:column>
+
+					</rich:columnGroup>
+				</f:facet>
+
+				<rich:column style="text-align: center;">
+					<h:outputText
+						value="#{item.fichaReajuste.msaForDataTable.cliente.nomeCliente}" />
+
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<h:outputText value="#{item.fichaReajuste.msaForDataTable.nomeMsa}" />
+
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<h:outputText value="#{item.fichaReajuste.nomeFichaReajuste}" />
+				</rich:column>
+				
+				<rich:column style="text-align: center;">
+                    <h:outputText value="#{item.fichaReajuste.dataBase}">
+                        <f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+                    </h:outputText>
+                </rich:column>
+                
+                <rich:column style="text-align: center;">
+                    <h:outputText value="#{item.fichaReajuste.fichaReajusteIndice.nomeFichaReajusteIndice}" />
+                </rich:column>
+                
+                <rich:column style="text-align: center;">
+                    <h:outputText value="#{item.fichaReajuste.numeroPeriodicidade} #{bundle['_nls.ficha.reajuste.meses']}" />
+                </rich:column>
+				
+
+				<rich:column style="text-align: center;">
+					<h:outputText value="#{item.dataPrevista}">
+						<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<h:outputText value="#{item.dataReajuste}"
+						rendered="#{item.controleReajusteStatus.nomeControleReajStatus != 'Not Executed' || item.controleReajusteStatus.nomeControleReajStatus != 'Renovation'}">
+						<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+					</h:outputText>
+					<h:outputText value="-"
+						rendered="#{item.controleReajusteStatus.nomeControleReajStatus == 'Not Executed' || item.controleReajusteStatus.nomeControleReajStatus == 'Renovation'}" />
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<h:outputText value="#{item.percentualPrevista}"
+						rendered="#{item.controleReajusteStatus.nomeControleReajStatus != 'Not Executed' || item.controleReajusteStatus.nomeControleReajStatus != 'Renovation'}">
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+					<h:outputText value="-"
+						rendered="#{item.controleReajusteStatus.nomeControleReajStatus == 'Not Executed' || item.controleReajusteStatus.nomeControleReajStatus == 'Renovation'}" />
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<h:outputText value="#{item.percentualRealizada}"
+						rendered="#{item.controleReajusteStatus.nomeControleReajStatus != 'Not Executed' || item.controleReajusteStatus.nomeControleReajStatus != 'Renovation'}">
+						<f:convertNumber locale="#{bundle['locale.en_us']}"
+							pattern="#{systemProperties['pattern.number']}" />
+					</h:outputText>
+					<h:outputText value="-"
+						rendered="#{item.controleReajusteStatus.nomeControleReajStatus == 'Not Executed' || item.controleReajusteStatus.nomeControleReajStatus == 'Renovation'}" />
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<h:outputText
+						value="#{item.controleReajusteStatus.nomeControleReajStatus}">
+					</h:outputText>
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<sec:ifAnyGranted roles="BUS.READJUSTMENT:VW">
+						<!-- Botao de view da tabela -->
+						<a4j:commandLink id="viewlink"
+							action="#{controleReajusteSearchController.prepareView}">
+							<h:graphicImage value="/images/icons/view.png" style="border:0" />
+							<f:setPropertyActionListener
+								value="#{item}"
+								target="#{controleReajusteSearchController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="viewlink" value="#{bundle['_nls.hint.view']}" />
+					</sec:ifAnyGranted>
+					<sec:ifAnyGranted roles="BUS.READJUSTMENT:ED">
+						<!-- Botao de edit da tabela -->
+						<a4j:commandLink id="editlink"
+							action="#{controleReajusteSearchController.prepareUpdate}">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener
+								value="#{item}"
+								target="#{controleReajusteSearchController.bean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+					</sec:ifAnyGranted>
+				</rich:column>
+			</rich:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

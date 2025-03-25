@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		#{bundle['_nls.menu.empresa']} &gt; #{bundle['_nls.menu.empresa.research']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+			<a4j:loadScript src="/js/jquery.alphanumeric.js" />
+			<a4j:loadScript src="/js/jquery.meio.mask.js" />
+			<h:panelGrid columns="2">
+				<h:outputText value="#{bundle['_nls.empresa.nome_empresa.label']}:"
+							  for="nomeEmpresa" styleClass="labelGeneric" />
+				<h:inputText id="nomeEmpresa" size="70" maxlength="99"
+							 label="#{bundle['_nls.empresa.nome_empresa.label']}"
+							 value="#{empresaController.bean.filter.nomeEmpresa}"
+							 validator="#{xssValidator.validate}">
+					<f:validateLength maximum="99" />
+				</h:inputText>
+
+				<h:outputText value="#{bundle['_nls.empresa.codigo_mnemonico.label']}:"
+							  for="codigoMnemonico" styleClass="labelGeneric" />
+				<h:inputText id="codigoMnemonico" size="15" maxlength="10"
+							 label="#{bundle['_nls.empresa.codigo_mnemonico.label']}"
+							 value="#{empresaController.bean.filter.codigoMnemonico}"
+							 validator="#{xssValidator.validate}">
+				</h:inputText>
+
+				<h:outputText value="#{bundle['_nls.empresa.empresa_pai.label']}:"
+							  for="empresaPai" styleClass="labelGeneric" />
+				<rich:comboBox validator="#{xssValidator.validate}"
+							   id="empresaPai" label="#{bundle['_nls.empresa.empresa_pai.label']}"
+							   value="#{empresaController.bean.empresaPaiSelectedFilter}"
+							   suggestionValues="#{empresaController.bean.empresaPaiList}"
+							   directInputSuggestions="true">
+				</rich:comboBox>
+
+				<h:outputText value="#{bundle['_nls.empresa.codigo_cnpj.label']}:"
+							  for="cnpj" styleClass="labelGeneric" />
+				<h:inputText id="cnpj" size="30" maxlength="49"
+							 label="#{bundle['_nls.empresa.codigo_cnpj.label']}"
+							 value="#{empresaController.bean.filter.numeroCnpj}"
+							 validator="#{xssValidator.validate}">
+					<rich:jQuery selector="#cnpj" query="setMask('cnpj')"
+								 timing="immediate" />
+					<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+									  maximum="49" />
+				</h:inputText>
+
+				<h:outputText value="#{bundle['_nls.empresa.texto_cidade.label']}:"
+							  for="textoCidade" styleClass="labelGeneric" />
+				<h:inputText id="textoCidade" size="30" maxlength="99"
+							 label="#{bundle['_nls.empresa.texto_cidade.label']}"
+							 value="#{empresaController.bean.filter.textoCidade}"
+							 validator="#{xssValidator.validate}">
+					<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+									  maximum="99" />
+				</h:inputText>
+
+				<h:outputText value="#{bundle['_nls.empresa.texto_estado.label']}:"
+							  for="textoEstado" styleClass="labelGeneric" />
+				<h:inputText id="textoEstado" size="30" maxlength="99"
+							 label="#{bundle['_nls.empresa.texto_estado.label']}"
+							 value="#{empresaController.bean.filter.textoEstado}"
+							 validator="#{xssValidator.validate}">
+					<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+									  maximum="99" />
+				</h:inputText>
+
+				<h:outputText value="#{bundle['_nls.empresa.texto_pais.label']}:"
+							  for="textoPais" styleClass="labelGeneric" />
+				<h:inputText id="textoPais" size="30" maxlength="49"
+							 label="#{bundle['_nls.empresa.texto_pais.label']}"
+							 value="#{empresaController.bean.filter.textoPais}"
+							 validator="#{xssValidator.validate}">
+					<f:validateLength minimum="#{systemProperties['form.input.length.minimum']}"
+									  maximum="49" />
+				</h:inputText>
+
+				<h:outputText value="#{bundle['_nls.empresa.indicador_ativo.label']}:"
+							  for="indicadorAtivo" styleClass="labelGeneric" />
+				<rich:comboBox validator="#{xssValidator.validate}"
+							   id="indicadorAtivo" enableManualInput="false"
+							   label="#{bundle['_nls.empresa.indicador_ativo.label']}"
+							   value="#{empresaController.bean.filter.indicadorAtivo}"
+							   suggestionValues="#{empresaController.bean.suggestionsListInAtivo}"
+							   directInputSuggestions="true" converter="ActiveInactiveConverter">
+				</rich:comboBox>
+
+				<rich:spacer height="5" />
+				<rich:spacer height="5" />
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+										   styleClass="buttonGeneric" type="submit"
+										   reRender="empresaTable,errorMsgId,empresaPanel"
+										   limitToList="true" action="#{empresaController.findByFilter}" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<a4j:outputPanel id="empresaPanel">
+			<h:form styleClass="noMargin">
+				<a4j:keepAlive beanName="empresaBean" />
+				<rich:dataTable value="#{empresaController.bean.resultList}"
+								var="item" rows="#{systemProperties['research.size.page.result']}"
+								width="100%" id="empresaTable" rowKeyVar="row"
+								rendered="#{!empty empresaController.bean.resultList}">
+					<rich:column sortBy="#{item.codigoMnemonico}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.empresa.codigo_mnemonico.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.codigoMnemonico}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.numeroCnpj}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.empresa.codigo_cnpj.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.numeroCnpj}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.nomeEmpresa}">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.empresa.nome_empresa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.nomeEmpresa}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.empresa.nomeEmpresa}">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.empresa.empresa_pai.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.empresa.nomeEmpresa}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.textoPais}">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.empresa.texto_pais.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.textoPais}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.indicadorAtivo}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.empresa.indicador_ativo.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.indicadorAtivo}" converter="ActiveInactiveConverter" />
+					</rich:column>
+
+					<sec:ifAnyGranted roles="BOF.COMPANY:ED, BOF.COMPANY:DE">
+						<rich:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="#{bundle['_nls.empresa.action.label']}" />
+							</f:facet>
+							<sec:ifAnyGranted roles="BOF.COMPANY:ED">
+								<a4j:commandLink ajaxSingle="true" id="editlink"
+												 action="#{empresaController.prepareUpdate}"
+												 reRender="empresaTable">
+									<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+									<f:setPropertyActionListener value="#{item}"
+																 target="#{empresaController.bean.to}" />
+									<f:setPropertyActionListener value="#{item.codigoEmpresa}"
+																 target="#{empresaController.bean.currentRowId}" />
+								</a4j:commandLink>
+								<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+							</sec:ifAnyGranted>
+
+							<sec:ifAnyGranted roles="BOF.COMPANY:DE">
+								<a4j:commandLink ajaxSingle="true" id="deletelink"
+												 action="#{empresaController.prepareRemove}"
+												 reRender="empresaTable">
+									<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+									<f:setPropertyActionListener value="#{item.codigoEmpresa}"
+																 target="#{empresaController.bean.currentRowId}" />
+								</a4j:commandLink>
+								<rich:toolTip for="deletelink" value="#{bundle['_nls.hint.delete']}" />
+							</sec:ifAnyGranted>
+						</rich:column>
+					</sec:ifAnyGranted>
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+										   maxPages="#{systemProperties['research.size.page.maxpages']}"
+										   page="#{empresaController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</h:form>
+		</a4j:outputPanel>
+	</ui:define>
+
+</ui:composition>
+
+</html>

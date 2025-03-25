@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+	<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="8">
+				<h:outputText value="#{bundle['_nls.controle.reajuste.expected.date']}:"
+					for="dataPrevista" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="dataPrevista" 
+					value="#{controleReajusteController.bean.to.dataPrevista}" >
+					<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+				</h:outputText>
+				
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.planned']}:"
+					for="percentualPrevista" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="percentualPrevista"
+					value="#{controleReajusteController.bean.to.percentualPrevista}">
+					<f:convertNumber locale="#{bundle['locale.en_us']}"
+						pattern="#{systemProperties['pattern.number']}" />
+				</h:outputText>
+
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.adjustment.date']}:"
+					for="dataReajuste" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="dataReajuste" 
+					value="#{controleReajusteController.bean.to.dataReajuste}" >
+					<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+				</h:outputText>
+				
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.actual']}:"
+					for="percentualRealizada" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="percentualRealizada"
+					value="#{controleReajusteController.bean.to.percentualRealizada}">
+					<f:convertNumber locale="#{bundle['locale.en_us']}"
+						pattern="#{systemProperties['pattern.number']}" />
+				</h:outputText>
+
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.status']}:"
+					for="controleReajusteStatus" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="controleReajusteStatus" 
+					value="#{controleReajusteController.bean.to.controleReajusteStatus.nomeControleReajStatus}" />
+				
+				<rich:spacer width="15px" />
+
+				<h:outputText value="#{bundle['_nls.controle.reajuste.obs']}:"
+					for="textoObservacao" styleClass="labelGeneric" />
+				<rich:spacer width="5px" />
+				<h:outputText id="textoObservacao" 
+					value="#{controleReajusteController.bean.to.textoObservacao}" />
+
+			</h:panelGrid>
+		</h:form>
+	</h:panelGrid>
+
+</ui:composition>
+
+</html>

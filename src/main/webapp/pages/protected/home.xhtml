@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+
+	<ui:define name="title">#{bundle['_nls.main.title']}</ui:define>
+
+	<ui:define name="header">
+		<script>
+			function deleteCookie()
+			{
+		    	var d = new Date();
+		    	document.cookie = "userName=;expires=" + d.toGMTString() + ";" + "path=/;";
+		    	document.cookie = "userPassword=;expires=" + d.toGMTString() + ";" + "path=/;";
+			}
+		</script>
+		<div id="header">
+		<div id="header-details">
+		<div id="logotype-cit"></div>
+		<div id="logotype"><a href="#">#{bundle['_nls.main.title']}</a></div>
+		<h:panelGroup
+			rendered="#{facesContext.externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME'] != null}">
+
+			<div id="logout">
+			<h:panelGroup id="formLogout">
+				<h:form>
+					<p><h:commandLink action="#{loginBean.doLogout}"
+						value="#{bundle['_nls.home.button.logout']}"
+						onclick="deleteCookie();" /></p>
+				</h:form>
+			</h:panelGroup>
+			</div>
+			<div id="user">
+			<h:form>
+				<p>#{bundle['_nls.header.welcome']} 
+					<rich:spacer width="5px" />
+					<a4j:commandLink
+							action="#{loginBean.preparePessoa}"
+							style="text-color: #000000; text-decoration: none;"
+							value="#{facesContext.externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME']}" />
+				</p>
+			</h:form>
+			</div>
+		</h:panelGroup></div>
+		</div>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<div id="divContent">
+			<a4j:outputPanel ajaxRendered="true">
+				<a4j:include viewId="/pages/protected/common/content.xhtml" />
+			</a4j:outputPanel>
+		</div>
+
+	</ui:define>
+</ui:composition>
+</html>

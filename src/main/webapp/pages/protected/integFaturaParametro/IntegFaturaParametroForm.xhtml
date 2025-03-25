@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+	<a4j:keepAlive beanName="integFaturaParametroBean" />
+	<h:outputText
+		value="#{bundle['_nls.integ_fatura_parametro.empresa.label']}*: "
+		for="empresa" styleClass="labelGeneric" />
+	<rich:comboBox id="empresa" required="true"
+		label="#{bundle['_nls.integ_fatura_parametro.empresa.label']}"
+		value="#{integFaturaParametroController.bean.to.empresa.nomeEmpresa}"
+		suggestionValues="#{integFaturaParametroController.bean.empresaList}"
+		validator="#{integFaturaParametroController.validateEmpresa}">
+	</rich:comboBox>
+
+	<h:outputText
+		value="#{bundle['_nls.integ_fatura_parametro.tipo_servico.label']}*: "
+		for="tipoServico" styleClass="labelGeneric" />
+	<rich:comboBox id="tipoServico"
+		label="#{bundle['_nls.integ_fatura_parametro.tipo_servico.label']}"
+		value="#{integFaturaParametroController.bean.to.tipoServico.nomeTipoServico}"
+		suggestionValues="#{integFaturaParametroController.bean.tipoServicoList}"
+		required="true"
+		validator="#{integFaturaParametroController.validateTipoServico}">
+	</rich:comboBox>
+
+	<h:outputText
+		value="#{bundle['_nls.integ_fatura_parametro.fonte_receita.label']}*: "
+		for="fonteReceita" styleClass="labelGeneric" />
+	<rich:comboBox id="fonteReceita" required="true"
+		label="#{bundle['_nls.integ_fatura_parametro.fonte_receita.label']}"
+		value="#{integFaturaParametroController.bean.to.fonteReceita.nomeFonteReceita}"
+		suggestionValues="#{integFaturaParametroController.bean.fonteReceitaList}"
+		validator="#{integFaturaParametroController.validateFonteReceita}">
+	</rich:comboBox>
+
+	<h:outputText
+		value="#{bundle['_nls.integ_fatura_parametro.codigo_erp_item.label']}*: "
+		for="codigoErpItem" styleClass="labelGeneric" />
+	<h:inputText id="codigoErpItem" size="15" maxlength="16"
+		required="true"
+		label="#{bundle['_nls.integ_fatura_parametro.codigo_erp_item.label']}"
+		value="#{integFaturaParametroController.bean.to.codigoErpItem}">
+		<f:validateLength maximum="16" />
+		<rich:jQuery query="numeric('')" timing="onload"
+			selector="#codigoErpItem" />
+	</h:inputText>
+
+	<h:outputText
+		value="#{bundle['_nls.integ_fatura_parametro.codigo_erp_servico.label']}*: "
+		for="codigoErpServico" styleClass="labelGeneric" />
+	<h:inputText id="codigoErpServico" size="15" maxlength="16"
+		required="true"
+		label="#{bundle['_nls.integ_fatura_parametro.codigo_erp_servico.label']}"
+		value="#{integFaturaParametroController.bean.to.codigoErpServico}">
+		<f:validateLength maximum="16" />
+		<rich:jQuery query="numeric('')" timing="onload"
+			selector="#codigoErpServico" />
+	</h:inputText>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

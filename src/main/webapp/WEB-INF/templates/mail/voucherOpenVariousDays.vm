@@ -1,0 +1,27 @@
+<html>
+  <body>
+    <p>Hi <b>${pessoa.nomePessoa}</b>, </p>
+    <p>The following voucher(s) opened by you is/are open for more than ${days} days.</p>
+
+    <p>&nbsp;</p>
+
+
+        <table CELLSPACING="0" CELLPADDING="1" BORDER="1">
+          <tr bgcolor="#CCCCCC">
+          <th align="left"><b>Voucher</b></th>
+          <th align="center"><b>Valor</b></th>
+          </tr>
+
+          #foreach( $voucher in $vouchers )
+            <tr>
+              <td align="left">$voucher.numeroVoucher</td>
+              <td align="left">$voucher.orcamentoDespesa.moeda.siglaMoeda ${voucher.valueFromCurrentStatus}.00</td>
+            </tr>
+          #end
+         </table>
+      <p>Thanks</p>
+      <p>IT</p>
+      <p>This email is an automated message. Please do not reply</p>
+      <hr WIDTH=80% align=left>
+  </body>
+</html>

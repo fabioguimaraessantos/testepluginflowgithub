@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:rich="http://richfaces.org/rich"
+	  xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+	<h:panelGrid columns="2">
+		<h:outputText value="#{bundle['_nls.chargeback.resource_type.label']}:"
+				      for="resourceType"
+					  styleClass="labelGeneric" />
+		<a4j:region id="resourceType">
+			<rich:comboBox id="resourceTypeComb"
+						   enableManualInput="false"
+						   label="#{bundle['_nls.chargeback.resource_type.label']}"
+						   value="#{chargebackController.bean.indicadorTipoAlocacao}"
+						   directInputSuggestions="true"
+						   converter="TipoTiRecursoConverter"
+						   immediate="true"
+						   valueChangeListener="#{chargebackController.prepareTipoAlocacaoCombo}"
+						   defaultLabel="#{bundle['_nls.ti_recurso.tipo_recurso.sp']}"
+						   disabled="true">
+			</rich:comboBox>
+		</a4j:region>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel value="#{bundle['_nls.chargeback.invoice_number.label']}*:"
+					   for="invoiceNumber"
+					   styleClass="labelGeneric" />
+		<rich:comboBox id="invoiceNumber"
+					   required="true"
+					   label="#{bundle['_nls.chargeback.invoice_number.label']}"
+					   immediate="true"
+					   value="#{chargebackController.bean.invoiceMegaSelect.selected}"
+					   suggestionValues="#{chargebackController.bean.invoiceMegaSelect.list}"
+					   valueChangeListener="#{chargebackController.prepareInvoiceNumberCombo}">
+			<a4j:support event="onselect"
+						 reRender="project"
+						 limitToList="true" />
+		</rich:comboBox>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel value="#{bundle['_nls.chargeback.project.label']}*:"
+					   for="project"
+					   styleClass="labelGeneric" />
+		<rich:comboBox id="project"
+					   required="true"
+					   label="#{bundle['_nls.chargeback.project.label']}"
+					   value="#{chargebackController.bean.invoiceProjectMegaSelect.selected}"
+					   suggestionValues="#{chargebackController.bean.invoiceProjectMegaSelect.list}"
+					   valueChangeListener="#{chargebackController.prepareInvoiceProjectCombo}"
+					   disabled="#{!chargebackController.bean.hasProjects}"
+					   immediate="true">
+			<a4j:support event="onselect"
+						 reRender="resourceName,branch,provider,tiRecurso,valorLicenca,nomeMoeda,installmentsAmountValue,mesInicio,anoInicio"
+						 limitToList="true" />
+		</rich:comboBox>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel value="#{bundle['_nls.chargeback.resource_name.label']}: "
+					   for="resourceName"
+					   styleClass="labelGeneric" />
+		<h:inputText id="resourceName"
+					 label="#{bundle['_nls.chargeback.resource_name.label']}"
+					 value="#{chargebackController.bean.nomeProduto}"
+					 immediate="true"
+					 disabled="true"
+					 rendered="#{!chargebackController.bean.hasIntegratedInstallments}" >
+		</h:inputText>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel value="#{bundle['_nls.chargeback.branch.label']}: "
+					   for="branch"
+					   styleClass="labelGeneric" />
+		<h:inputText id="branch"
+					 label="#{bundle['_nls.chargeback.branch.label']}"
+					 value="#{chargebackController.bean.empresa.nomeEmpresa}"
+					 immediate="true"
+					 disabled="true"
+					 rendered="#{!chargebackController.bean.hasIntegratedInstallments}" >
+		</h:inputText>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel for="installmentsAmount"
+					   value="#{bundle['_nls.chargeback.installments_amount.label']}*:"
+					   styleClass="labelGeneric" />
+		<a4j:region>
+			<h:inputText id="installmentsAmount"
+						 required="true"
+						 value="#{chargebackController.bean.parcelasLicenca}"
+						 label="#{bundle['_nls.chargeback.installments_amount.label']}"
+						 valueChangeListener="#{chargebackController.prepareCalculateInstallments}"
+						 immediate="true"
+						 maxlength="2"
+						 onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"
+						 rendered="#{!chargebackController.bean.hasIntegratedInstallments}">
+				<f:validateLength maximum="2"/>
+				<a4j:support event="onchange"
+							 reRender="installmentsAmountValue"
+							 limitToList="true">
+					<f:setPropertyActionListener target="#{chargebackController.bean.parcelasLicenca}" value="#{chargebackController.bean.valorParcela}" />
+				</a4j:support>
+			</h:inputText>
+			<rich:toolTip for="approverMgrInfo" value="#{bundle['_nls.chback_pess.tooltip.alert.numbers_only']}"/>
+			<h:graphicImage id="approverMgrInfo"
+							value="/images/icons/info.gif"
+							style="border:0;padding-left:5px;margin-bottom:-5px;"/>
+		</a4j:region>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel for="installmentsNumber"
+					   value="#{bundle['_nls.chargeback.installments_number.label']}:"
+					   styleClass="labelGeneric" />
+		<h:inputText id="installmentsNumber"
+					 value="1"
+					 immediate="true" label="#{bundle['_nls.receita.installments.label']}"
+					 rendered="#{!chargebackController.bean.hasIntegratedInstallments}"
+					 disabled="true">
+		</h:inputText>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel value="#{bundle['_nls.chargeback.provider.label']}: "
+					   for="provider"
+					   styleClass="labelGeneric" />
+		<h:inputText id="provider"
+					 label="#{bundle['_nls.chargeback.provider.label']}"
+					 value="#{chargebackController.bean.nomeFornecedor}"
+					 immediate="true"
+					 disabled="true"
+					 rendered="#{!chargebackController.bean.hasIntegratedInstallments}" >
+		</h:inputText>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel value="#{bundle['_nls.chargeback.ti_recurso.label']}: "
+					   for="tiRecurso"
+					   styleClass="labelGeneric" />
+		<rich:comboBox id="tiRecurso"
+					   label="#{bundle['_nls.chargeback.ti_recurso.label']}"
+					   value="#{chargebackController.bean.nomeTiRecurso}"
+					   suggestionValues="#{chargebackController.bean.tiRecursoList}"
+					   immediate="true" directInputSuggestions="true"
+					   rendered="#{!chargebackController.bean.hasIntegratedInstallments}" >
+			<a4j:support event="onselect" reRender="valorLicenca,nomeMoeda"
+						 limitToList="true" immediate="true" />
+		</rich:comboBox>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputText for="valorLicenca"
+					  value="#{bundle['_nls.chargeback.total_amount.label']}:"
+					  styleClass="labelGeneric" />
+		<h:inputText id="valorLicenca"
+					 value="#{chargebackController.bean.valorLicenca}"
+					 immediate="true"
+					 label="#{bundle['_nls.chargeback.total_amount.label']}"
+					 disabled="true"
+					 rendered="#{!chargebackController.bean.hasIntegratedInstallments}">
+			<a4j:support event="onchange"
+						 limitToList="true"
+						 reRender="valorLicenca" />
+			<rich:jQuery selector="#valorLicenca"
+						 query="setMask('#{bundle['jquery.monetary.pattern']}')"
+						 timing="onload" />
+			<f:convertNumber locale="#{bundle['locale.en_us']}" pattern="#{systemProperties['pattern.number']}" />
+		</h:inputText>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputText value="#{bundle['_nls.deal.moeda.label']}: "
+					  for="nomeMoeda"
+					  styleClass="labelGeneric" />
+
+		<h:inputText id="nomeMoeda"
+					 label="#{bundle['_nls.deal.moeda.label']}"
+					 value="#{chargebackController.bean.nomeMoeda}"
+					 immediate="true"
+					 disabled="true"
+					 rendered="#{!chargebackController.bean.hasIntegratedInstallments}" >
+		</h:inputText>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputText for="installmentsAmountValue"
+					  value="#{bundle['_nls.chargeback.installments_amount.label']} (value):"
+					  styleClass="labelGeneric" />
+		<h:inputText id="installmentsAmountValue"
+					 value="#{chargebackController.bean.valorParcela}"
+					 label="#{bundle['_nls.chargeback.installments_amount.label']}"
+					 disabled="true">
+			<a4j:support event="onchange"
+						 limitToList="true"
+						 reRender="installmentsAmountValue" />
+			<rich:jQuery selector="#installmentsAmountValue"
+						 query="setMask('#{bundle['jquery.monetary.pattern']}')"
+						 timing="onload" />
+			<f:convertNumber locale="#{bundle['locale.en_us']}" pattern="#{systemProperties['pattern.number']}" />
+		</h:inputText>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+		<h:outputLabel value="#{bundle['_nls.chargeback.start_date.label']}: " styleClass="labelGeneric" />
+		<h:panelGrid columns="5"
+					 cellpadding="0"
+					 cellspacing="0" >
+			<rich:comboBox id="mesInicio"
+						   enableManualInput="false"
+						   value="#{chargebackController.bean.monthBeg}"
+						   label="#{bundle['_nls.mes.label']}"
+						   defaultLabel="#{bundle['_nls.mes.label']}"
+						   suggestionValues="#{dateBean.monthList}"
+						   width="55"
+						   immediate="true"
+						   disabled="true"
+						   rendered="#{!chargebackController.bean.hasIntegratedInstallments}" >
+			</rich:comboBox>
+
+			<rich:spacer height="5" width="5" />
+			<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+			<rich:spacer height="5" width="5" />
+
+			<rich:comboBox id="anoInicio"
+						   enableManualInput="false"
+						   value="#{chargebackController.bean.yearBeg}"
+						   label="#{bundle['_nls.ano.label']}"
+						   defaultLabel="#{bundle['_nls.ano.label']}"
+						   suggestionValues="#{dateBean.yearList}"
+						   width="55"
+						   immediate="true"
+						   disabled="true"
+						   rendered="#{!chargebackController.bean.hasIntegratedInstallments}" >
+			</rich:comboBox>
+		</h:panelGrid>
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+		<rich:spacer height="2" rendered="#{chargebackController.bean.hasIntegratedInstallments}" />
+
+	</h:panelGrid>
+
+	<rich:panel>
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="2">
+				<a4j:region renderRegionOnly="true" id="region">
+					<h:outputText value="#{bundle['_nls.travel.budget.label.login']}*: " styleClass="labelGeneric" />
+					<h:inputText value="#{chargebackController.bean.login}"
+								 id="codigoMnemonico"
+								 validator="#{chargebackController.validateRecursoPessoa}"
+								 required="false"
+								 style=" width : 150px;"
+								 label="#{bundle['_nls.travel.budget.label.login']}">
+						<rich:suggestionbox for="codigoMnemonico"
+											var="result"
+											suggestionAction="#{chargebackController.autoCompleteRecurso}">
+							<h:column>
+								<h:outputText value="#{result.codigoMnemonico}" />
+							</h:column>
+						</rich:suggestionbox>
+					</h:inputText>
+				</a4j:region>
+				<a4j:commandButton action="#{chargebackController.addPersonLicencaSwProjeto}"
+								   value="#{bundle['_nls.travel.budget.button.add']}"
+								   styleClass="buttonGeneric"
+								   reRender="lista" />
+			</h:panelGrid>
+		</h:form>
+		<rich:spacer height="5"/>
+		<h:form>
+			<rich:dataTable value="#{chargebackController.bean.logins}"
+							var="item"
+							width="100%"
+							id="lista">
+				<rich:column style="width:400px;">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.travel.budget.white_list.label.login']}" />
+					</f:facet>
+					<h:outputText value="#{item}" />
+				</rich:column>
+
+				<rich:column style="text-align: center;">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.travel.budget.label.actions']}" />
+					</f:facet>
+					<!-- Botao de delete -->
+					<a4j:commandLink ajaxSingle="true"
+									 id="deleteLink"
+									 oncomplete="#{rich:component('deletePerson')}.show()">
+						<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+						<f:setPropertyActionListener value="#{item}" target="#{chargebackController.bean.login}" />
+					</a4j:commandLink>
+					<rich:toolTip for="deleteLink" value="#{bundle['_nls.hint.delete']}" />
+				</rich:column>
+				<f:facet name="footer">
+					<h:outputText value="Logins without added"
+								  rendered="#{empty chargebackController.bean.logins}"
+								  style="font-style: italic;" />
+				</f:facet>
+			</rich:dataTable>
+		</h:form>
+	</rich:panel>
+
+	<!-- Modal do delete -->
+	<rich:modalPanel id="deletePerson"
+					 autosized="true"
+					 width="200">
+		<f:facet name="header">
+			<h:outputText value="#{bundle['_nls.title.confirmation']}" style="padding-right:15px;" />
+		</f:facet>
+		<f:facet name="controls">
+			<h:panelGroup>
+				<h:graphicImage value="/images/icons/close.gif"
+								styleClass="hidelink"
+								id="hidelinkDeletePerson" />
+				<rich:componentControl for="deletePerson"
+									   attachTo="hidelinkDeletePerson"
+									   operation="hide"
+									   event="onclick" />
+			</h:panelGroup>
+		</f:facet>
+		<h:outputText value="#{bundle['_nls.travel.budget.msgm.delete.person']}" style="padding-right:15px;" />
+
+		<h:form>
+			<rich:spacer height="5" />
+			<table width="100%">
+				<tbody>
+				<tr>
+					<td align="center" width="50%">
+						<a4j:commandButton value="#{bundle['_nls.button.ok']}"
+										   ajaxSingle="true"
+										   action="#{chargebackController.removePersonLicencaSwProjeto}"
+										   oncomplete="#{rich:component('deletePerson')}.hide();"
+										   styleClass="buttonGeneric" />
+					</td>
+					<td align="center" width="50%">
+						<a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+										   styleClass="buttonGeneric"
+										   oncomplete="#{rich:component('deletePerson')}.hide();return false;"/>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</h:form>
+	</rich:modalPanel>
+	<rich:spacer height="10" />
+</ui:composition>
+</html>

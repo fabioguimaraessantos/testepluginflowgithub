@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition>
+	<h:panelGrid columns="2">
+		<h:outputText value="#{bundle['_nls.base_papel_alocacao.papel_alocacao.label']}: "
+					  styleClass="labelGeneric" />
+		<rich:comboBox id="papelAlocacao" required="true"
+					   rendered="#{!basePapelAlocacaoController.bean.isUpdate}"
+					   enableManualInput="false" label="#{bundle['_nls.base_papel_alocacao.papel_alocacao.label']}"
+					   value="#{basePapelAlocacaoController.bean.to.papelAlocacao.nomePapelAlocacao}"
+					   suggestionValues="#{basePapelAlocacaoController.bean.papelAlocacaoList}"
+					   directInputSuggestions="true" width="110">
+		</rich:comboBox>
+		<h:outputText
+				value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.basePapelAlocacao.papelAlocacao.nomePapelAlocacao}"
+				rendered="#{basePapelAlocacaoController.bean.isUpdate}" />
+
+		<h:outputText value="#{bundle['_nls.base_papel_alocacao.empresa.label']}: "
+					  styleClass="labelGeneric" />
+		<rich:comboBox id="company"
+					   rendered="#{!basePapelAlocacaoController.bean.isUpdate}"
+					   enableManualInput="false"
+					   label="#{bundle['_nls.base_papel_alocacao.empresa.label']}"
+					   value="#{basePapelAlocacaoController.bean.nomeEmpresaMatriz}"
+					   suggestionValues="#{basePapelAlocacaoController.bean.empresaList}"
+					   directInputSuggestions="true" width="170">
+		</rich:comboBox>
+		<h:outputText value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.nomeEmpresaMatriz}"
+					  rendered="#{basePapelAlocacaoController.bean.isUpdate}" />
+
+		<h:outputText value="#{bundle['_nls.base_papel_alocacao.site.label']}: "
+					  styleClass="labelGeneric" />
+		<a4j:region>
+			<rich:comboBox id="cidadeBase" required="true"
+						   enableManualInput="false"
+						   label="#{bundle['_nls.base_papel_alocacao.site.label']}"
+						   value="#{basePapelAlocacaoController.bean.to.cidadeBase.nomeCidadeBase}"
+						   suggestionValues="#{basePapelAlocacaoController.bean.cidadeBaseList}"
+						   directInputSuggestions="true" width="110"
+						   validator="#{basePapelAlocacaoController.validateCidadeBase}"
+						   rendered="#{!basePapelAlocacaoController.bean.isUpdate}">
+				<a4j:support reRender="moeda" event="onselect" limitToList="true" />
+			</rich:comboBox>
+			<h:outputText
+					value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.basePapelAlocacao.cidadeBase.nomeCidadeBase}"
+					rendered="#{basePapelAlocacaoController.bean.isUpdate}" />
+		</a4j:region>
+
+		<rich:spacer height="5" rendered="#{!basePapelAlocacaoController.bean.isUpdate}" />
+		<rich:spacer height="5" rendered="#{!basePapelAlocacaoController.bean.isUpdate}" />
+
+		<h:outputText value="#{bundle['_nls.custo_base_papel_alocacao.data_inicio.label']}: "
+					  for="dataInicio" styleClass="labelGeneric"
+					  rendered="#{!basePapelAlocacaoController.bean.isUpdate}" />
+		<h:panelGrid columns="5" border="0" cellspacing="0"
+					 rendered="#{!basePapelAlocacaoController.bean.isUpdate}">
+			<rich:comboBox id="monthBeg" enableManualInput="false"
+						   value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.validityMonthBeg}"
+						   label="#{bundle['_nls.custo_base_papel_alocacao.mes.label']}"
+						   defaultLabel="#{bundle['_nls.custo_base_papel_alocacao.mes.label']}"
+						   required="true"
+						   suggestionValues="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.validityMonthList}"
+						   width="55">
+			</rich:comboBox>
+
+			<rich:spacer height="5" width="3" styleClass="noMargin" />
+			<h:outputText value="/" styleClass="labelGeneric" />
+			<rich:spacer height="5" width="3" styleClass="noMargin" />
+
+			<rich:comboBox id="yearBeg" enableManualInput="false"
+						   value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.validityYearBeg}"
+						   label="#{bundle['_nls.custo_base_papel_alocacao.ano.label']}"
+						   defaultLabel="#{bundle['_nls.custo_base_papel_alocacao.ano.label']}"
+						   required="true"
+						   suggestionValues="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.validityYearList}"
+						   width="55">
+			</rich:comboBox>
+		</h:panelGrid>
+
+		<rich:spacer height="5" rendered="#{!basePapelAlocacaoController.bean.isUpdate}" />
+		<rich:spacer height="5" rendered="#{!basePapelAlocacaoController.bean.isUpdate}" />
+
+		<a4j:region id="regionMoeda" renderRegionOnly="true" rendered="#{!basePapelAlocacaoController.bean.isUpdate}">
+			<a4j:outputPanel id="moeda" layout="block">
+				<h:outputText
+						value="#{bundle['_nls.custo_base_papel_alocacao.valor.label']} (#{basePapelAlocacaoController.bean.to.cidadeBase.moeda.siglaMoeda}): "
+						for="valor" styleClass="labelGeneric" />
+			</a4j:outputPanel>
+		</a4j:region>
+		<h:inputText id="valor" size="15" maxlength="10"
+					 rendered="#{!basePapelAlocacaoController.bean.isUpdate}"
+					 label="#{bundle['_nls.custo_base_papel_alocacao.valor.label']}"
+					 value="#{basePapelAlocacaoController.custoBasePapelAlocacaoBean.to.valorBasePapelAlocacao}"
+					 required="true">
+			<f:validateLength maximum="10" />
+			<f:convertNumber locale="#{bundle['locale.en_us']}"
+							 pattern="#{systemProperties['pattern.number']}" />
+			<rich:jQuery query="numeric('#{bundle['locale.decimal.separator']}')"
+						 timing="onload" selector="#valor" />
+		</h:inputText>
+	</h:panelGrid>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+</ui:composition>
+
+</html>

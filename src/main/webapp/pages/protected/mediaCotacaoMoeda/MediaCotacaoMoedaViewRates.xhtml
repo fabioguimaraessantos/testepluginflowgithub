@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.media_cotacao_moeda.titulo']}
+   	</ui:define>
+
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+
+		<h:form id="form" styleClass="noMargin">
+			<a4j:keepAlive beanName="mediaCotacaoMoedaBean" />
+			<a4j:loadScript src="/js/jquery.meio.mask.js" />
+
+			<h:panelGrid columns="2">
+				<h:outputText
+					value="#{bundle['_nls.media_cotacao_moeda.currency.label']}:"
+					styleClass="labelGeneric" />
+				<h:outputText
+					value="#{mediaCotacaoMoedaController.bean.to.moeda.nomeMoeda}" />
+
+			</h:panelGrid>
+
+			<rich:spacer height="5" styleClass="noMargin" />
+
+			<h:panelGrid columns="4">
+				<a4j:commandButton
+					action="#{mediaCotacaoMoedaController.prepareView}"
+					value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric"
+					immediate="true" />
+
+				<a4j:commandButton
+					action="#{mediaCotacaoMoedaController.updateMediaCotacaoMoeda}"
+					value="#{bundle['_nls.button.save']}" styleClass="buttonGeneric"
+					reRender="mediaCotacaoMoedaPanel"
+					rendered="#{mediaCotacaoMoedaController.bean.flagUpdate}" />
+				<a4j:commandButton
+					action="#{mediaCotacaoMoedaController.prepareConfigure}"
+					value="#{bundle['_nls.button.cancel']}" immediate="true"
+					rendered="#{mediaCotacaoMoedaController.bean.flagUpdate}" />
+			</h:panelGrid>
+		</h:form>
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<!-- TABELA -->
+		<h:form>
+			<a4j:outputPanel id="mediaCotacaoMoedaPanel">
+				<table border="1" class="dr-table rich-table" width="100%">
+					<thead class="dr-table-thead">
+						<tr class="dr-table-header rich-table-header">
+
+							<th class="dr-table-headercell rich-table-headercell"><h:outputLabel
+									value="#{bundle['_nls.media_cotacao_moeda.year']}" /></th>
+							<th class="dr-table-headercell rich-table-headercell"><h:outputLabel
+									value="#{bundle['_nls.media_cotacao_moeda.exchangeRate.label']}" /></th>
+						</tr>
+					</thead>
+					<a4j:repeat
+						value="#{mediaCotacaoMoedaController.bean.listaMediaCotacaoMoedaRow}"
+						var="item" rowKeyVar="row">
+						<tr>
+							<td class="dr-subtable-cell rich-subtable-cell" width="33%"><rich:spacer
+									width="5" /> <a4j:commandLink limitToList="true"
+									ajaxSingle="true" rendered="#{!item.showMediaCotacaoMoeda}"
+									action="#{mediaCotacaoMoedaController.showHideMediaCotacaoMoedaMeses}"
+									reRender="mediaCotacaoMoedaPanel">
+									<h:graphicImage value="/images/icons/plus.gif" style="border:0" />
+									<f:setPropertyActionListener value="#{item}"
+										target="#{mediaCotacaoMoedaController.bean.mediaCotacaoMoedaRow}" />
+								</a4j:commandLink> <a4j:commandLink rendered="#{item.showMediaCotacaoMoeda}"
+									reRender="mediaCotacaoMoedaPanel" ajaxSingle="true"
+									limitToList="true"
+									action="#{mediaCotacaoMoedaController.showHideMediaCotacaoMoedaMeses}">
+									<h:graphicImage value="/images/icons/minus.gif"
+										style="border:0" />
+									<f:setPropertyActionListener value="#{item}"
+										target="#{mediaCotacaoMoedaController.bean.mediaCotacaoMoedaRow}" />
+								</a4j:commandLink> <rich:spacer width="4" /> <h:outputText
+									value="#{item.mediaCotacaoMoeda.dataData}">
+									<f:convertDateTime pattern="yyyy" />
+								</h:outputText></td>
+							<td class="dr-subtable-cell rich-subtable-cell"
+								style="text-align: center" width="34%"><h:outputText
+									value="#{item.mediaCotacaoMoeda.valorCotacao}">
+									<f:convertNumber locale="#{bundle['locale.en_us']}"
+										pattern="#{systemProperties['pattern.number.4']}" />
+								</h:outputText></td>
+						</tr>
+
+						<a4j:region rendered="#{item.showMediaCotacaoMoeda}">
+							<a4j:repeat value="#{item.listaMediaCotacaoMoeda}"
+								var="itemMediaCotacaoMoedaMes">
+								<tr class="footerLine">
+									<td class="dr-subtable-cell rich-subtable-cell" width="33%"><rich:spacer
+											width="20" /> <h:outputText
+											value="#{itemMediaCotacaoMoedaMes.dataData}">
+											<f:convertDateTime pattern="MMM/yyyy" />
+										</h:outputText></td>
+									<td class="dr-subtable-cell rich-subtable-cell"
+										style="text-align: center" width="34%"><h:outputText
+											value="#{itemMediaCotacaoMoedaMes.valorCotacao}">
+											<f:convertNumber locale="#{bundle['locale.en_us']}"
+												pattern="#{systemProperties['pattern.number.4']}" />
+										</h:outputText></td>
+								</tr>
+							</a4j:repeat>
+						</a4j:region>
+					</a4j:repeat>
+				</table>
+			</a4j:outputPanel>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</html>

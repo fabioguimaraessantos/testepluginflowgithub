@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:composition>
+
+       <h:panelGrid columns="2">
+            <h:outputText value="#{bundle['_nls.industry.type.name.label']}" styleClass="labelGeneric" />
+            <h:outputLabel value="#{industryTypeController.bean.industryType.name}" />
+
+            <h:outputText value="#{bundle['_nls.industry.type.status.label']}" styleClass="labelGeneric" />
+            <h:outputLabel value="#{industryTypeController.bean.industryType.inActive eq 'A' ? 'Active' : 'Inactive'}" />
+
+           <rich:spacer height="5" />
+           <rich:spacer height="5" />
+        </h:panelGrid>
+
+        <rich:spacer height="5" styleClass="noMargin" />
+
+         <a4j:outputPanel id="pnlMsa" rendered="#{!empty industryTypeController.bean.msas}" >
+            <fieldset style="width: 300px;">
+                <legend> <h:outputText value="#{bundle['_nls.menu.msa']}"  /> </legend>
+                <rich:dataTable value="#{industryTypeController.bean.msas}"
+                        var="msa" rows="#{systemProperties['research.size.page.result']}"
+                        width="100%" id="msaTable" >
+
+                    <rich:column style="text-align: center;">
+                        <f:facet name="header">
+                            <h:outputText value="#{bundle['_nls.msa.nome_msa.label']}" />
+                        </f:facet>
+                        <h:outputText value="#{msa.nomeMsa}" />
+                    </rich:column>
+                </rich:dataTable>
+            </fieldset>
+        </a4j:outputPanel>
+
+    </ui:composition>
+</html>

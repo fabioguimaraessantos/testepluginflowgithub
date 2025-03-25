@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.apropriacao_fatura']} &gt; #{bundle['_nls.menu.apropriacao_fatura.research']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+
+			<h:panelGrid columns="9">
+				<h:outputText
+					value="#{bundle['_nls.apropriacao_fatura.data_mes.label']}*: "
+					for="mesHorasFat" styleClass="labelGeneric"></h:outputText>
+
+
+					<rich:comboBox id="mesInicio" required="true"
+						enableManualInput="false"
+						label="#{bundle['_nls.apropriacao_fatura.mes_inicio.label']}"
+						value="#{apropriacaoFaturaController.bean.filter.mesInicio}"
+						directInputSuggestions="true"
+						suggestionValues="#{apropriacaoFaturaController.bean.monthList}"
+						defaultLabel="#{bundle['_nls.mes.label']}" width="60">
+					</rich:comboBox>
+					<h:outputText value="/"></h:outputText>
+					<rich:comboBox id="anoInicio" required="true"
+						enableManualInput="false"
+						label="#{bundle['_nls.apropriacao_fatura.ano_inicio.label']}"
+						value="#{apropriacaoFaturaController.bean.filter.anoInicio}"
+						directInputSuggestions="true"
+						suggestionValues="#{apropriacaoFaturaController.bean.yearList}"
+						defaultLabel="#{bundle['_nls.ano.label']}" width="60">
+					</rich:comboBox>
+
+					<h:outputText value="#{bundle['_nls.until.label']}*: "
+						styleClass="labelGeneric" />
+
+				<rich:comboBox id="mesFim" required="true" enableManualInput="false"
+						label="#{bundle['_nls.apropriacao_fatura.mes_fim.label']}"
+						value="#{apropriacaoFaturaController.bean.filter.mesFim}"
+						directInputSuggestions="true"
+						suggestionValues="#{apropriacaoFaturaController.bean.monthList}"
+						defaultLabel="#{bundle['_nls.mes.label']}" width="60">
+					</rich:comboBox>
+					<h:outputText value="/"></h:outputText>
+				<rich:comboBox id="anoFim" required="true" enableManualInput="false"
+						label="#{bundle['_nls.apropriacao_fatura.ano_fim.label']}"
+						value="#{apropriacaoFaturaController.bean.filter.anoFim}"
+						directInputSuggestions="true"
+						suggestionValues="#{apropriacaoFaturaController.bean.yearList}"
+						defaultLabel="#{bundle['_nls.ano.label']}" width="60">
+					</rich:comboBox>
+
+				</h:panelGrid>
+
+			<h:panelGrid columns="4">
+				<h:outputText
+					value="#{bundle['_nls.apropriacao_fatura.natureza.label']}: "
+					for="natureza" styleClass="labelGeneric" />
+
+					<a4j:region>
+						<rich:comboBox id="natureza"
+							label="#{bundle['_nls.apropriacao_fatura.natureza.label']}"
+							value="#{apropriacaoFaturaController.bean.filter.nomeNatureza}"
+							suggestionValues="#{apropriacaoFaturaController.bean.naturezaList}"
+							valueChangeListener="#{apropriacaoFaturaController.prepareCentroLucroCombo}"
+							immediate="true" directInputSuggestions="true"
+							validator="#{apropriacaoFaturaController.validateNaturezaCentroLucro}">
+
+							<a4j:support event="onselect" reRender="centroLucro"
+								limitToList="true" immediate="true" />
+						</rich:comboBox>
+					</a4j:region>
+
+					<h:outputText
+						value="#{bundle['_nls.apropriacao_fatura.centro_lucro.label']}: "
+						for="centroLucro" styleClass="labelGeneric" />
+					<rich:comboBox id="centroLucro"
+						label="#{bundle['_nls.apropriacao_fatura.centro_lucro.label']}"
+						value="#{apropriacaoFaturaController.bean.filter.nomeCentroLucro}"
+						suggestionValues="#{apropriacaoFaturaController.bean.centroLucroList}"
+						directInputSuggestions="true"
+						validator="#{apropriacaoFaturaController.validateCentroLucro}">
+					</rich:comboBox>
+
+
+
+				<h:outputText
+					value="#{bundle['_nls.apropriacao_fatura.cliente.label']}: "
+					for="cliente" styleClass="labelGeneric" />
+
+
+					<a4j:region>
+						<rich:comboBox id="cliente"
+							label="#{bundle['_nls.apropriacao_fatura.cliente.label']}"
+							value="#{apropriacaoFaturaController.bean.filter.nomeCliente}"
+							suggestionValues="#{apropriacaoFaturaController.bean.clienteList}"
+							directInputSuggestions="true" immediate="true"
+							valueChangeListener="#{apropriacaoFaturaController.prepareContratoPraticaCombo}"
+							validator="#{apropriacaoFaturaController.validateCliente}">
+
+							<a4j:support event="onselect" reRender="contratoPratica"
+								limitToList="true" immediate="true" />
+						</rich:comboBox>
+					</a4j:region>
+
+					<h:outputText
+						value="#{bundle['_nls.apropriacao_fatura.contrato_pratica.label']}: "
+						for="contratoPratica" styleClass="labelGeneric" />
+				<a4j:region>
+					<rich:comboBox id="contratoPratica"
+						label="#{bundle['_nls.apropriacao_fatura.contrato_pratica.label']}"
+						value="#{apropriacaoFaturaController.bean.filter.nomeContratoPratica}"
+						suggestionValues="#{apropriacaoFaturaController.bean.contratoPraticaList}"
+						directInputSuggestions="true" immediate="true"
+						validator="#{apropriacaoFaturaController.validateContratoPratica}"
+						valueChangeListener="#{apropriacaoFaturaController.prepareDealFiscalCombo}" >
+						<a4j:support event="onselect" reRender="dealFiscalCombo"
+							limitToList="true" immediate="true"/>
+					</rich:comboBox>
+				</a4j:region>
+
+
+				<h:outputText value="Deal Fiscal: " for="dealFiscalCombo"
+					styleClass="labelGeneric"></h:outputText>
+
+				<rich:comboBox id="dealFiscalCombo"
+					label="#{bundle['_nls.apropriacao_fatura.indicador_status.label']}"
+					value="#{apropriacaoFaturaController.bean.filter.nomeDealFiscal}"
+						directInputSuggestions="true"
+					suggestionValues="#{apropriacaoFaturaController.bean.dealFiscalList}">
+
+					</rich:comboBox>
+
+
+
+				<h:outputText
+					value="#{bundle['_nls.apropriacao_fatura.indicador_status.label']}: "
+					for="indicadorStatus" styleClass="labelGeneric"></h:outputText>
+					<rich:comboBox id="indicadorStatus" enableManualInput="false"
+						label="#{bundle['_nls.apropriacao_fatura.indicador_status.label']}"
+						value="#{apropriacaoFaturaController.bean.filter.indicadorStatus}"
+						converter="ApropriacaoFaturaConverter"
+						directInputSuggestions="true">
+
+						<f:selectItem itemValue="ALL" />
+						<f:selectItem itemValue="PD" />
+						<f:selectItem itemValue="CP" />
+					</rich:comboBox>
+					<a4j:commandButton value="#{bundle['_nls.button.search']}"
+						styleClass="buttonGeneric" limitToList="true"
+						reRender="apropriacaoFaturaTable,errorMsgId,apropriacaoFaturaPanel"
+						action="#{apropriacaoFaturaController.findByFilter}" type="submit" />
+
+			</h:panelGrid>
+
+
+
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="apropriacaoFaturaBean" />
+			<a4j:outputPanel id="apropriacaoFaturaPanel">
+				<rich:dataTable
+					value="#{apropriacaoFaturaController.bean.filterResultList}"
+					rendered="#{!empty apropriacaoFaturaController.bean.filterResultList}"
+					var="item" rows="#{systemProperties['research.size.page.result']}"
+					width="100%" id="apropriacaoFaturaTable" rowKeyVar="row"
+					reRender="ds">
+
+					<rich:column sortBy="#{item.cliente.nomeCliente}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao_fatura.cliente.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.cliente.nomeCliente}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.contratoPratica.nomeContratoPratica}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao_fatura.contrato_pratica.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.contratoPratica.nomeContratoPratica}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.deal.nomeDealFiscal}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao_fatura.deal.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.deal.nomeDealFiscal}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.receita.dataMes}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao_fatura.data_mes.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.receita.dataMes}">
+							<f:convertDateTime pattern="MMM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.totalReceita}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao_fatura.receita.total.label']}" />
+						</f:facet>
+						<h:outputLabel value="#{item.patternCurrency} " />
+						<h:outputText
+							value="#{item.totalReceita + item.receitaDealFiscal.totalAdjustmentValue}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.totalFatura}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao_fatura.fatura.total.label']}" />
+						</f:facet>
+						<h:outputLabel value="#{item.patternCurrency} " />
+						<h:outputText value="#{item.totalFatura}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column
+						sortBy="#{item.totalFatura - item.totalReceita - item.receitaDealFiscal.totalAdjustmentValue}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao_fatura.saldo.label']}" />
+						</f:facet>
+						<h:outputLabel value="#{item.patternCurrency} " />
+						<h:outputText
+							value="#{item.totalFatura - item.totalReceita - item.receitaDealFiscal.totalAdjustmentValue}"
+							styleClass="superAlocationColor"
+							rendered="#{(item.totalFatura - item.totalReceita - item.receitaDealFiscal.totalAdjustmentValue) lt 0}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+						<h:outputText
+							value="#{item.totalFatura - item.totalReceita - item.receitaDealFiscal.totalAdjustmentValue}"
+							rendered="#{(item.totalFatura - item.totalReceita - item.receitaDealFiscal.totalAdjustmentValue) ge 0}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.apropriacao_fatura.action.label']}" />
+						</f:facet>
+						<a4j:commandLink ajaxSingle="true" id="editlink"
+							action="#{apropriacaoFaturaController.prepareManage}"
+							reRender="receitaTable">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item.receitaDealFiscal}"
+								target="#{apropriacaoFaturaController.bean.receitaDealFiscal}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:datascroller id="ds" renderIfSinglePage="false"
+							reRender="apropriacaoFaturaTable" limitToList="true"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{apropriacaoFaturaController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

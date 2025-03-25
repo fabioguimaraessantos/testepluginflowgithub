@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+    <ui:define name="titleForm">
+        <h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+            <h:outputLabel
+                    value="#{bundle['_nls.menu.fatura']} &gt; #{bundle['_nls.menu.fatura.view']}"
+                    rendered="#{!faturaController.bean.isRemove}" />
+            <h:outputLabel
+                    value="#{bundle['_nls.menu.fatura']} &gt; #{bundle['_nls.menu.fatura.delete']}"
+                    rendered="#{faturaController.bean.isRemove}" />
+        </h:panelGrid>
+    </ui:define>
+
+    <ui:define name="bodyForm">
+        <rich:spacer height="0" width="560" styleClass="noMargin" />
+        <h:form styleClass="noMargin">
+            <a4j:loadScript src="/js/jquery.numeric.js" />
+            <h:panelGrid columns="4">
+                <h:outputLabel value="#{bundle['_nls.fatura.entity_name']}"
+                               styleClass="labelGeneric" />
+                <h:outputLabel value="#{faturaController.bean.to.codigoFatura}" />
+
+                <h:outputLabel value="#{bundle['_nls.fatura.moeda.label']}"
+                               styleClass="labelGeneric" />
+                <h:outputLabel value="#{faturaController.bean.to.moeda.nomeMoeda}"
+                               for="nomeMoeda" />
+
+                <h:outputLabel value="#{bundle['_nls.fatura.cliente.label']}"
+                               styleClass="labelGeneric" />
+                <h:outputLabel
+                        value="#{faturaController.bean.to.dealFiscal.msa.cliente.nomeCliente}"
+                        for="nomeCliente" />
+
+                <h:outputLabel
+                        value="#{bundle['_nls.fatura.msa.label']}"
+                        styleClass="labelGeneric" />
+                <h:outputLabel value="#{faturaController.bean.to.dealFiscal.msa.nomeMsa}" />
+
+                <h:outputLabel value="#{bundle['_nls.fatura.deal_fiscal.label']}"
+                               styleClass="labelGeneric" />
+                <h:outputLabel
+                        value="#{faturaController.bean.to.dealFiscal.nomeDealFiscal}"
+                        for="nomeDealFiscal" />
+
+                <h:outputLabel value="#{bundle['_nls.fatura.data_previsao.label']}"
+                               styleClass="labelGeneric" />
+                <h:outputText value="#{faturaController.bean.to.dataPrevisao}">
+                    <f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+                </h:outputText>
+
+                <h:outputLabel value="#{bundle['_nls.fatura.login_ae.label']}"
+                               styleClass="labelGeneric" />
+                <h:outputLabel value="#{faturaController.bean.to.codigoLoginAe}" />
+
+                <h:outputText value="#{bundle['_nls.fatura.data_vencimento.label']}"
+                              for="dataVencimento" styleClass="labelGeneric" />
+                <h:outputText value="#{faturaController.bean.to.dataVencimento}">
+                    <f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+                </h:outputText>
+
+                <h:outputLabel
+                        value="#{bundle['_nls.fatura.indicador_status.label']}"
+                        styleClass="labelGeneric" />
+                <h:outputLabel value="#{faturaController.bean.to.indicadorStatus}"
+                               for="indicadorStatus" converter="StatusFaturaConverter" />
+
+                <h:outputText
+                        value="#{bundle['_nls.receita.published_fiscal_balance.label']}:"
+                        styleClass="labelGeneric" />
+
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{faturaController.bean.patternCurrency} " />
+
+                    <h:commandLink id="consultaFBlink"
+                                   action="#{fiscalBalanceController.prepareDealFiscalFiscalBalanceBlank}">
+
+                        <h:outputText
+                                value="#{faturaController.bean.publishedFiscalBalance}">
+                            <f:convertNumber locale="#{bundle['locale.en_us']}"
+                                             pattern="#{systemProperties['pattern.number']}" />
+                        </h:outputText>
+
+                        <f:setPropertyActionListener
+                                value="#{faturaController.bean.to.dealFiscal}"
+                                target="#{fiscalBalanceController.bean.currentDealFiscal}" />
+                        <f:setPropertyActionListener
+                                value="#{faturaController.bean.backTo}"
+                                target="#{fiscalBalanceController.bean.backTo}" />
+                    </h:commandLink>
+                </h:panelGrid>
+
+            </h:panelGrid>
+
+            <h:panelGrid columns="2">
+                <h:outputLabel
+                        value="#{bundle['_nls.fatura.texto_observacao.label']}"
+                        styleClass="labelGeneric" />
+                <h:outputLabel value="#{faturaController.bean.to.textoObservacao}"
+                               for="textoObservacao" />
+
+                <rich:spacer height="5" />
+                <rich:spacer height="5" />
+
+                <f:facet name="footer">
+                    <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                        <a4j:commandButton value="#{bundle['_nls.button.back']}"
+                                           styleClass="buttonGeneric" action="fatura_search_financial"
+                                           immediate="true" />
+                        <rich:spacer height="5" width="5"
+                                     rendered="#{faturaController.bean.isRemove}" />
+                        <a4j:commandButton value="#{bundle['_nls.button.delete']}"
+                                           styleClass="buttonGeneric"
+                                           oncomplete="#{rich:component('deleteFaturaPanel')}.show()"
+                                           rendered="#{faturaController.bean.isRemove}" />
+                    </h:panelGrid>
+                </f:facet>
+            </h:panelGrid>
+        </h:form>
+
+        <rich:spacer height="10" styleClass="noMargin" />
+
+        <rich:tabPanel immediate="true" switchType="ajax">
+            <!-- Tab do ItemFatura -->
+            <rich:tab label="#{bundle['_nls.item_fatura.entity_name']}">
+                <h:form styleClass="noMargin">
+                    <rich:dataTable value="#{faturaController.bean.to.itemFaturas}"
+                                    var="item" width="100%" id="itemFaturaTable" rowKeyVar="row">
+
+                        <rich:column sortBy="#{item.codigoItemFatura}"
+                                     style="text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.item_fatura.codigo_item_fatura.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{item.codigoItemFatura}" />
+                        </rich:column>
+
+                        <rich:column sortBy="#{item.tipoServico.nomeTipoServico}">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.item_fatura.tipo_servico.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{item.tipoServico.nomeTipoServico}" />
+                        </rich:column>
+
+                        <rich:column sortBy="#{item.fonteReceita.nomeFonteReceita}">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.item_fatura.fonte_receita.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{item.fonteReceita.nomeFonteReceita}" />
+                        </rich:column>
+
+                        <rich:column sortBy="#{item.numeroNotaFiscal}" width="70">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.item_fatura.doc_number.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{item.numeroNotaFiscal}" />
+                        </rich:column>
+
+                        <rich:column sortBy="#{item.textoObservacao}">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.item_fatura.description.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{item.textoObservacao}" />
+                        </rich:column>
+
+                        <rich:column sortBy="#{item.valorItem}" style="text-align: right;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.item_fatura.valor_item.label']}" />
+                            </f:facet>
+                            <h:outputLabel value="#{faturaController.bean.patternCurrency}" />
+                            <h:outputText value="#{item.valorItem}">
+                                <f:convertNumber locale="#{bundle['locale.en_us']}"
+                                                 pattern="#{systemProperties['pattern.number']}" />
+                            </h:outputText>
+                        </rich:column>
+
+                        <f:facet name="footer">
+                            <rich:columnGroup>
+                                <rich:column style="text-align: center;">
+                                    <h:outputText value="#{bundle['_nls.total.label']}" />
+                                </rich:column>
+
+                                <rich:column style="text-align: right;" colspan="6">
+                                    <h:outputLabel
+                                            value="#{faturaController.itemFaturaBean.patternCurrency}" />
+                                    <h:outputText
+                                            value="#{faturaController.itemFaturaBean.totalGeralItemFatura}">
+                                        <f:convertNumber locale="#{bundle['locale.en_us']}"
+                                                         pattern="#{systemProperties['pattern.number']}" />
+                                    </h:outputText>
+                                </rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+                    </rich:dataTable>
+                </h:form>
+            </rich:tab>
+
+            <!-- Tab do HistoricoFatura -->
+            <rich:tab label="#{bundle['_nls.historico_fatura.entity_name']}"
+                      action="#{faturaController.prepareHistoricoFatura}">
+                <h:form styleClass="noMargin">
+                    <rich:dataTable
+                            value="#{faturaController.bean.historicoFaturaList}" var="hifa"
+                            width="100%" id="historicoFaturaTable" rowKeyVar="row">
+
+                        <rich:column style="text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.historico_fatura.codigo_login.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{hifa.codigoAutor}" />
+                        </rich:column>
+
+                        <rich:column style="text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.historico_fatura.data_alteracao.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{hifa.dataAlteracao}">
+                                <f:convertDateTime
+                                        pattern="#{bundle['_nls.calendar.pattern.full']}"
+                                        timeZone="#{bundle['_nls.date.timezone.br']}" />
+                            </h:outputText>
+                        </rich:column>
+
+                        <rich:column style="text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.historico_fatura.status_anterior.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{hifa.indicadorStatusAnterior}"
+                                          converter="StatusFaturaConverter" />
+                        </rich:column>
+
+                        <rich:column style="text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.historico_fatura.status_atual.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{hifa.indicadorStatusAtual}"
+                                          converter="StatusFaturaConverter" />
+                        </rich:column>
+
+                        <rich:column style="text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.historico_fatura.invoice_date.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{hifa.dataPrevisao}">
+                                <f:convertDateTime
+                                        pattern="#{bundle['_nls.calendar.pattern']}" />
+                            </h:outputText>
+                        </rich:column>
+
+                        <rich:column
+                                style="text-align: center;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.historico_fatura.total_value.label']}" escape="false"/>
+                            </f:facet>
+                            <h:outputText value="#{hifa.moeda.siglaMoeda} " />
+                            <h:outputText
+                                    value="#{hifa.valorFatura}">
+                                <f:convertNumber locale="#{bundle['locale.en_us']}"
+                                                 pattern="#{systemProperties['pattern.number']}" />
+                            </h:outputText>
+                        </rich:column>
+
+                    </rich:dataTable>
+                </h:form>
+            </rich:tab>
+        </rich:tabPanel>
+
+        <rich:modalPanel id="deleteFaturaPanel" autosized="true" width="200">
+            <f:facet name="header">
+                <h:outputText value="#{bundle['_nls.fatura.delete.title']}"
+                              style="padding-right:15px;" />
+            </f:facet>
+            <f:facet name="controls">
+                <h:panelGroup>
+                    <h:graphicImage value="/images/icons/close.gif"
+                                    styleClass="hidelink" id="hidelinkDeleteFatura" />
+                    <rich:componentControl for="deleteFaturaPanel"
+                                           attachTo="hidelinkDeleteFatura" operation="hide" event="onclick" />
+                </h:panelGroup>
+            </f:facet>
+            <h:form styleClass="noMargin">
+                <table width="100%">
+                    <tbody>
+                    <tr>
+                        <td align="center" width="50%"><a4j:commandButton
+                                value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+                                action="#{faturaController.remove}"
+                                oncomplete="#{rich:component('deleteFaturaPanel')}.hide();"
+                                styleClass="buttonGeneric" /></td>
+                        <td align="center" width="50%"><a4j:commandButton
+                                value="#{bundle['_nls.button.cancel']}"
+                                styleClass="buttonGeneric"
+                                onclick="#{rich:component('deleteFaturaPanel')}.hide();return false;" />
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </h:form>
+        </rich:modalPanel>
+    </ui:define>
+
+</ui:composition>
+
+</html>

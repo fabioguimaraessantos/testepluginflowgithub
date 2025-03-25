@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<rich:modalPanel id="ajusteReceitaPanel" autosized="true" width="300">
+
+	<f:facet name="header">
+		<h:outputText value="#{bundle['_nls.menu.ajuste_receita']}"
+			style="padding-right:15px;" />
+	</f:facet>
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/images/icons/close.gif" styleClass="hidelink"
+				id="hidelinkAjusteReceita" />
+			<rich:componentControl for="ajusteReceitaPanel"
+				attachTo="hidelinkAjusteReceita" operation="hide" event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+
+	<h:form>
+		<h:panelGrid columns="2">
+		
+			<h:outputText value="#{bundle['_nls.ajuste_receita.data_criacao']}:" styleClass="labelGeneric"/>
+			<h:outputText value="#{receitaController.ajusteReceitaBean.to.dataCriacao}">
+				<f:convertDateTime pattern="MM/dd/yyyy"/>
+			</h:outputText>
+
+			<h:outputText
+				value="#{bundle['_nls.ajuste_receita.contrato_pratica.label']}: "
+				styleClass="labelGeneric" />
+
+			<h:outputText
+				value="#{receitaController.ajusteReceitaBean.to.receitaDealFiscal.receita.contratoPratica.nomeContratoPratica}" />
+
+			<h:outputText
+				value="#{bundle['_nls.ajuste_receita.mes_receita.label']}: "
+				styleClass="labelGeneric" />
+
+			<h:outputText value="#{receitaController.bean.to.dataMes}">
+				<f:convertDateTime pattern="#{bundle['_nls.date.pattern.simple']}" />
+			</h:outputText>
+			<h:outputLabel
+				value="#{bundle['_nls.ajuste_receita.mes_ajuste.label']}: "
+				styleClass="labelGeneric" />
+			<h:outputText
+				value="#{receitaController.ajusteReceitaBean.to.dataMesAjuste}">
+				<f:convertDateTime pattern="#{bundle['_nls.date.pattern.simple']}"
+					locale="#{bundle['locale.en_us']}" />
+			</h:outputText>
+
+			<h:outputLabel
+				value="#{bundle['_nls.ajuste_receita.codigo_login.label']}: "
+				styleClass="labelGeneric" />
+			<h:outputText
+				value="#{receitaController.ajusteReceitaBean.to.codigoLoginAutor}" />
+		</h:panelGrid>
+		<rich:spacer height="5" />
+		<rich:dataTable
+			value="#{receitaController.ajusteReceitaBean.resultListAddEdit}"
+			var="item" rows="#{systemProperties['research.size.page.result']}"
+			width="100%" id="ajusteReceitaTable" rowKeyVar="key">
+
+			<rich:column
+				sortBy="#{item.receitaDealFiscal.dealFiscal.nomeDealFiscal}"
+				style="text-align: left;">
+				<f:facet name="header">
+					<h:outputText value="#{bundle['_nls.ajuste_receita.deal.label']}" />
+				</f:facet>
+				<h:outputText
+					value="#{item.receitaDealFiscal.dealFiscal.nomeDealFiscal}" />
+			</rich:column>
+
+			<rich:column
+				sortBy="#{item.receitaDealFiscal.receita.valorTotalReceita}"
+				style="text-align: right;">
+				<f:facet name="header">
+					<h:outputText
+						value="#{bundle['_nls.ajuste_receita.valor_receita.label']}" />
+				</f:facet>
+				<h:outputText
+					value="#{item.receitaDealFiscal.receita.cotacaoMoeda.moeda.siglaMoeda} " />
+				<h:outputText value="#{item.receitaDealFiscal.valorReceita}">
+					<f:convertNumber locale="#{bundle['locale.en_us']}"
+						pattern="#{systemProperties['pattern.number']}" />
+				</h:outputText>
+			</rich:column>
+
+			<rich:column sortBy="#{item.valorAjuste}" style="text-align: right;">
+				<f:facet name="header">
+					<h:outputText
+						value="#{bundle['_nls.ajuste_receita.valor_ajuste.label']}" />
+				</f:facet>
+				<h:outputText
+					value="#{item.receitaDealFiscal.receita.cotacaoMoeda.moeda.siglaMoeda} " />
+				<h:outputText value="#{item.valorAjuste}">
+					<f:convertNumber locale="#{bundle['locale.en_us']}"
+						pattern="#{systemProperties['pattern.number']}" />
+				</h:outputText>
+			</rich:column>
+
+			<rich:column sortBy="#{item.balanco}" style="text-align: right;">
+				<f:facet name="header">
+					<h:outputText
+						value="#{bundle['_nls.ajuste_receita.balanco.label']}" />
+				</f:facet>
+				<h:outputText
+					value="#{item.receitaDealFiscal.receita.cotacaoMoeda.moeda.siglaMoeda} " />
+				<h:outputText value="#{item.balanco}">
+					<f:convertNumber locale="#{bundle['locale.en_us']}"
+						pattern="#{systemProperties['pattern.number']}" />
+				</h:outputText>
+			</rich:column>
+
+			<rich:column style="text-align: center;">
+				<f:facet name="header">
+					<h:outputText
+						value="#{bundle['_nls.ajuste_receita.tipo_ajuste.label']}" />
+				</f:facet>
+				<h:outputText value="#{item.tipoAjuste.nomeTipoAjuste}" />
+			</rich:column>
+
+			<rich:column style="text-align: center;">
+				<f:facet name="header">
+					<h:outputText
+						value="#{bundle['_nls.ajuste_receita.observacao.label']}" />
+				</f:facet>
+				<h:outputText value="#{item.textoObservacao}" />
+			</rich:column>
+
+		</rich:dataTable>
+	</h:form>
+
+</rich:modalPanel>
+</html>

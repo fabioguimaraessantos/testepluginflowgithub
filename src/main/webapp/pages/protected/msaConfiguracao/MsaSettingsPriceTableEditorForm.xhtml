@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition>
+    <rich:spacer height="15"/>
+
+    <rich:panel id="msa-settings-price-table-editor">
+        <h:panelGrid>
+            <h:panelGrid columns="3">
+                <a4j:region renderRegionOnly="true" id="region-pte">
+                    <h:outputText value="#{bundle['_nls.msa.configuracao.price_table_editor.label']}:"
+                                  styleClass="labelGeneric"/>
+                    <h:inputText id="price-table-editor"
+                                 size="30"
+                                 maxlength="20"
+                                 label="#{bundle['_nls.msa.configuracao.price_table_editor.label']}"
+                                 value="#{msaController.bean.newPriceTableEditorLoginAdded}"
+                                 disabled="#{msaController.msaContratoBean.isITSupport}"
+                                 validator="#{msaController.validateSettingsPriceTableLogin}"
+                                 rendered="#{msaController.isAdminMsa || msaController.msaContratoBean.isITSupport }">
+                        <rich:suggestionbox for="price-table-editor" var="result" minChars="2"
+                                            suggestionAction="#{msaController.autoCompletePriceTable}">
+                            <h:column>
+                                <h:outputText value="#{result.login}"/>
+                            </h:column>
+                        </rich:suggestionbox>
+                    </h:inputText>
+                </a4j:region>
+
+                <sec:ifAnyGranted roles="BUS.MSA.SETTINGS:ED">
+                    <a4j:commandButton
+                            action="#{msaController.addPriceTableEditorLogin}"
+                            value="#{bundle['_nls.button.add']}" styleClass="buttonGeneric"
+                            reRender="lista"/>
+                </sec:ifAnyGranted>
+            </h:panelGrid>
+            <h:panelGrid style="width:100%;">
+                <h:form>
+                    <rich:dataTable width="100%" id="pte-list" var="pte"
+                                    value="#{msaController.bean.msaSettingsPriceTableEditorList}">
+                        <rich:column style="width:300px;">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.msa.configuracao.login.table.header']}"/>
+                            </f:facet>
+                            <h:outputText value="#{pte}"/>
+                        </rich:column>
+
+                        <sec:ifAnyGranted roles="BUS.MSA.SETTINGS:ED">
+                            <rich:column style="text-align: center;">
+                                <f:facet name="header">
+                                    <h:outputText
+                                            value="#{bundle['_nls.msa.configuracao.actions.table.header']}"/>
+                                </f:facet>
+
+                                <!-- Botao de delete -->
+                                <a4j:commandLink id="deleteLink" ajaxSingle="true"
+                                                 reRender="msa-settings-price-table-editor"
+                                                 action="#{msaController.removePriceTableEditorLogin}"
+                                                 immediate="true" limitToList="true">
+                                    <h:graphicImage value="/images/icons/delete.gif" style="border:0"/>
+                                    <f:setPropertyActionListener value="#{pte}"
+                                                                 target="#{msaController.bean.loginToRemove}"/>
+                                </a4j:commandLink>
+                                <rich:toolTip for="deleteLink"
+                                              value="#{bundle['_nls.hint.delete']}"/>
+                            </rich:column>
+                        </sec:ifAnyGranted>
+                    </rich:dataTable>
+                </h:form>
+            </h:panelGrid>
+        </h:panelGrid>
+    </rich:panel>
+
+    <rich:spacer height="10"/>
+</ui:composition>
+
+</html>

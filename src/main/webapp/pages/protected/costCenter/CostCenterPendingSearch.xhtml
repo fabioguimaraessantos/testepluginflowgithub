@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		#{bundle['_nls.menu.cost_center_activation']} &gt; #{bundle['_nls.button.search']}
+	</ui:define>
+
+	<ui:define name="bodyForm">
+	
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+	
+		<!-- formulario do Search -->	
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="2">
+				<h:outputText value="#{bundle['_nls.name.label']}:" />
+				<h:inputText validator="#{xssValidator.validate}" value="#{costCenterController.bean.name}" size="40" />
+				<h:commandButton action="#{costCenterController.pendingSearch}" 
+					value="#{bundle['_nls.button.search']}" />
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<!-- Grid de resultado do Search -->
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="costCenterBean" />
+			<a4j:outputPanel id="costCenterPanel">
+			
+				<rich:dataTable value="#{costCenterController.bean.pendentes}"
+					var="pendente" id="costCenterTable" rowKeyVar="row"
+					rendered="#{!empty costCenterController.bean.pendentes}" width="100%">
+	
+					<rich:column sortBy="#{pendente.name}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.description.label']}" />
+						</f:facet>
+						<h:outputText value="#{pendente.descricao}" />
+					</rich:column>
+					
+					<rich:column sortBy="#{pendente.empresa.nomeEmpresa}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.menu.cost_center.nome_empresa']}" />
+						</f:facet>
+						<h:outputText value="#{pendente.empresa.nomeEmpresa}" />
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.actions.label']}" />
+						</f:facet>
+
+						<a4j:commandLink ajaxSingle="true" id="activeLink"
+							action="#{costCenterController.activateAndNext}" 
+							reRender="costCenterPanel" value="#{bundle['_nls.activate.label']}">
+							<f:setPropertyActionListener value="#{pendente}"
+								target="#{costCenterController.bean.to}" />
+						</a4j:commandLink>
+
+					</rich:column>
+					
+				</rich:dataTable>
+				
+			</a4j:outputPanel>
+
+		</h:form>		
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

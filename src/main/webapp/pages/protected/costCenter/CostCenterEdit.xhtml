@@ -1,0 +1,378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+        #{bundle['_nls.menu.grupo_custo']} &gt; #{bundle['_nls.menu.grupo_custo.edit']}
+   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="grupoCustoBean" />
+			<a4j:keepAlive beanName="grupoCustoAreaOrcamentariaBean" />
+
+			<h:panelGrid columns="2">
+				<h:outputLabel value="#{bundle['_nls.grupo_custo.entity_name']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel value="" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<ui:include src="/pages/protected/costCenter/CostCenterForm.xhtml" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+				<a4j:commandButton value="#{bundle['_nls.button.back']}"
+					styleClass="buttonGeneric" immediate="true"
+					action="#{grupoCustoController.backButtonOutcome}" />
+
+				<rich:spacer height="5" width="5" />
+
+				<a4j:commandButton value="#{bundle['_nls.button.save']}"
+					styleClass="buttonGeneric"
+					action="#{grupoCustoController.update}"
+				    oncomplete="#{!grupoCustoController.bean.to.changeStatusCostCenter
+				                  and grupoCustoController.bean.to.hasBudgetArea
+				                  and grupoCustoController.bean.to.isInactivationProcess} ? #{rich:component('isGcaoValid')}.show() : '';" />
+
+			</h:panelGrid>
+
+			<rich:spacer height="5" />
+
+			<h:panelGrid columns="1" width="100%">
+				<rich:panel style="padding: 0px; width: 560px;"
+					styleClass="noMargin">
+					<f:facet name="header">
+						<h:outputText value="#{bundle['_nls.centro_lucro.entity_name']}" />
+					</f:facet>
+
+					<h:panelGrid columns="6">
+						<h:outputText
+							value="#{bundle['_nls.grupo_custo_periodo.vigencia.label']}*: "
+							styleClass="labelGeneric" />
+						<rich:comboBox id="mesInicio" enableManualInput="false"
+							value="#{grupoCustoController.bean.monthBeg}"
+							label="#{bundle['_nls.mes.label']}"
+						    disabled="#{grupoCustoController.enabledProfitCenter == true}"
+							defaultLabel="#{bundle['_nls.mes.label']}"
+							suggestionValues="#{dateBean.monthList}" width="55">
+						</rich:comboBox>
+
+						<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+
+						<rich:comboBox id="anoInicio" enableManualInput="false"
+							value="#{grupoCustoController.bean.yearBeg}"
+							label="#{bundle['_nls.ano.label']}"
+							defaultLabel="#{bundle['_nls.ano.label']}"
+						    disabled="#{grupoCustoController.enabledProfitCenter == true}"
+							suggestionValues="#{dateBean.yearList}" width="55">
+						</rich:comboBox>
+
+						<rich:spacer height="5" width="10" />
+
+						<a4j:commandButton value="#{bundle['_nls.button.add']}"
+							styleClass="buttonGeneric"
+						    disabled="#{grupoCustoController.enabledProfitCenter == true}"
+							action="#{grupoCustoController.createGrupoCustoPeriodo}" />
+					</h:panelGrid>
+				</rich:panel>
+
+				<rich:dataTable
+					value="#{grupoCustoController.bean.to.grupoCustoPeriodos}"
+					var="itemGCPeriodo" width="100%" id="gcPeriodoTable">
+
+					<rich:column style="text-align: left; background-color: #D6E6FB;"
+						colspan="2">
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<h:outputLabel
+								value="#{bundle['_nls.grupo_custo_periodo.vigencia.label']}:"
+								styleClass="labelGeneric" />
+							<h:panelGrid columns="6" cellpadding="0" cellspacing="0">
+								<rich:spacer height="5" width="5" />
+
+								<h:outputText value="#{itemGCPeriodo.dataInicio}"
+									for="dataInicio">
+									<f:convertDateTime pattern="MMM/yyyy"
+										locale="#{bundle['locale.en_us']}" />
+								</h:outputText>
+
+								<rich:spacer height="5" width="5" />
+								<h:outputLabel rendered="#{itemGCPeriodo.dataFim != null}"
+									value="#{bundle['_nls.until.label']}" styleClass="labelGeneric" />
+								<h:outputLabel rendered="#{itemGCPeriodo.dataFim == null}"
+									value="..." styleClass="labelGeneric" />
+								<rich:spacer height="5" width="5" />
+
+								<h:outputText value="#{itemGCPeriodo.dataFim}" for="dataFim">
+									<f:convertDateTime pattern="MMM/yyyy"
+										locale="#{bundle['locale.en_us']}" />
+								</h:outputText>
+							</h:panelGrid>
+							<a4j:commandButton value="#{bundle['_nls.button.delete']}"
+								styleClass="buttonGeneric"
+								oncomplete="#{rich:component('deleteGrupoCustoPeriodoPanel')}.show()"
+								rendered="#{itemGCPeriodo.dataFim == null and itemGCPeriodo.dataInicio > grupoCustoController.bean.historyLockDate}">
+								<f:setPropertyActionListener value="#{itemGCPeriodo}"
+									target="#{grupoCustoController.bean.toGCPeriodo}" />
+							</a4j:commandButton>
+						</h:panelGrid>
+					</rich:column>
+
+					<rich:subTable var="itemGCCL"
+						value="#{itemGCPeriodo.grupoCustoCentroLucros}">
+						<rich:column style="text-align: left;" width="30%">
+							<h:outputText
+								value="#{itemGCCL.naturezaCentroLucro.nomeNatureza}: "
+								styleClass="labelGeneric" />
+						</rich:column>
+
+						<rich:column style="text-align: left;">
+							<rich:comboBox id="centroLucro"
+								value="#{itemGCCL.nomeCentroLucro}"
+								label="#{bundle['_nls.grupo_custo.centro_lucro.label']}"
+								suggestionValues="#{itemGCCL.nomeCentroLucroList}" width="200"
+								rendered="#{itemGCPeriodo.dataInicio > grupoCustoController.bean.historyLockDate}">
+							</rich:comboBox>
+
+							<h:outputText value="#{itemGCCL.nomeCentroLucro}"
+								rendered="#{!(itemGCPeriodo.dataInicio > grupoCustoController.bean.historyLockDate)}" />
+						</rich:column>
+					</rich:subTable>
+
+					<rich:column colspan="2">
+						<rich:spacer height="13" />
+					</rich:column>
+
+				</rich:dataTable>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:modalPanel id="deleteGrupoCustoPeriodoPanel" autosized="true"
+			width="200">
+			<f:facet name="header">
+				<h:outputText
+					value="#{bundle['_nls.grupo_custo_periodo.delete.title']}"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="hidelinkDeleteGrupoCustoPeriodo" />
+					<rich:componentControl for="deleteGrupoCustoPeriodoPanel"
+						attachTo="hidelinkDeleteGrupoCustoPeriodo" operation="hide"
+						event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<h:form>
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="50%"><a4j:commandButton
+									value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+									action="#{grupoCustoController.removeGrupoCustoPeriodo}"
+									oncomplete="#{rich:component('deleteGrupoCustoPeriodoPanel')}.hide();"
+									styleClass="buttonGeneric" /></td>
+							<td align="center" width="50%"><a4j:commandButton
+									value="#{bundle['_nls.button.cancel']}"
+									styleClass="buttonGeneric"
+									onclick="#{rich:component('deleteGrupoCustoPeriodoPanel')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+  <!-- Modal do Add GrupoCustoAreaOrcamentaria -->
+  <rich:modalPanel id="addGcao" autosized="true" width="270">
+    <f:facet name="header">
+      <h:outputText value="#{bundle['_nls.cpgc.add.title']}"
+        style="padding-right:15px;" />
+    </f:facet>
+    <f:facet name="controls">
+      <h:panelGroup>
+        <h:graphicImage value="/images/icons/close.gif"
+          styleClass="hidelink" id="closeAddGrupoCustoModalId" />
+        <rich:componentControl for="addGcao"
+          attachTo="closeAddGrupoCustoModalId" operation="hide"
+          event="onclick" />
+      </h:panelGroup>
+    </f:facet>
+    <rich:messages errorClass="msgError" warnClass="msgWarng"
+      infoClass="msgSuccess" layout="table" ajaxRendered="true">
+    </rich:messages>
+    <h:form style="noMargin">
+      <h:panelGrid columns="2">
+        <h:outputText value="Budget Area"
+          for="centroLucro" styleClass="labelGeneric"></h:outputText>
+          <a4j:region>
+	          <rich:comboBox id="centroLucro"
+	            label="Budget Area"
+	            value="#{grupoCustoController.bean.areaOrcamentariaPaiCombo.selected}"
+	            suggestionValues="#{grupoCustoController.bean.areaOrcamentariaPaiCombo.list}"
+	            valueChangeListener="#{grupoCustoController.prepareAreaOrcamentariaFilho}"
+	            immediate="true" directInputSuggestions="true" tabindex="2">
+	
+	            <a4j:support event="onselect" reRender="areaOrcamentariaFilho" limitToList="true" immediate="true" />
+	          </rich:comboBox>
+          </a4j:region>
+        <h:outputText value="Budget Sub-Area "
+          for="areaOrcamentariaFilho" styleClass="labelGeneric"></h:outputText>
+          <rich:comboBox id="areaOrcamentariaFilho"
+            label="Budget Sub-Area"
+            value="#{grupoCustoController.bean.areaOrcamentariaFilhoCombo.selected}"
+            suggestionValues="#{grupoCustoController.bean.areaOrcamentariaFilhoCombo.list}"
+            required="true" directInputSuggestions="true">
+          </rich:comboBox>
+
+        <h:outputText
+          value="#{bundle['_nls.cpgc.data_inicio_vigencia.label']}"
+          for="mesInicioVigencia" styleClass="labelGeneric"></h:outputText>
+        <h:panelGrid columns="3" border="0" cellspacing="0">
+          <rich:comboBox id="mesInicioVigencia" required="true"
+            enableManualInput="false"
+            label="#{bundle['_nls.cpgc.mes_inicio_vigencia.label']}"
+            value="#{grupoCustoController.gcaoBean.mesInicioVigencia}"
+            directInputSuggestions="true" immediate="true"
+            suggestionValues="#{grupoCustoController.gcaoBean.monthList}"
+            defaultLabel="#{bundle['_nls.mes.label']}" width="60">
+          </rich:comboBox>
+          <h:outputText value="/"></h:outputText>
+          <rich:comboBox id="anoInicioVigencia" required="true"
+            enableManualInput="false"
+            label="#{bundle['_nls.cpgc.ano_inicio_vigencia.label']}"
+            value="#{grupoCustoController.gcaoBean.anoInicioVigencia}"
+            directInputSuggestions="true"
+            suggestionValues="#{grupoCustoController.gcaoBean.yearList}"
+            defaultLabel="#{bundle['_nls.ano.label']}" width="82">
+          </rich:comboBox>
+        </h:panelGrid>
+
+        <f:facet name="footer">
+          <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+            <a4j:commandButton
+              action="#{grupoCustoController.createGrupoCustoAreaOrcamentaria}"
+              value="#{bundle['_nls.button.ok']}" styleClass="buttonSpecific"
+              oncomplete="if (#{facesContext.maximumSeverity!=null and facesContext.maximumSeverity!='INFO 0'}) #{rich:component('addGcao')}.show();"
+              reRender="addGcao, infoGrid" />
+            <rich:spacer height="5" width="5" />
+            <a4j:commandButton limitToList="true" immediate="true"
+              value="#{bundle['_nls.button.cancel']}"
+              styleClass="buttonGeneric"
+              onclick="#{rich:component('addGcao')}.hide();return false;" />
+          </h:panelGrid>
+        </f:facet>
+      </h:panelGrid>
+    </h:form>
+  </rich:modalPanel>
+
+		<!-- Modal do delete Centro Custo -->
+		<rich:modalPanel id="deleteGcao" autosized="true"
+			width="200">
+			<f:facet name="header">
+				<h:outputText value="Are you sure you want to delete this Budget Area?"
+					style="padding-right:15px;" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/icons/close.gif"
+						styleClass="hidelink" id="hidelinkdeleteGcao" />
+					<rich:componentControl for="deleteGcao"
+						attachTo="hidelinkdeleteGcao" operation="hide"
+						event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<h:form>
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+								action="#{grupoCustoController.removeGrupoCustoAreaOrcamentaria}"
+								oncomplete="#{rich:component('deleteGcao')}.hide();"
+								styleClass="buttonGeneric" reRender="cpclNatMandatoryTable" /></td>
+							<td align="center" width="50%"><a4j:commandButton
+								value="#{bundle['_nls.button.cancel']}"
+								styleClass="buttonGeneric"
+								action="#{grupoCustoController.prepareUpdate}"
+								oncomplete="#{rich:component('deleteGcao')}.hide();return false;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+		<!-- Modal de validação de Budget Area para troca de status do Centro de Custo -->
+		<rich:modalPanel id="isGcaoValid" autosized="true" width="400">
+			<f:facet name="header">
+				<h:outputText  value="#{bundle['_nls.msg.error.integrity_budget_area_attention']}" style="padding-right:15px;" />
+			</f:facet>
+			<h:form>
+				<a4j:keepAlive beanName="grupoCustoBean" />
+				<a4j:keepAlive beanName="grupoCustoAreaOrcamentariaBean" />
+				<table width="100%">
+					<thead>
+					<tr>
+						<td colspan="3">
+							<h:outputText value="#{bundle[grupoCustoController.bean.to.errorMessageBudgetAreaConstraintContentFirstText]}"
+										  style="color:red;font-weight: bold;"
+										  rendered="#{grupoCustoController.bean.to.errorMessageBudgetAreaConstraint}" />
+
+							<br/>
+							<br/>
+							<h:outputText value="#{bundle[grupoCustoController.bean.to.errorMessageBudgetAreaConstraintContentSecondText]}"
+										  style="color:red;font-weight: bold;"
+										  rendered="#{grupoCustoController.bean.to.errorMessageBudgetAreaConstraint}" />
+							<br/>
+							<br/>
+							<h:outputText value="#{bundle[grupoCustoController.bean.to.errorMessageBudgetAreaConstraintContentThirdText]}"
+										  style="color:red;font-weight: bold;"
+										  rendered="#{grupoCustoController.bean.to.errorMessageBudgetAreaConstraint}" />
+
+							<br/>
+							<br/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<rich:spacer height="5" />
+							<br/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4" align="left">
+							<br/>
+							<h:panelGrid columns="4">
+								<a4j:commandButton value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+												   action="#{grupoCustoController.changeStatusCostCenter}"
+												   oncomplete="#{rich:component('isGcaoValid')}.hide();"
+												   styleClass="buttonGeneric" />
+								<a4j:commandButton value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric"
+												   id="botaoCancelarBudgetAreaConstraint"
+												   onclick="#{rich:component('isGcaoValid')}.hide();return false;" />
+							</h:panelGrid>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<rich:spacer height="5" />
+						</td>
+					</tr>
+					</thead>
+				</table>
+			</h:form>
+		</rich:modalPanel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

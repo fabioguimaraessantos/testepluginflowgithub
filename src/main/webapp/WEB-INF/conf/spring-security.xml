@@ -1,0 +1,85 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:s="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
+
+	<!--
+		Habilita a anotation '@RolesAllowed' referente a camada de serviço de
+		segurança
+	-->
+	<s:global-method-security jsr250-annotations="enabled"></s:global-method-security>
+
+	<s:http access-denied-page="/pages/public/login.jsf?denied=true">
+
+		<s:intercept-url pattern="/admin/**" access="ROLE_PMS_ROOT" />
+
+		<s:intercept-url pattern="/pages/protected/**" access="IS_AUTHENTICATED_FULLY" />
+
+		<s:form-login login-processing-url="/j_spring_security_check"
+					  login-page="/pages/public/login.jsf" authentication-failure-url="/pages/public/login.jsf?failure=true"
+					  default-target-url="/pages/protected/home.jsf" always-use-default-target="false" />
+
+		<s:logout invalidate-session="true" logout-success-url="/pages/public/login.jsf?logout=true" />
+
+		<s:anonymous />
+
+	</s:http>
+
+	<!-- Conexão com o LDAP -->
+	<bean id="contextSource"
+		  class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+		    <!-- <constructor-arg value="ldap://ldapcloudaws.ciandt.global:389/OU=CIANDT.GLOBAL,DC=ciandt,DC=global" /> -->
+		    <!-- <constructor-arg value="ldap://172.16.22.110:389/OU=CIANDT.GLOBAL,DC=ciandt,DC=global" /> -->
+		    <constructor-arg value="${LDAP}" />
+		<property name="userDn"
+				  value="CN=sa_solutions_pms,OU=Infra,OU=SERVICE_ACCOUNT,OU=CIANDT_USERS,OU=CIANDT.GLOBAL,DC=ciandt,DC=global" />
+		<property name="password" value="*J8&amp;FmkX2&amp;e6QYs@%uh5" />
+	</bean>
+	<bean id="ldapAuthProvider" class="org.springframework.security.providers.ldap.LdapAuthenticationProvider">
+		<s:custom-authentication-provider />
+
+		<constructor-arg>
+			<bean class="org.springframework.security.providers.ldap.authenticator.BindAuthenticator">
+				<constructor-arg ref="contextSource" />
+				<!-- Referencia do filtro de busca dos usuários -->
+				<property name="userSearch" ref="userSearch" />
+			</bean>
+		</constructor-arg>
+		<!-- Filtro de busca dos grupos (Roles) do usuário -->
+		<constructor-arg>
+			<bean class="com.ciandt.pms.authority.PMSAuthoritiesPopulator">
+				<constructor-arg ref="userProfileService" />
+				<constructor-arg ref="pessoaService" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	<!-- Filtro de busca dos usuários -->
+	<bean id="userSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+		<constructor-arg index="0" value="" />
+		<constructor-arg index="1" value="(&amp;(sAMAccountName={0})(objectCategory=person)(objectClass=user)(memberOf:=CN=Applications_CIANDT,OU=GROUPS_OF_IT,OU=IT,OU=CIANDT_GROUPS,OU=CIANDT.GLOBAL,DC=ciandt,DC=global))" />
+		<constructor-arg index="2" ref="contextSource" />
+		<property name="searchSubtree" value="true" />
+	</bean>
+	<!-- Fim Conexão com o LDAP -->
+
+	<!--<s:authentication-provider>
+		<s:password-encoder hash="plaintext" />
+		<s:user-service>
+			<s:user name="system" password="8b64801ada30e9ea0f1bc9c2a20eba05"
+				authorities="ROLE_PMS_ROOT" />
+			<s:user name="peri" password="abc"
+				authorities="PMS_MANAGER,PMS_AE,PMS_PEOPLE_MANAGER,PMS_SR_MANAGER" />
+		</s:user-service>
+	</s:authentication-provider>
+-->
+	<!-- 
+	<s:authentication-provider>
+		<s:password-encoder hash="plaintext" />
+		<s:user-service>
+			<s:user name="system" password="8b64801ada30e9ea0f1bc9c2a20eba05"
+				authorities="ROLE_PMS_ROOT" />
+			<s:user name="" password="" authorities="ROLE_PMS_MANAGER,ROLE_PMS_AE,ROLE_PMS_PEOPLE_MANAGER,ROLE_PMS_SR_MANAGER" />
+		</s:user-service>
+	</s:authentication-provider>
+	 -->
+</beans>

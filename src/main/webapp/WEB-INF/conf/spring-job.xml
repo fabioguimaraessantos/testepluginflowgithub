@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<!--
+		********************************************************* ***
+		Configuração para os Jobs de envio de email para o AE ***
+		**********************************************************
+	-->
+	<bean id="faturaJob" class="com.ciandt.pms.job.FaturaJob" />
+
+	<bean id="compareMapaAlocSnapshotsJob" class="com.ciandt.pms.job.CompareMapaAlocSnapshotsJob" />
+
+	<bean id="softwareLicenseJob" class="com.ciandt.pms.job.SoftwareLicenseJob" />
+
+	<bean id="receitaSnapshotsJob" class="com.ciandt.pms.job.ReceitaSnapshotsJob" />
+
+	<bean id="voucherMailJob" class="com.ciandt.pms.job.VoucherMailJob" />
+
+	<bean id="controlRescindedAproversJob" class="com.ciandt.pms.job.ControlRescindedAproversJob" />
+
+	<bean id="controleReajusteJob" class="com.ciandt.pms.job.ControleReajusteJob" />
+
+	<bean id="documentoLegalJob" class="com.ciandt.pms.job.DocumentoLegalJob" />
+
+	<bean id="contratoPraticaJob" class="com.ciandt.pms.job.ContratoPraticaJob" />
+
+	<bean id="mapaProspectComAlocacaoJob" class="com.ciandt.pms.job.MapaProspectComAlocacaoJob" />
+
+	<!-- ********************************************************** -->
+
+	<bean id="jobSendInvoiceMailDelayed"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="faturaJob" />
+		<property name="targetMethod" value="sendInvoiceMailDelayed" />
+	</bean>
+
+	<bean id="jobSendInvoiceMailToBeSubmitted"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="faturaJob" />
+		<property name="targetMethod" value="sendInvoiceMailToBeSubmitted" />
+	</bean>
+
+	<bean id="jobCompareMapaAlocSnapshots"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="compareMapaAlocSnapshotsJob" />
+		<property name="targetMethod" value="compareMapaAlocSnapshots" />
+	</bean>
+
+	<bean id="jobSoftwareLicense"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="softwareLicenseJob" />
+		<property name="targetMethod" value="softwareLicense" />
+	</bean>
+
+	<bean id="jobReceitaSnapshots"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="receitaSnapshotsJob" />
+		<property name="targetMethod" value="snapshotReceita" />
+	</bean>
+
+	<bean id="jobControlRescindedAprovers"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="controlRescindedAproversJob" />
+		<property name="targetMethod" value="sendEmailControlRescindedAprovers" />
+	</bean>
+
+	<bean id="jobSendVoucherMail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="voucherMailJob" />
+		<property name="targetMethod" value="sendVoucherMail" />
+	</bean>
+
+	<bean id="jobSendOldOpenVoucherMail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="voucherMailJob" />
+		<property name="targetMethod" value="sendOldOpenVoucherMail" />
+	</bean>
+	
+	<bean id="jobSendControleReajusteMail"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="controleReajusteJob" />
+        <property name="targetMethod" value="sendMail" />
+    </bean>
+	
+	<bean id="jobCreateNewControleReajuste"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="controleReajusteJob" />
+        <property name="targetMethod" value="create" />
+    </bean>
+
+    <bean id="jobDocumentoLegalMail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="documentoLegalJob" />
+		<property name="targetMethod" value="sendMail" />
+	</bean>
+
+	<bean id="jobContratoPraticaDealFiscal" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="contratoPraticaJob"/>
+		<property name="targetMethod" value="sendMailContratoPraticaSemDealFiscal"/>
+	</bean>
+
+	<bean id="jobMapaProspectComAlocacao" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="mapaProspectComAlocacaoJob"/>
+		<property name="targetMethod" value="sendMailMapaProspectComAlocacao"/>
+	</bean>
+
+	<!-- ********************************************************** -->
+
+	<!-- Quartz	 job scheduler -->
+	<!-- * * * * * * 
+	     | | | | | | |_ Year empty or 1970-2099 (not mandatory)
+	     | | | | | |___ Day of week 1-7 or SUN-SAT
+	     | | | | |_____ Month 1-12 or JAN-DEC
+	     | | | |_______ Day of month  1-31
+	     | | |_________ Hour 0-23
+	     | |___________ Minute 0-59
+	     |_____________ Secound 0-59
+	-->
+	<!-- For more information go to http://quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger -->
+
+	<bean id="faturaDailyTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobSendInvoiceMailDelayed" />
+		<property name="cronExpression" value="0 30 7 * * ?" />
+	</bean>
+
+	<bean id="faturaWeeklyTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobSendInvoiceMailToBeSubmitted" />
+		<property name="cronExpression" value="0 30 7 ? * MON" />
+	</bean>
+
+	<bean id="compareMapaAlocSnapshotsDailyTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobCompareMapaAlocSnapshots" />
+		<property name="cronExpression" value="0 0 0 * * ?" />
+	</bean>
+
+	<!-- Este email não será mais enviado pois a cobrança será feita de outra forma -->
+	<bean id="softwareLicenseMonthlyTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobSoftwareLicense" />
+		<property name="cronExpression" value="0 0 0 15 * ?" />
+	</bean>
+
+	<bean id="receitaSnapshotTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobReceitaSnapshots" />
+		<property name="cronExpression" value="0 0 23 3 * ?" />
+	</bean>
+
+	<bean id="voucherMailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobSendVoucherMail" />
+		<property name="cronExpression" value="0 30/30 * * * ?" />
+	</bean>
+
+	<bean id="oldOpenVoucherMailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobSendOldOpenVoucherMail" />
+		<property name="cronExpression" value="0 0 3 * * ?" />
+	</bean>
+
+	<!-- Executa no primeiro dia de cada mês as 06:00 -->
+	<bean id="controleReajusteMailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="jobSendControleReajusteMail" />
+        <property name="cronExpression" value="0 0 6 1 1/1 ?" />
+    </bean>
+
+    <!-- Executa no primeiro dia de cada mês as 06:30 -->
+    <bean id="documentoLegalMailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobDocumentoLegalMail" />
+		<property name="cronExpression" value="0 30 6 1 1/1 ?" />
+	</bean>
+
+	 <!-- Executa todos os dias as 07:00 -->
+	<bean id="createNewControleReajusteTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="jobCreateNewControleReajuste" />
+        <property name="cronExpression" value="0 0 7 * * ?" />
+    </bean>
+
+	<bean id="contratoPraticaSemDealFiscalTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobContratoPraticaDealFiscal" />
+		<property name="cronExpression" value="0 00 8 * * ?" />
+	</bean>
+
+	<bean id="mapaProspectComAlocacaoTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobMapaProspectComAlocacao" />
+		<property name="cronExpression" value="0 00 8 * * ?" />
+	</bean>
+
+
+	<bean id="controlRescindedAproversTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobControlRescindedAprovers" />
+		<property name="cronExpression" value="0 0 7 ? * MON-FRI" />
+	</bean>
+
+
+	<!-- ******************************************************** -->
+
+	<!-- Trigger que aciona os Jobs -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="receitaSnapshotTrigger" />
+				<ref bean="controlRescindedAproversTrigger" />
+<!--				<ref bean="faturaDailyTrigger" />-->
+<!--			    <ref bean="faturaWeeklyTrigger" />-->
+<!--				<ref bean="compareMapaAlocSnapshotsDailyTrigger" />-->
+<!--				<ref bean="voucherMailTrigger" />-->
+<!--				<ref bean="oldOpenVoucherMailTrigger" />-->
+<!--				<ref bean="createNewControleReajusteTrigger" />-->
+<!--				&lt;!&ndash;<ref bean="contratoPraticaSemDealFiscalTrigger" />&ndash;&gt;-->
+<!--				<ref bean="mapaProspectComAlocacaoTrigger" />-->
+			</list>
+		</property>
+	</bean>
+
+</beans>

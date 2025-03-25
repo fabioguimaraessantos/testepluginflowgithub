@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:pms="http://pms.cit.com.br">
+	
+
+	<rich:panel id="formPanel">
+			<f:facet name="header">
+				Session Manage
+			</f:facet>
+
+			<h:form styleClass="noMargin" style="text-align: center;">
+				<a4j:poll id="poll" interval="3000" reRender="sessionTable" />
+				
+				<rich:dataTable value="#{sessionBean.itemKeys}"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+                    onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'"
+					var="key" id="sessionTable" align="center" >
+						
+					<f:facet name="header" style="text-align: center;" >
+						<h:panelGroup>
+							<h:graphicImage value="/images/icons/delete.gif" height="14" width="14" style="border:0;"/>
+							<a4j:commandLink action="#{sessionBean.invalidateSelected}" value="Invalidate Selected"  
+								style="text-decoration: none; vertical-align: top; text-decoration: none">		
+							</a4j:commandLink>
+							<h:outputText value="|" styleClass="labelGeneric" style="text-decoration: none; vertical-align: top; padding: 5px;"/>
+							<h:graphicImage value="/images/icons/delete.gif" height="14" width="14" style="border:0" />
+							<a4j:commandLink action="#{sessionBean.invalidateAll}" 
+								value="Invalidate All" style="text-decoration: none; vertical-align: top; text-decoration: none"/>
+					</h:panelGroup>
+					</f:facet>
+					<rich:column  
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:panelGroup >
+		                		<rich:spacer height="5" width="5" />
+		                		<a4j:commandLink action="#{sessionBean.selectAll}" reRender="sessionTable"
+		                			value="#{bundle['_nls.all.label']}" styleClass="linkGeneric"/>
+		                		<rich:spacer height="5" width="5" />
+		                		<h:outputText value="/" styleClass="labelGeneric" />
+		                		<rich:spacer height="5" width="5" />
+		                		<a4j:commandLink action="#{sessionBean.selectNone}" reRender="sessionTable"
+		                			value="#{bundle['_nls.none.label']}" styleClass="linkGeneric"/>
+							</h:panelGroup>				                	    	
+						</f:facet>
+						<h:selectBooleanCheckbox  value="#{sessionBean.activeSessions[key].selected}" />
+					</rich:column>
+					
+					<rich:column sortBy="#{sessionBean.activeSessions[key].session.id}" width="120" 
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="SESSION ID" />
+						</f:facet>
+						<h:outputText value="#{sessionBean.activeSessions[key].session.id}" />
+					</rich:column>
+					
+					<rich:column sortBy="#{sessionBean.usersLogin[key]}" width="120" 
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="USER" />
+						</f:facet>
+						<h:outputText value="#{sessionBean.usersLogin[key]}">
+							
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column width="120" style="text-align: center;"
+						sortBy="#{sessionBean.currentDate.time-sessionBean.activeSessions[key].session.lastAccessedTime}">
+						<f:facet name="header">
+							<h:outputText value="IDLE TIME" />
+						</f:facet>
+						<h:outputText value="#{sessionBean.currentDate.time-sessionBean.activeSessions[key].session.lastAccessedTime}">
+							<f:convertDateTime pattern="HH:mm:ss" type="time"/>
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column width="120" 
+						sortBy="#{sessionBean.currentDate.time-sessionBean.activeSessions[key].session.creationTime}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="AGE" />
+						</f:facet>
+						<h:outputText value="#{sessionBean.currentDate.time-sessionBean.activeSessions[key].session.creationTime}">
+							<f:convertDateTime pattern="HH:mm:ss" type="time"/>
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column width="130" 
+						sortBy="#{sessionBean.activeSessions[key].session.creationTime}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="CREATION TIME" />
+						</f:facet>
+						<h:outputText value="#{sessionBean.activeSessions[key].session.creationTime}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" type="both" timeZone="America/Sao_Paulo"/>
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column width="130" 
+						sortBy="#{sessionBean.activeSessions[key].session.lastAccessedTime}" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="LAST ACCESS" />
+						</f:facet>
+						<h:outputText value="#{sessionBean.activeSessions[key].session.lastAccessedTime}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" type="both" timeZone="America/Sao_Paulo"/>							
+						</h:outputText>
+						
+					</rich:column>
+					
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="ACTIONS" />
+						</f:facet>
+						<a4j:commandLink action="#{sessionBean.activeSessions[key].session.invalidate}" 
+							reRender="sessionTable" id="invalidateLink">
+							<h:graphicImage value="/images/icons/delete.gif" height="16" width="16" style="border:0" />
+						</a4j:commandLink>
+						<rich:toolTip for="invalidateLink" value="Expire session"/>
+					</rich:column>
+				
+				</rich:dataTable>
+				
+			</h:form>
+	</rich:panel>
+
+</html>

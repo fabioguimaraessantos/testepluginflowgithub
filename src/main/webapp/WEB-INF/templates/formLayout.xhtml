@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/mainLayout.xhtml">
+
+	<ui:define name="menuArea">
+		<ui:include src="/pages/protected/common/menu.xhtml" />
+
+		<rich:spacer height="30" />
+	</ui:define>
+
+	<ui:define name="workArea">
+		<a4j:region rendered="#{loginBean.isDelegate}" id="msgDelegated">
+			<div
+				style="max-height: 150px; overflow: auto; background-color: #ECF4FE;"><rich:panel
+				style="background-color: #ECF4FE;">
+				<h:panelGrid columns="4">
+					<h:graphicImage value="/images/icons/warng.gif" style="border:0" />
+					<rich:spacer width="5px" />
+					<h:outputText
+						value="#{bundle['_nls.pessoa.msg.delegated']} #{loginBean.pessoaDelegada.codigoLogin}"
+						styleClass="labelGeneric" />
+					<h:form>
+						<a4j:commandButton value="#{bundle['_nls.button.delegate_off']}"
+							ajaxSingle="false" reRender="msgDelegated, spcDelegated"
+							action="#{loginBean.updateDelegateOff}">
+						</a4j:commandButton>
+					</h:form>
+				</h:panelGrid>
+			</rich:panel></div>
+		</a4j:region>
+		<rich:spacer height="5px" rendered="#{loginBean.isDelegate}"
+			id="spcDelegated" />
+		<rich:panel id="formPanel">
+			<f:facet name="header">
+				<ui:insert name="titleForm">titleForm</ui:insert>
+			</f:facet>
+
+			<div style="max-height: 150px; overflow: auto;"><rich:messages
+				errorClass="msgError" warnClass="msgWarng" infoClass="msgSuccess"
+				id="errorMsgId" rendered="#{messageControlBean.displayMessages}"
+				layout="table" ajaxRendered="true">
+			</rich:messages></div>
+
+			<ui:insert name="bodyForm">bodyForm</ui:insert>
+		</rich:panel>
+
+		<rich:spacer height="30" />
+	</ui:define>
+
+</ui:composition>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.mapa_despesa']} &gt; #{bundle['_nls.menu.mapa_despesa.research']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<h:panelGrid columns="2">
+				<h:panelGrid columns="2">
+					<h:outputText
+						value="#{bundle['_nls.mapa_despesa.contrato_pratica.label']}:"
+						for="contratoPratica" styleClass="labelGeneric" />
+					<rich:comboBox id="contratoPratica"
+						label="#{bundle['_nls.mapa_despesa.contrato_pratica.label']}"
+						value="#{mapaDespesaController.despBean.filter.contratoPratica.nomeContratoPratica}"
+						suggestionValues="#{mapaDespesaController.despBean.contratoPraticaList}"
+						directInputSuggestions="true" tabindex="6">
+						<pms:validateComboBox
+							map="#{mapaDespesaController.despBean.contratoPraticaMap}" />
+					</rich:comboBox>
+
+					<h:outputText
+						value="#{bundle['_nls.mapa_despesa.natureza.label']}:"
+						for="natureza" styleClass="labelGeneric" />
+					<a4j:region>
+						<rich:comboBox id="natureza"
+							label="#{bundle['_nls.mapa_despesa.natureza.label']}"
+							value="#{mapaDespesaController.despBean.natureza.nomeNatureza}"
+							suggestionValues="#{mapaDespesaController.despBean.naturezaList}"
+							valueChangeListener="#{mapaDespesaController.prepareCentroLucroCombo}"
+							immediate="true" directInputSuggestions="true" tabindex="2">
+
+							<a4j:support event="onselect" reRender="centroLucro"
+								limitToList="true" immediate="true" />
+							<a4j:support event="onchange" reRender="centroLucro"
+								limitToList="true" immediate="true" />
+						</rich:comboBox>
+					</a4j:region>
+
+					<h:outputText value="#{bundle['_nls.mapa_despesa.cliente.label']}:"
+						for="cliente" styleClass="labelGeneric" />
+					<a4j:region>
+						<rich:comboBox id="cliente"
+							label="#{bundle['_nls.mapa_despesa.cliente.label']}"
+							value="#{mapaDespesaController.despBean.cliente.nomeCliente}"
+							suggestionValues="#{mapaDespesaController.despBean.clienteList}"
+							directInputSuggestions="true" immediate="true"
+							valueChangeListener="#{mapaDespesaController.prepareContratoCombo}"
+							tabindex="4">
+
+							<a4j:support event="onselect" reRender="contrato"
+								limitToList="true" />
+							<a4j:support event="onselect" reRender="contrato"
+								limitToList="true" />
+						</rich:comboBox>
+					</a4j:region>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<rich:spacer height="14" />
+					<rich:spacer height="14" />
+
+					<h:outputText
+						value="#{bundle['_nls.mapa_despesa.centro_lucro.label']}:"
+						for="centroLucro" styleClass="labelGeneric" />
+					<rich:comboBox id="centroLucro"
+						label="#{bundle['_nls.mapa_despesa.centro_lucro.label']}"
+						value="#{mapaDespesaController.despBean.centroLucro.nomeCentroLucro}"
+						suggestionValues="#{mapaDespesaController.despBean.centroLucroList}"
+						directInputSuggestions="true" tabindex="3">
+					</rich:comboBox>
+
+					<h:outputText
+						value="#{bundle['_nls.mapa_despesa.msa.label']}:"
+						for="contrato" styleClass="labelGeneric" />
+					<a4j:region>
+						<rich:comboBox id="contrato"
+							label="#{bundle['_nls.mapa_despesa.msa.label']}"
+							value="#{mapaDespesaController.despBean.msa.nomeMsa}"
+							suggestionValues="#{mapaDespesaController.despBean.contratoList}"
+							valueChangeListener="#{mapaDespesaController.prepareContratoPraticaCombo}"
+							directInputSuggestions="true" immediate="true" tabindex="5">
+
+							<a4j:support event="onselect" reRender="contratoPratica"
+								limitToList="true" />
+							<a4j:support event="onselect" reRender="contratoPratica"
+								limitToList="true" />
+
+						</rich:comboBox>
+					</a4j:region>
+
+				</h:panelGrid>
+
+				<f:facet name="footer">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<a4j:commandButton value="#{bundle['_nls.button.search']}"
+							styleClass="buttonGeneric" tabindex="8" type="submit"
+							reRender="mapaDespesaTable,errorMsgId,mapaDespesaPanel"
+							limitToList="true" action="#{mapaDespesaController.findByFilter}" />
+					</h:panelGrid>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="mapaDespesaBean" />
+			<a4j:outputPanel id="mapaDespesaPanel">
+				<rich:dataTable value="#{mapaDespesaController.despBean.resultList}"
+					var="item" rows="#{systemProperties['research.size.page.result']}"
+					rendered="#{!empty mapaDespesaController.despBean.resultList}"
+					width="100%" id="mapaDespesaTable" rowKeyVar="row">
+
+					<rich:column sortBy="#{item.contratoPratica.nomeContratoPratica}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.mapa_despesa.contrato_pratica.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.contratoPratica.nomeContratoPratica}" />
+					</rich:column>
+
+					<rich:column
+						sortBy="#{item.contratoPratica.msa.cliente.nomeCliente}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.mapa_despesa.cliente.label']}" />
+						</f:facet>
+						<h:outputText
+							value="#{item.contratoPratica.msa.cliente.nomeCliente}" />
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.action.label']}" />
+						</f:facet>
+
+						<a4j:commandLink ajaxSingle="false" id="viewlink"
+							action="#{mapaDespesaController.prepareView}"
+							reRender="mapaDespesaTable">
+							<h:graphicImage value="/images/icons/view.png" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaDespesaController.despBean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="viewlink" value="#{bundle['_nls.hint.view']}" />
+
+						<a4j:commandLink ajaxSingle="false" id="editlink"
+							action="#{mapaDespesaController.manage}"
+							reRender="mapaDespesaTable">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaDespesaController.despBean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+
+						<a4j:commandLink ajaxSingle="false" id="deletelink"
+							action="#{mapaDespesaController.prepareRemoveMapaDespesa}"
+							reRender="mapaDespesaTable">
+							<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{mapaDespesaController.despBean.to}" />
+						</a4j:commandLink>
+						<rich:toolTip for="deletelink"
+							value="#{bundle['_nls.hint.delete']}" />
+
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{mapaDespesaController.despBean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

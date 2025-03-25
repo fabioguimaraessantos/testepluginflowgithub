@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.plantao']} &gt; #{bundle['_nls.menu.plantao.upload']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="registroAtividadeBean" />
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+
+			<h:panelGrid columns="6">
+				<h:outputText
+					value="#{bundle['_nls.registro_atividade.padrao_arquivo.label']}*: "
+					for="padraoArquivo" styleClass="labelGeneric" />
+				<rich:spacer height="10" styleClass="noMargin" />
+				<a4j:region>
+					<rich:comboBox id="padraoArquivo"
+						label="#{bundle['_nls.registro_atividade.padrao_arquivo.label']}"
+						value="#{registroAtividadeController.bean.padraoArquivo.nomePadraoArquivo}"
+						suggestionValues="#{registroAtividadeController.bean.padraoArquivoList}"
+						valueChangeListener="#{registroAtividadeController.changeValuePadraoArquivo}"
+						required="true" directInputSuggestions="false">
+
+						<a4j:support event="onselect" limitToList="true" />
+					</rich:comboBox>
+				</a4j:region>
+				<h:graphicImage id="uploadInfo" value="/images/icons/info.gif" />
+				<rich:toolTip for="uploadInfo" event="onmouseover" layout="block"
+					value="#{bundle['_nls.msg.info.registro_atividade.file_pattern']}" />
+
+				<h:commandLink action="#{registroAtividadeController.getSampleFile}"
+					value="#{bundle['_nls.registro_atividade.upload.arquivo.exemplo']}"
+					immediate="true" />
+
+			</h:panelGrid>
+
+			<a4j:region renderRegionOnly="true">
+
+				<rich:fileUpload listHeight="60px" listWidth="100%"
+					noDuplicate="true"
+					fileUploadListener="#{registroAtividadeController.uploadRegistroAtividadeListener}"
+					maxFilesQuantity="5" id="upload" immediateUpload="false"
+					acceptedTypes="csv" allowFlash="false">
+
+					<f:facet name="label">
+						<h:outputText value="{_KB}KB from {KB}KB uploaded --- {mm}:{ss}" />
+					</f:facet>
+
+					<a4j:support event="onuploadcomplete" limitToList="true"
+						reRender="registroAtividadePanel,errorMsgId,btnSaveImport" />
+
+				</rich:fileUpload>
+
+				<rich:spacer height="5" styleClass="noMargin" />
+
+				<h:panelGrid columns="1" width="100%" id="registroAtividadePanel">
+					<a4j:region
+						rendered="#{registroAtividadeController.bean.errorList != null}">
+						<rich:dataTable
+							value="#{registroAtividadeController.bean.errorList}" var="item"
+							rows="#{systemProperties['research.size.page.result']}"
+							width="100%" id="errosTable" rowKeyVar="row">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.registro_atividade.upload.error_import.label']}" />
+							</f:facet>
+							<rich:column>
+								<h:outputText value="#{item}" />
+							</rich:column>
+							<f:facet name="footer">
+								<rich:datascroller renderIfSinglePage="false"
+									maxPages="#{systemProperties['research.size.page.maxpages']}"
+									page="#{registroAtividadeController.bean.currentPageId}" />
+							</f:facet>
+						</rich:dataTable>
+					</a4j:region>
+
+					<a4j:region
+						rendered="#{registroAtividadeController.bean.uploadArquivo.registroAtividades != null}">
+						<rich:dataTable
+							value="#{registroAtividadeController.bean.uploadArquivo.registroAtividades}"
+							var="item"
+							rows="#{systemProperties['research.size.page.result']}"
+							width="100%" id="registroAtividadeTable" rowKeyVar="row">
+							<f:facet name="header">
+								<h:outputText
+									value="#{bundle['_nls.registro_atividade.upload.success_import.label']}" />
+							</f:facet>
+							<rich:column sortBy="#{item.pessoa.codigoLogin}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.registro_atividade.pessoa.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.pessoa.codigoLogin}" />
+							</rich:column>
+
+							<rich:column sortBy="#{item.dataRegistroAtividade}"
+								style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.registro_atividade.data_registro_atividade.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.dataRegistroAtividade}">
+									<f:convertDateTime pattern="#{bundle['_nls.calendar.pattern']}" />
+								</h:outputText>
+							</rich:column>
+
+							<rich:column sortBy="#{item.contratoPratica.nomeContratoPratica}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.registro_atividade.contrato_pratica.label']}" />
+								</f:facet>
+								<h:outputText
+									value="#{item.contratoPratica.nomeContratoPratica}" />
+							</rich:column>
+
+							<rich:column sortBy="#{item.grupoCusto.nomeGrupoCusto}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.registro_atividade.grupo_custo.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.grupoCusto.nomeGrupoCusto}" />
+							</rich:column>
+
+
+							<rich:column sortBy="#{item.atividade.nomeAtividade}"
+								style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.registro_atividade.atividade.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.atividade.nomeAtividade}" />
+							</rich:column>
+
+							<rich:column sortBy="#{item.numeroHoras}"
+								style="text-align: right;">
+								<f:facet name="header">
+									<h:outputText
+										value="#{bundle['_nls.registro_atividade.numero_horas.label']}" />
+								</f:facet>
+								<h:outputText value="#{item.numeroHoras}" />
+							</rich:column>
+
+
+							<f:facet name="footer">
+								<rich:datascroller renderIfSinglePage="false"
+									maxPages="#{systemProperties['research.size.page.maxpages']}"
+									page="#{registroAtividadeController.bean.currentPageId}" />
+							</f:facet>
+						</rich:dataTable>
+
+					</a4j:region>
+					<rich:spacer height="5" />
+
+					<h:commandButton
+						rendered="#{registroAtividadeController.bean.uploadArquivo.registroAtividades != null}"
+						action="#{registroAtividadeController.saveUploadRegistroAtividade}"
+						value="Save Import" id="btnSaveImport" />
+				</h:panelGrid>
+			</a4j:region>
+
+
+		</h:form>
+
+
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

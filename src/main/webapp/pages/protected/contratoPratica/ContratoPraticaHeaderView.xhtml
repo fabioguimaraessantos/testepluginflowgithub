@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition>
+
+	<rich:panel
+		header="#{bundle['_nls.menu.contrato_pratica.information']}">
+
+		<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+
+			<h:panelGrid columns="2">
+				<h:outputLabel
+					value="#{bundle['_nls.contrato_pratica.codigo_contrato_pratica.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel
+					value="#{contratoPraticaController.bean.to.codigoContratoPratica}" />
+
+				<h:outputLabel
+					value="#{bundle['_nls.contrato_pratica.nome_contrato_pratica.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel
+					value="#{contratoPraticaController.bean.to.nomeContratoPratica}" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<h:outputLabel value="#{bundle['_nls.contrato_pratica.msa.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel
+					value="#{contratoPraticaController.bean.to.msa.nomeMsa}" />
+
+				<h:outputLabel
+					value="#{bundle['_nls.contrato_pratica.pratica.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel
+					value="#{contratoPraticaController.bean.to.pratica.nomePratica}" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" id="infoGrid">
+				<h:outputLabel
+					value="#{bundle['_nls.contrato_pratica.indicador_status.label']}"
+					styleClass="labelGeneric" />
+				<h:outputLabel
+					value="#{contratoPraticaController.bean.to.indicadorStatus}"
+					style="#{contratoPraticaController.bean.to.indicadorStatus == 'I' ? 'color : red;' : ''}"
+					converter="StatusContratoPraticaConverter" />
+				
+				<h:outputLabel
+					value="#{bundle['_nls.contrato_pratica.status']}"
+					styleClass="labelGeneric" />
+			    <h:outputLabel
+					value="#{contratoPraticaController.bean.to.indicadorAtivo}"
+					style="#{contratoPraticaController.bean.to.indicadorAtivo == 'I' ? 'color : red;' : ''}"
+					converter="ContratoPraticaStatusContratoConverter" />
+
+			</h:panelGrid>
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="2">
+			<h:outputLabel
+				value="#{bundle['_nls.contrato_pratica.cost_center.approver.label']}"
+				styleClass="labelGeneric" />
+			<h:outputText
+				value="#{contratoPraticaController.bean.aprovadorCombo.selected}" />
+
+			<h:outputLabel
+				value="#{bundle['_nls.contrato_pratica.cost_center.approver_manager.label']}"
+				styleClass="labelGeneric" />
+			<h:outputText
+				value="#{contratoPraticaController.bean.gerenteCombo.selected}" />
+
+			<h:outputLabel
+				value="#{bundle['_nls.contrato_pratica.cost_center.label']}"
+				styleClass="labelGeneric" />
+			<h:outputText
+				value="#{contratoPraticaController.bean.grupoCustoCombo.selected}" />
+
+			<h:outputLabel
+				value="#{bundle['_nls.contrato_pratica.descricao.label']}"
+				styleClass="labelGeneric" />
+			<h:outputLabel
+				value="#{contratoPraticaController.bean.to.descricaoContratoPratica}" />
+			<h:outputLabel
+					value="#{bundle['_nls.contrato_pratica.tipoModeloNegocio.label']}"
+					styleClass="labelGeneric" />
+			<h:outputText value="#{contratoPraticaController.bean.tipoModeloNegocioSelected}"
+						  rendered="#{!contratoPraticaController.bean.isCreation}"
+						   />
+		</h:panelGrid>
+	</rich:panel>
+
+</ui:composition>
+</html>

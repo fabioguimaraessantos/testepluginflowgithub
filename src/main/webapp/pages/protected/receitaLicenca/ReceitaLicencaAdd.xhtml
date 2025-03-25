@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+		<script>
+			// nao permite ficar com campo numerico vazio (branco).
+			function valorZero(objeto) {
+				if (objeto.value.trim() == "") {
+					objeto.value = 0.0;
+				}
+			}
+		</script>
+		<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+			<h:outputLabel
+				value="#{bundle['_nls.menu.receita']} &gt; #{bundle['_nls.menu.receita.view']}"
+				rendered="#{!receitaController.bean.isRemove}" />
+			<h:outputLabel
+				value="#{bundle['_nls.menu.receita']} &gt; #{bundle['_nls.menu.receita.delete']}"
+				rendered="#{receitaController.bean.isRemove}" />
+		</h:panelGrid>
+	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form id="itemReceitaFormTable" styleClass="noMargin">
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+			<a4j:loadScript src="/js/utils.js" />
+			<a4j:loadScript src="/js/jquery.meio.mask.js" />
+
+			<h:panelGrid columns="2" width="100%">
+				<h:column>
+					<h:panelGrid columns="2">
+						<h:outputLabel
+							value="#{bundle['_nls.receita.contrato_pratica.label']}"
+							styleClass="labelGeneric" />
+						<h:outputLabel
+							value="#{receitaController.bean.to.contratoPratica.nomeContratoPratica}" />
+
+						<h:outputLabel
+							value="#{bundle['_nls.receita.indicador_versao.label']}"
+							styleClass="labelGeneric" />
+						<h:outputLabel
+							value="#{receitaController.bean.to.indicadorVersao}"
+							converter="VersionReceitaConverter" />
+
+						<h:outputLabel value="#{bundle['_nls.receita.data_mes.label']}"
+							styleClass="labelGeneric" />
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<h:outputText value="#{receitaController.bean.validityMonth}"
+								for="validityMonth" />
+							<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+							<h:outputText value="#{receitaController.bean.validityYear}"
+								for="validityYear" />
+						</h:panelGrid>
+
+						<h:outputText
+							value="#{bundle['_nls.receita.fiscal_deal.label']}*:"
+							for="fiscalDeals" styleClass="labelGeneric" />
+						<rich:comboBox id="fiscalDeals"
+							label="#{bundle['_nls.receita.fiscal_deal.label']}"
+							value="#{receitaController.bean.nomeFiscalDeal}"
+							suggestionValues="#{receitaController.bean.dealFiscalNameList}"
+							required="true" directInputSuggestions="true">
+						</rich:comboBox>
+
+						<h:outputLabel for="textoObservacao" styleClass="labelGeneric"
+							value="#{bundle['_nls.receita.observacao.label']}: " />
+						<h:inputTextarea cols="60" rows="2" id="textoObservacao"
+							label="#{bundle['_nls.receita.observacao.label']}"
+							value="#{receitaController.bean.to.textoObservacao}">
+							<f:validateLength maximum="399" />
+						</h:inputTextarea>
+
+						<h:outputLabel for="installments" styleClass="labelGeneric"
+							value="#{bundle['_nls.receita.installments.label']}: " />
+						<h:inputText id="installments" label="#{bundle['_nls.receita.installments.label']}"
+							style=" width : 42px;" required="true"
+							value="#{receitaController.bean.installments}">
+						</h:inputText>
+
+						<h:outputLabel for="totalValue" styleClass="labelGeneric"
+							value="#{bundle['_nls.receita.total_value.label']}: " />
+						<h:inputText id="totalValue" label="#{bundle['_nls.receita.total_value.label']}"
+							style=" width : 100px;" required="true"
+							value="#{receitaController.bean.valorReceitaLicenca}">
+								<rich:jQuery selector="#totalValue"
+									query="setMask('#{bundle['jquery.monetary.pattern']}')"
+									timing="onload" />
+								<f:convertNumber locale="#{bundle['locale.en_us']}"
+									pattern="#{systemProperties['pattern.number']}" />
+						</h:inputText>
+
+						<rich:spacer height="5" width="0" />
+						<rich:spacer height="5" width="0" />
+
+						<a4j:commandButton action="#{receitaController.prepareCreate}" immediate="true"
+								value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric" />
+
+						<a4j:commandButton action="#{receitaLicencaController.create}" 
+							disabled="#{receitaLicencaController.bean.createReceitaLicencaButtonDisabled}"
+							value="#{bundle['_nls.button.save']}" styleClass="buttonGeneric" />
+					</h:panelGrid>
+
+					
+				</h:column>
+				<h:column>
+
+				</h:column>
+
+			</h:panelGrid>
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:outputPanel id="table">
+				<rich:dataTable value="#{receitaController.bean.receitaLicencaRows}"
+				var="item" rows="99"
+				width="100%" id="receitaTable" rendered="#{!empty receitaController.bean.receitaLicencaRows}">
+	
+					<rich:column
+						sortBy="#{item.installmentNumber}">
+						<f:facet name="header">
+							<h:outputText
+								value="" />
+						</f:facet>
+						<h:outputText
+							value="#{item.installmentNumber}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.receitaLicenca.dataMes}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita_licenca.label.month']}" />
+						</f:facet>
+						<h:outputText value="#{item.receitaLicenca.dataMes}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}" />
+						</h:outputText>
+					</rich:column>
+	
+					<rich:column
+						sortBy="#{item.receitaLicenca.dealFiscal.nomeDealFiscal}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita_licenca.label.fiscal_deal']}" />
+						</f:facet>
+						<h:outputText
+							value="#{item.receitaLicenca.dealFiscal.nomeDealFiscal}" />
+					</rich:column>
+
+					<rich:column
+						sortBy="#{item.receitaLicenca.valorReceita}"
+						style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.receita_licenca.label.revenue_value']}" escape="false"/>
+						</f:facet>
+						<h:outputText
+							value="#{item.receitaLicenca.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.receitaLicenca.valorReceita}">
+							<f:convertNumber locale="#{bundle['locale.en_us']}"
+								pattern="#{systemProperties['pattern.number']}" />
+						</h:outputText>
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:columnGroup>
+							<rich:column style="text-align: right;">
+								<h:outputText value="" />
+							</rich:column>
+							<rich:column style="text-align: right;">
+								<h:outputText value="" />
+							</rich:column>
+							<rich:column style="text-align: right;">
+								<h:outputText value="#{bundle['_nsl.total.label']}:" />
+							</rich:column>
+							<rich:column style="text-align: right;">
+								<h:outputLabel
+									value="#{item.receitaLicenca.moeda.siglaMoeda} " />
+								<h:outputText value="#{receitaController.bean.receitaLicencaInstallmentsTotal}">
+									<f:convertNumber locale="#{bundle['locale.en_us']}"
+										pattern="#{systemProperties['pattern.number']}" />
+								</h:outputText>
+							</rich:column>
+						</rich:columnGroup>
+					</f:facet>
+
+				</rich:dataTable>
+			</a4j:outputPanel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

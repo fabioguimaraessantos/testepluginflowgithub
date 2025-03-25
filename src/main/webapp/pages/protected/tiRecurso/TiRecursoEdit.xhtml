@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:rich="http://richfaces.org/rich"
+	  xmlns:a4j="http://richfaces.org/a4j"
+>
+
+	<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+	
+	
+		<ui:define name="titleForm">
+	        #{bundle['_nls.menu.ti_recurso']} &gt; #{bundle['_nls.menu.ti_recurso.edit']}
+	   	</ui:define>
+	   	
+		<ui:define name="bodyForm">
+			<rich:spacer height="0" width="560" styleClass="noMargin" />
+			<h:form styleClass="noMargin">
+				<a4j:keepAlive beanName="tiRecursoBean" />
+				<a4j:loadScript src="/js/jquery.meio.mask.js" />
+				<a4j:loadScript src="/js/jquery.alphanumeric.js" />
+				<h:panelGrid columns="2">
+					<ui:include src="/pages/protected/tiRecurso/TiRecursoForm.xhtml" />
+					
+					<f:facet name="footer">
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<a4j:commandButton action="#{tiRecursoController.backToSearch}"
+								value="#{bundle['_nls.button.back']}" styleClass="buttonGeneric" 
+								immediate="true"/>
+								
+							<rich:spacer width="5" styleClass="noMargin"/>
+															
+							<a4j:commandButton action="#{tiRecursoController.update}" 
+								value="#{bundle['_nls.button.save']}" styleClass="buttonGeneric" />
+						</h:panelGrid>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+			
+			<rich:spacer height="5" />
+			
+			<rich:panel rendered="#{tiRecursoController.bean.to.indicadorTipoAlocacao != 'SOFTWARE_PROJECT'}" style="padding: 0; width: 560px;">
+					
+				<f:facet name="header">#{bundle['_nls.custo_ti_recurso.entity_name']}</f:facet>
+			
+				<h:form styleClass="noMargin">
+					<a4j:keepAlive beanName="tiRecursoBean" />
+					
+					<h:panelGrid columns="2">
+					    <h:outputText value="#{bundle['_nls.ti_recurso.data_inicio.label']}*:"
+							for="dataInicio" styleClass="labelGeneric" />
+						<h:panelGrid columns="5" border="0" cellspacing="0">
+							<rich:comboBox id="monthBeg" enableManualInput="false"
+								value="#{tiRecursoController.bean.monthBeg}"
+								label="#{bundle['_nls.mes.label']}"
+								defaultLabel="#{bundle['_nls.mes.label']}"
+								required="true" width="55"
+								suggestionValues="#{dateBean.monthList}">
+							</rich:comboBox>
+							
+							<rich:spacer height="5" width="3" styleClass="noMargin"/>
+							<h:outputText value="/" styleClass="labelGeneric" />
+							<rich:spacer height="5" width="3" styleClass="noMargin"/>
+											
+							<rich:comboBox id="yearBeg" enableManualInput="false"
+								value="#{tiRecursoController.bean.yearBeg}"
+								label="#{bundle['_nls.ano.label']}"
+								defaultLabel="#{bundle['_nls.ano.label']}"
+								required="true" width="55"
+								suggestionValues="#{dateBean.yearList}">
+							</rich:comboBox>
+						</h:panelGrid>
+				        
+				        <h:outputText value="#{bundle['_nls.ti_recurso.valor_unitario.label']} (#{tiRecursoController.bean.to.moeda.siglaMoeda})*:"
+							for="valorUnitario" styleClass="labelGeneric" />
+				        <h:inputText id="valorUnitario" size="20" maxlength="20" 
+					   			label="#{bundle['_nls.ti_recurso.valor_unitario.label']}" 
+					   			value="#{tiRecursoController.bean.custoTiRecurso.valorCustoTiRecurso}" 
+					   			required="true">
+						  	<f:validateLength maximum="20"/>
+			  
+						   <f:convertNumber locale="#{bundle['locale.en_us']}" 
+						  		pattern="#{systemProperties['pattern.number']}"  />
+						  
+						  <rich:jQuery selector="#valorUnitario" 
+						  		query="setMask('#{bundle['jquery.monetary.pattern']}')" timing="onload"/>
+					    </h:inputText>
+					    
+					    <rich:spacer height="5" /><rich:spacer height="5" />
+						
+						<f:facet name="footer">
+							<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+								<a4j:commandButton value="#{bundle['_nls.button.add']}" styleClass="buttonGeneric"
+										reRender="tiRecursoTable"
+										action="#{tiRecursoController.createCustoTiRecurso}"
+										rendered="#{!tiRecursoController.bean.isUpdateCusto}" />
+						
+								<a4j:commandButton rendered="#{tiRecursoController.bean.isUpdateCusto}"  
+									action="#{tiRecursoController.updateCustoTiRecurso}"
+									reRender="tiRecursoTable"
+									value="#{bundle['_nls.button.save']}" styleClass="buttonGeneric" />
+									
+								<rich:spacer width="5" styleClass="noMargin"/>	
+												
+								<a4j:commandButton rendered="#{tiRecursoController.bean.isUpdateCusto}"
+									action="#{tiRecursoController.cancelCustoTiRecurso}"
+									reRender="tiRecursoTable" 
+									value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric" />
+							</h:panelGrid>
+						</f:facet>
+					</h:panelGrid>
+				</h:form>
+				<rich:spacer height="5" styleClass="noMargin"/>
+				
+				<h:form>
+					<rich:dataTable value="#{tiRecursoController.bean.to.custoTiRecursos}" 
+						var="item" width="100%" id="tiRecursoTable">
+						
+						<rich:column sortBy="#{item.dataInicio}" style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="#{bundle['_nls.ti_recurso.data_inicio.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.dataInicio}" >
+								<f:convertDateTime pattern="MMM/yyyy"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column sortBy="#{item.dataFim}" style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="#{bundle['_nls.ti_recurso.data_fim.label']}" />
+							</f:facet>
+							<h:outputText value="#{item.dataFim}" >
+								<f:convertDateTime pattern="MMM/yyyy"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column sortBy="#{item.valorCustoTiRecurso}" style="text-align: right;">
+							<f:facet name="header">
+								<h:outputText value="#{bundle['_nls.ti_recurso.valor_unitario.label']}" />
+							</f:facet>
+							<h:outputLabel value="#{tiRecursoController.bean.to.moeda.siglaMoeda} " />
+							<h:outputText value="#{item.valorCustoTiRecurso}">
+								<f:convertNumber locale="#{bundle['locale.en_us']}" pattern="#{systemProperties['pattern.number']}" />
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText value="#{bundle['_nls.ti_recurso.action.label']}" />
+							</f:facet>
+			                <a4j:commandLink ajaxSingle="true" id="deletelink"
+			                    	oncomplete="#{rich:component('deleteCustoTiRecPanel')}.show()"
+			                    	rendered="#{item.dataInicio > tiRecursoController.bean.historyLockDate}" >
+			                    <h:graphicImage value="/images/icons/delete.gif" style="border:0"/>
+			                    <f:setPropertyActionListener value="#{item}"
+			                        	target="#{tiRecursoController.bean.custoTiRecurso}" />
+			                </a4j:commandLink>
+			                <rich:toolTip for="deletelink" value="#{bundle['_nls.hint.delete']}"/>
+						</rich:column>
+					</rich:dataTable>
+				</h:form>
+			</rich:panel>
+			
+			<!-- Modal Delete -->
+			<rich:modalPanel id="deleteCustoTiRecPanel" autosized="true" width="200">
+		        <f:facet name="header">
+		            <h:outputText value="#{bundle['_nls.title.confirmation']}" style="padding-right:15px;" />
+		        </f:facet>
+		        <f:facet name="controls">
+		            <h:panelGroup>
+		                <h:graphicImage value="/images/icons/close.gif" styleClass="hidelink" id="hidelinkDeleteCusto" />
+		                <rich:componentControl for="deleteCustoTiRecPanel" 
+		                	attachTo="hidelinkDeleteCusto" operation="hide" event="onclick" />
+		            </h:panelGroup>
+		        </f:facet>
+		        <h:form>
+		            <table width="100%">
+		                <tbody>
+		                	<tr>
+		                		<td colspan="2">
+		                			 <h:outputText value="#{bundle['_nls.title.delete_all']}" style="padding-right:15px;" />
+		                		</td>
+		                	</tr>
+		                    <tr>
+		                        <td align="center" width="50%">
+		                			<a4j:commandButton value="#{bundle['_nls.button.ok']}" ajaxSingle="true"
+		                    				action="#{tiRecursoController.removeCustoTiRecurso}"
+		                    				oncomplete="#{rich:component('deleteCustoTiRecPanel')}.hide();"
+		                    				styleClass="buttonGeneric"/>
+		                        </td>
+		                        <td align="center" width="50%">
+		                			<a4j:commandButton value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric"
+			                				action="#{tiRecursoController.cancelCustoTiRecurso}"
+			                    			oncomplete="#{rich:component('deleteCustoTiRecPanel')}.hide();return false;" />
+		                        </td>
+		                    </tr>
+		                </tbody>
+		            </table>
+		        </h:form>
+			</rich:modalPanel>
+		</ui:define>
+	
+	</ui:composition>
+
+</html>

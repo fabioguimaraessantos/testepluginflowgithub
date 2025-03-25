@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.despesa']} &gt; #{bundle['_nls.menu.despesa.research']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="despesaBean" />
+			<a4j:loadScript src="/js/jquery.numeric.js" />
+			<a4j:loadScript src="/js/utils.js" />
+
+			<h:panelGrid columns="2">
+				<h:outputText value="#{bundle['_nls.despesa.periodo.label']}*: "
+					for="periodo" styleClass="labelGeneric" />
+				<h:panelGrid columns="7">
+					<rich:calendar value="#{despesaController.bean.dataInicio}"
+						id="dataInicio" locale="#{bundle['_nls.calendar.locale']}"
+						required="true" datePattern="#{bundle['_nls.date.pattern']}"
+						enableManualInput="true" showApplyButton="false" cellWidth="24px"
+						cellHeight="22px" style="width:200px" tabindex="1"
+						label="#{bundle['_nls.despesa.data_inicio.label']}" />
+					<rich:spacer width="5" />
+					<h:outputLabel
+						value="#{bundle['_nls.fatura.data_previsao.until.label']}*: "
+						styleClass="labelGeneric" />
+					<rich:spacer width="5" />
+					<rich:calendar value="#{despesaController.bean.dataFim}"
+						id="dataFim" locale="#{bundle['_nls.calendar.locale']}"
+						required="true" datePattern="#{bundle['_nls.date.pattern']}"
+						enableManualInput="true" showApplyButton="false" cellWidth="24px"
+						cellHeight="22px" style="width:200px" tabindex="1"
+						label="#{bundle['_nls.despesa.data_fim.label']}" />
+					<rich:spacer width="5" />
+					<h:outputText
+						value="#{bundle['_nls.date.pattern.name']}: #{bundle['_nls.date.pattern']}"
+						styleClass="labelDatePattern" />
+				</h:panelGrid>
+				<h:outputText
+					value="#{bundle['_nls.despesa.upload.empresa.label']}: "
+					for="empresa" styleClass="labelGeneric"></h:outputText>
+				<h:panelGrid columns="4">
+					<a4j:region>
+						<rich:comboBox validator="#{xssValidator.validate}"
+							id="empresa" width="180"
+							label="#{bundle['_nls.despesa.upload.empresa.label']}"
+							value="#{despesaController.bean.empresa.nomeEmpresa}"
+							suggestionValues="#{despesaController.bean.empresaList}"
+							valueChangeListener="#{despesaController.changeValueEmpresa}"
+							directInputSuggestions="false">
+
+							<a4j:support event="onselect" limitToList="true" />
+						</rich:comboBox>
+					</a4j:region>
+					<rich:spacer width="5px" />
+					<h:outputText value="#{bundle['_nls.despesa.grupo_custo.label']}:"
+						for="grupoCusto" styleClass="labelGeneric"></h:outputText>
+					<a4j:region>
+						<rich:comboBox validator="#{xssValidator.validate}"
+							id="grupoCusto" width="180"
+							label="#{bundle['_nls.despesa.grupo_custo.label']}"
+							value="#{despesaController.bean.grupoCusto.nomeGrupoCusto}"
+							suggestionValues="#{despesaController.bean.grupoCustoList}"
+							valueChangeListener="#{despesaController.changeValueGrupoCusto}"
+							directInputSuggestions="false">
+
+							<a4j:support event="onselect" limitToList="true" />
+						</rich:comboBox>
+					</a4j:region>
+				</h:panelGrid>
+				<h:outputText value="#{bundle['_nls.despesa.tipo_despesa.label']}:"
+					for="tipoDespesa" styleClass="labelGeneric"></h:outputText>
+				<h:panelGrid columns="1">
+					<a4j:region>
+						<rich:comboBox validator="#{xssValidator.validate}"
+							id="tipoDespesa" width="180"
+							label="#{bundle['_nls.despesa.tipo_despesa.label']}"
+							value="#{despesaController.bean.tipoDespesa.nomeTipoDespesa}"
+							suggestionValues="#{despesaController.bean.tipoDespesaList}"
+							valueChangeListener="#{despesaController.changeValueTipoDespesa}"
+							directInputSuggestions="false">
+
+							<a4j:support event="onselect" limitToList="true" />
+						</rich:comboBox>
+					</a4j:region>
+				</h:panelGrid>
+				<h:outputText value="#{bundle['_nls.despesa.descricao.label']}:"
+					for="descricao" styleClass="labelGeneric"></h:outputText>
+				<h:panelGrid columns="1">
+					<h:inputText validator="#{xssValidator.validate}" value="#{despesaController.bean.descricao}" size="84" />
+				</h:panelGrid>
+			</h:panelGrid>
+			<a4j:commandButton action="#{despesaController.findByFilter}"
+				type="submit" value="#{bundle['_nls.button.search']}"
+				reRender="regionResult" />
+		</h:form>
+
+		<rich:spacer height="5" styleClass="noMargin" />
+
+		<h:form styleClass="noMargin">
+			<a4j:keepAlive beanName="despesaBean" />
+			<a4j:outputPanel id="regionResult">
+				<rich:dataTable value="#{despesaController.bean.resultList}"
+					var="item" rows="#{systemProperties['research.size.page.result']}"
+					width="100%" id="despesaTable" rowKeyVar="row"
+					rendered="#{! empty despesaController.bean.resultList}">
+
+					<rich:column style="text-align: center;" width="50">
+						<f:facet name="header">
+							<a4j:region>
+								<h:selectBooleanCheckbox
+									onclick="javascript: checkUncheckAll(this);" />
+							</a4j:region>
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{item.isSelected}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.empresa.nomeEmpresa}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.despesa.upload.empresa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.empresa.nomeEmpresa}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.grupoCusto.nomeGrupoCusto}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.despesa.grupo_custo.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.grupoCusto.nomeGrupoCusto}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.contratoPratica.nomeContratoPratica}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.despesa.contrato_pratica.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.contratoPratica.nomeContratoPratica}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.tipoDespesa.nomeTipoDespesa}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.despesa.categoria.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.tipoDespesa.nomeTipoDespesa}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.textoGrupoDespesa}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.despesa.grupo_despesa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.textoGrupoDespesa}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.textoTipoDespesa}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.despesa.tipo_despesa.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.textoTipoDespesa}" />
+					</rich:column>
+
+					<rich:column sortBy="#{item.dataLancamento}"
+						style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.despesa.data_lancamento.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.dataLancamento}">
+							<f:convertDateTime
+								pattern="#{bundle['_nls.date.pattern.simple']}" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.valorDespesa}"
+						style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.despesa.valor.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.moeda.siglaMoeda} " />
+						<h:outputText value="#{item.valorDespesa}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2"
+								pattern="0.00" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column sortBy="#{item.indicadorOrigem}"
+						style="text-align: left;">
+						<f:facet name="header">
+							<h:outputText
+								value="#{bundle['_nls.despesa.tipo_entrada.label']}" />
+						</f:facet>
+						<h:outputText value="#{item.indicadorOrigem} " />
+					</rich:column>
+
+					<rich:column sortBy="#{item.uploadArquivo.nomeArquivo}"
+						style="text-align: right;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.despesa.arquivo.label']}" />
+						</f:facet>
+
+						<h:commandLink action="#{despesaController.downloadFile}"
+							value="#{item.uploadArquivo.nomeArquivo}">
+							<f:setPropertyActionListener value="#{item}"
+								target="#{despesaController.bean.uploadDespesa}" />
+						</h:commandLink>
+					</rich:column>
+
+					<rich:column style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="#{bundle['_nls.despesa.action.label']}" />
+						</f:facet>
+						<a4j:commandLink ajaxSingle="true" id="viewlink"
+							action="#{despesaController.prepareView}">
+							<h:graphicImage value="/images/icons/view.png" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{despesaController.bean.uploadDespesa}" />
+							<f:setPropertyActionListener value="#{item.codigoUploadDespesa}"
+								target="#{despesaController.bean.currentRowId}" />
+						</a4j:commandLink>
+						<rich:toolTip for="deletelink"
+							value="#{bundle['_nls.hint.delete']}" />
+						<a4j:commandLink ajaxSingle="true" id="editlink"
+							action="#{despesaController.prepareUpdate}"
+							reRender="despesaTable" rendered="false">
+							<h:graphicImage value="/images/icons/edit.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{despesaController.bean.uploadDespesa}" />
+							<f:setPropertyActionListener value="#{item.codigoUploadDespesa}"
+								target="#{despesaController.bean.currentRowId}" />
+						</a4j:commandLink>
+						<rich:toolTip for="editlink" value="#{bundle['_nls.hint.edit']}" />
+						<a4j:commandLink ajaxSingle="true" id="deletelink"
+							action="#{despesaController.prepareRemove}"
+							reRender="despesaTable">
+							<h:graphicImage value="/images/icons/delete.gif" style="border:0" />
+							<f:setPropertyActionListener value="#{item}"
+								target="#{despesaController.bean.uploadDespesa}" />
+							<f:setPropertyActionListener value="#{item.codigoUploadDespesa}"
+								target="#{despesaController.bean.currentRowId}" />
+						</a4j:commandLink>
+						<rich:toolTip for="deletelink"
+							value="#{bundle['_nls.hint.delete']}" />
+					</rich:column>
+
+					<f:facet name="footer">
+						<rich:datascroller renderIfSinglePage="false"
+							maxPages="#{systemProperties['research.size.page.maxpages']}"
+							page="#{despesaController.bean.currentPageId}" />
+					</f:facet>
+				</rich:dataTable>
+				<rich:toolBar style="padding: 0px;"
+					rendered="#{! empty despesaController.bean.resultList}">
+
+					<rich:dropDownMenu direction="top-right" hideDelay="100">
+						<f:facet name="label">
+							<h:panelGroup style="vertical-align: top;">
+								<h:graphicImage value="/images/icons/money.png" styleClass="pic"
+									height="18" width="18" style="border:0; vertical-align: top" />
+								<h:outputText value="#{bundle['_nls.menu.despesa']}" />
+							</h:panelGroup>
+						</f:facet>
+
+						<rich:menuItem id="deleteAlllink" limitToList="true"
+							submitMode="ajax" value="#{bundle['_nls.hint.remove.all']}"
+							icon="/images/icons/remove_selected.png"
+							oncomplete="#{rich:component('deleteAllDespesaPanel')}.show()">
+						</rich:menuItem>
+
+					</rich:dropDownMenu>
+				</rich:toolBar>
+			</a4j:outputPanel>
+
+		</h:form>
+
+		<ui:include src="/pages/protected/despesa/DespesaDeleteAll.xhtml" />
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

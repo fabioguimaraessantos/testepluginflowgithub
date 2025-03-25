@@ -1,0 +1,940 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags"
+>
+
+<ui:composition>
+    <h:panelGrid id="panelMenu" columns="1" cellpadding="0" cellspacing="0">
+        <h:form id="menuForm">
+            <rich:panelMenu id="menuBar" style="width:200px" mode="ajax"
+                            iconItem="disc" iconExpandedGroup="triangle"
+                            iconCollapsedGroup="triangleDown" iconExpandedTopGroup="triangleUp"
+                            iconGroupTopPosition="right" iconCollapsedTopGroup="triangleDown">
+
+                <sec:ifAnyGranted roles="PRO.RESOURCE_VALIDATION:VW, PRO.RESOURCE:VW, PRO.RESOURCE:ED">
+                    <rich:panelMenuGroup id="menuProduction"
+                                         label="#{bundle['_nls.menu.production']}" expanded="true">
+
+                        <sec:ifAnyGranted roles="PRO.RESOURCE_VALIDATION:VW,PRO.RESOURCE_VALIDATION:ED">
+                            <!-- Validacao MapaAlocacao Sub-Menu -->
+                            <rich:panelMenuGroup id="menuMapaAlocacaoValidation"
+                                                 label="#{bundle['_nls.menu.mapa_alocacao.validation']}">
+                                <!-- Staff Meus Gerenciados Sub-Menu -->
+                                <rich:panelMenuItem id="menuMapaValidacaoMeusGerenciados"
+                                                    label="#{bundle['_nls.menu.mapa_alocacao.my_managed']}"
+                                                    action="#{validacaoPessoaController.findAllMyManaged}"/>
+                                <rich:panelMenuItem id="menuMapaAlocacaoSenior"
+                                                    label="#{bundle['_nls.menu.mapa_alocacao.validation_sr']}"
+                                                    action="#{validacaoPessoaController.prepareResearch}"/>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="PRO.RESOURCE:VW, PRO.RESOURCE:ED">
+                            <rich:panelMenuItem id="menuPessoaPeopleManager"
+                                                label="#{bundle['_nls.menu.pessoa']}"
+                                                action="#{pessoaController.prepareSearch}"/>
+                        </sec:ifAnyGranted>
+
+                    </rich:panelMenuGroup>
+                </sec:ifAnyGranted>
+
+                <sec:ifAnyGranted roles="BUS.CLIENT:VW, BUS.CLIENT:ED, BUS.CLIENT:DE, BUS.CLIENT:CR,
+										 BUS.CLIENT.TRAVEL_BUDGET:ED, BUS.CLIENT.TRAVEL_BUDGET.EXTRA:ED,
+										 BUS.WHITE_LIST:VW, BUS.WHITE_LIST:CR, BUS.WHITE_LIST:DE, BUS.COST_CENTER:VW, BUS.COST_CENTER:ED, BUS.COST_CENTER:DE,
+										 BUS.COST_CENTER.TRAVEL_BUDGET:ED, BUS.DEFAULT_PRICE_TABLE:VW,  BUS.DEFAULT_PRICE_TABLE:ED,
+										 BUS.DEFAULT_PRICE_TABLE:DE, BUS.DEFAULT_PRICE_TABLE:CR, BUS.MSA:VW, BUS.MSA:ED, BUS.MSA:DE, BUS.MSA:CR,
+										 BUS.VIEW_PROJECT_ASSOCIATIONS:VW, BUS.READJUSTMENT:VW, BUS.READJUSTMENT:ED, BUS.CONTRACT_LOB:VW,
+										 BUS.CONTRACT_LOB:ED, BUS.CONTRACT_LOB:DE, BUS.CONTRACT_LOB:CR,
+										 BUS.INVOICE:CR, BUS.INVOICE:ED, BUS.INVOICE:VW, BUS.REVENUE:VW, BUS.REVENUE:CR,
+										 BUS.REVENUE:ED, BUS.REVENUE:DE, BUS.REVENUE.FISCAL_BALANCE:VW,
+										 BUS.REVENUE.REPORT:VW, BUS.REVENUE.UR_REVIEW:VW, BUS.REVENUE.UR_REVIEW:CR, BUS.REVENUE.ADJUSTMENT:VW,
+										 BUS.COMMISSION:CR, BUS.COMMISSION:ED, BUS.COMMISSION:VW,
+										 BUS.MSA.SETTINGS:ED,BUS.COST_CENTER.MANAGER:VW,BUS.COST_CENTER.MANAGER:ED,
+										 BUS.COST_CENTER.MANAGER:CR">
+                    <rich:panelMenuGroup id="menuBusiness"
+                                         label="#{bundle['_nls.menu.business']}" expanded="true">
+                        <sec:ifAnyGranted roles="BUS.CLIENT:VW, BUS.CLIENT:ED, BUS.CLIENT:DE, BUS.CLIENT:CR,
+								   				 BUS.CLIENT.TRAVEL_BUDGET:ED, BUS.CLIENT.TRAVEL_BUDGET.EXTRA:ED">
+                            <!-- Cliente Pai Sub-Menu -->
+                            <rich:panelMenuGroup id="menuClientePai"
+                                                 label="#{bundle['_nls.menu.cliente_pai']}">
+                                <sec:ifAnyGranted roles="BUS.CLIENT:VW, BUS.CLIENT:ED, BUS.CLIENT:DE,
+														 BUS.CLIENT.TRAVEL_BUDGET:ED, BUS.CLIENT.TRAVEL_BUDGET.EXTRA:ED">
+                                    <rich:panelMenuItem id="menuClientePaiResearch"
+                                                        label="#{bundle['_nls.menu.cliente_pai.research']}"
+                                                        action="#{clientePaiController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BUS.CLIENT:CR">
+                                    <rich:panelMenuItem id="menuClientePaiAdd"
+                                                        label="#{bundle['_nls.menu.cliente_pai.add']}"
+                                                        action="#{clientePaiController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BUS.MSA:VW, BUS.MSA:ED, BUS.MSA:DE, BUS.MSA:CR,
+                                                    BUS.MSA.SETTINGS:ED">
+                            <!--  Contrato Sub-Menu -->
+                            <rich:panelMenuGroup id="menuContrato" label="#{bundle['_nls.menu.msa']}">
+                                <sec:ifAnyGranted
+                                        roles="BUS.MSA:VW, BUS.MSA:ED, BUS.MSA:DE, BUS.MSA.SETTINGS:ED">
+                                    <rich:panelMenuItem id="menuContratoResearch"
+                                                        label="#{bundle['_nls.menu.msa.search']}"
+                                                        action="#{msaController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BUS.MSA:CR">
+                                    <rich:panelMenuItem id="menuContratoAdd"
+                                                        label="#{bundle['_nls.menu.msa.add']}"
+                                                        action="#{msaController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BUS.MSA:ED">
+                                    <rich:panelMenuItem id="menuUploadLegalDoc"
+                                                        label="#{bundle['_nls.menu.msa.upload.legaldoc']}"
+                                                        action="#{msaController.prepareLegalDocUpload}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <!-- GrupoCusto Sub-Menu -->
+                        <sec:ifAnyGranted roles="BUS.COST_CENTER:VW, BUS.COST_CENTER:ED, BUS.COST_CENTER:DE,
+										 		 BUS.COST_CENTER.TRAVEL_BUDGET:ED,
+                                                 BUS.COST_CENTER.MANAGER:VW, BUS.COST_CENTER.MANAGER:ED,
+										         BUS.COST_CENTER.MANAGER:CR">
+                            <rich:panelMenuGroup id="menuGrupoCusto1"
+                                                 label="#{bundle['_nls.menu.grupo_custo']}">
+
+                                <rich:panelMenuItem id="menuGrupoCustoResearch1"
+                                                    label="#{bundle['_nls.menu.grupo_custo.research']}"
+                                                    action="#{grupoCustoController.prepareSearch}" />
+
+                                <sec:ifAnyGranted roles="BUS.COST_CENTER.ADDS:VW, BUS.COST_CENTER.ADDS:ED, BUS.COST_CENTER.ADDS:CR,
+                                                         BUS.COST_CENTER.MANAGER:VW, BUS.COST_CENTER.MANAGER:ED, BUS.COST_CENTER.MANAGER:CR">
+                                    <rich:panelMenuItem id="menuGrupoCustoAdd1"
+                                                        label="#{bundle['_nls.menu.grupo_custo.add']}"
+                                                        action="#{grupoCustoController.prepareCreate}" />
+                                </sec:ifAnyGranted>
+							</rich:panelMenuGroup>
+						</sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BUS.WHITE_LIST:VW, BUS.WHITE_LIST:CR, BUS.WHITE_LIST:DE">
+                            <!-- Travel Budget Delegates -->
+                            <rich:panelMenuItem id="travelBudgetDelegated"
+                                                label="#{bundle['_nls.travel.budget.label.white_list']}"
+                                                action="#{orcDespesaDelegacaoController.prepareOrcDespesaDelegacao}"/>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BUS.DEFAULT_PRICE_TABLE:VW, BUS.DEFAULT_PRICE_TABLE:ED, BUS.DEFAULT_PRICE_TABLE:DE, BUS.DEFAULT_PRICE_TABLE:CR">
+                            <!-- Tabela Padrao Sub-Menu -->
+                            <rich:panelMenuItem id="menuPerfilPadraoAdd"
+                                                label="#{bundle['_nls.perfil_padrao.titulo']}"
+                                                action="#{tabelaPerfilPadraoController.prepareAdd}"/>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BUS.CONTRACT_LOB:VW, BUS.CONTRACT_LOB:ED, BUS.CONTRACT_LOB:DE,
+												BUS.CONTRACT_LOB:CR">
+                            <!-- ContratoPratica Sub-Menu -->
+                            <rich:panelMenuGroup id="menuContratoPratica"
+                                                 label="#{bundle['_nls.menu.contrato_pratica']}">
+
+                                <sec:ifAnyGranted roles="BUS.CONTRACT_LOB:VW, BUS.CONTRACT_LOB:ED, BUS.CONTRACT_LOB:DE">
+                                    <rich:panelMenuItem id="menuContratoPraticaSearch"
+                                                        label="#{bundle['_nls.menu.contrato_pratica.search']}"
+                                                        action="#{contratoPraticaController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BUS.CONTRACT_LOB:CR">
+                                    <rich:panelMenuItem id="menuContratoPraticaAdd"
+                                                        label="#{bundle['_nls.menu.contrato_pratica.add']}"
+                                                        action="#{contratoPraticaController.prepareAdd}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BUS.CONTRACT_LOB:ED">
+                                    <rich:panelMenuItem id="menuContratoPraticaUpload"
+                                                        label="#{bundle['_nls.menu.contrato_pratica.upload']}"
+                                                        action="#{contratoPraticaController.prepareUpload}"/>
+                                </sec:ifAnyGranted>
+
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+                        <sec:ifAnyGranted roles="BUS.VIEW_PROJECT_ASSOCIATIONS:VW">
+                            <!--  Ativacao do Projeto Sub-Menu -->
+                            <rich:panelMenuItem id="menuContratoPraticaProjeto"
+                                                label="#{bundle['_nls.menu.contrato_pratica.project.association']}"
+                                                action="#{activeProjectController.prepareView}"/>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BUS.READJUSTMENT:VW, BUS.READJUSTMENT:ED">
+                            <!-- Reajuste Sub-Menu -->
+                            <rich:panelMenuGroup id="menuControleReajuste"
+                                                 label="#{bundle['_nls.controle.reajuste']}">
+
+                                <rich:panelMenuItem id="menuControleReajusteSearch"
+                                                    label="#{bundle['_nls.controle.reajuste.search']}"
+                                                    action="#{controleReajusteSearchController.prepareSearch}"/>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BUS.REVENUE:VW, BUS.REVENUE:CR, BUS.REVENUE:ED, BUS.REVENUE:DE,
+												 BUS.REVENUE.FISCAL_BALANCE:VW,	 BUS.REVENUE.REPORT:VW,
+												 BUS.REVENUE.UR_REVIEW:VW, BUS.REVENUE.UR_REVIEW:CR, BUS.REVENUE.ADJUSTMENT:VW">
+                            <!-- Receita Sub-Menu -->
+                            <rich:panelMenuGroup id="menuReceita"
+                                                 label="#{bundle['_nls.menu.receita']}">
+
+                                <sec:ifAnyGranted
+                                        roles="BUS.REVENUE:VW, BUS.REVENUE:CR, BUS.REVENUE:ED, BUS.REVENUE:DE">
+                                    <rich:panelMenuItem id="menuReceitaResearch"
+                                                        label="#{bundle['_nls.menu.receita.research']}"
+                                                        action="#{receitaController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BUS.REVENUE:CR">
+                                    <rich:panelMenuItem id="menuReceitaAdd"
+                                                        label="#{bundle['_nls.menu.receita.add']}"
+                                                        action="#{receitaController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BUS.REVENUE.FISCAL_BALANCE:VW">
+                                    <rich:panelMenuItem id="menuFiscalBalanceNew"
+                                                        label="#{bundle['_nls.menu.fiscal_balance']}"
+                                                        action="#{fiscalBalanceController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BUS.REVENUE.REPORT:VW">
+                                    <rich:panelMenuItem id="menuReceitaReport"
+                                                        label="#{bundle['_nls.menu.receita.report']}"
+                                                        action="#{receitaController.prepareReport}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BUS.REVENUE.UR_REVIEW:VW, BUS.REVENUE.UR_REVIEW:CR">
+                                    <rich:panelMenuItem id="menuReceitaResearchReviewUR"
+                                                        label="#{bundle['_nls.menu.receita.research_review_ur']}"
+                                                        action="#{receitaController.prepareResearchReviewUr}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BUS.REVENUE.ADJUSTMENT:VW">
+                                    <rich:panelMenuItem id="menuAjusteReceitaSearch"
+                                                        label="#{bundle['_nls.menu.ajuste_receita.search_Adjustment']}"
+                                                        action="#{ajusteReceitaController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BUS.INVOICE:CR, BUS.INVOICE:ED, BUS.INVOICE:VW">
+                            <!-- Fatura Sub-Menu -->
+                            <rich:panelMenuGroup id="menuFatura"
+                                                 label="#{bundle['_nls.menu.fatura']}">
+                                <sec:ifAnyGranted roles="BUS.INVOICE:ED, BUS.INVOICE:VW">
+                                    <rich:panelMenuItem id="menuFaturaResearch"
+                                                        label="#{bundle['_nls.menu.fatura.research']}"
+                                                        action="#{faturaController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BUS.INVOICE:CR">
+                                    <rich:panelMenuItem id="menuFaturaAdd"
+                                                        label="#{bundle['_nls.menu.fatura.add']}"
+                                                        action="#{faturaController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BUS.COMMISSION:CR, BUS.COMMISSION:ED, BUS.COMMISSION:VW">
+                            <!-- Comissao Sub-Menu -->
+                            <rich:panelMenuGroup id="menuComissao" label="#{bundle['_nls.menu.comissao']}">
+                                <sec:ifAnyGranted roles="BUS.COMMISSION:VW">
+                                    <!-- Comissao Fatura AE -->
+                                    <rich:panelMenuItem id="menuComissaoFaturaAe"
+                                                        label="#{bundle['_nls.menu.comissao_fatura']}"
+                                                        action="#{comissaoController.prepareSearchComissaoFaturaPerAe}"/>
+                                </sec:ifAnyGranted>
+
+                                <!-- Comissao Acelerador AE -->
+                                <sec:ifAnyGranted roles="BUS.COMMISSION:CR, BUS.COMMISSION:VW">
+                                    <rich:panelMenuGroup
+                                            label="#{bundle['_nls.menu.comissao.comissao_acelerador']}">
+                                        <sec:ifAnyGranted roles="BUS.COMMISSION:VW">
+                                            <rich:panelMenuItem id="menuComissaoResearchAe"
+                                                                label="#{bundle['_nls.menu.comissao.comissao_acelerador.research']}"
+                                                                action="#{comissaoController.prepareSearchAe}"/>
+                                        </sec:ifAnyGranted>
+                                        <sec:ifAnyGranted roles="BUS.COMMISSION:CR">
+                                            <rich:panelMenuItem id="menucomissaoAdd"
+                                                                label="#{bundle['_nls.menu.comissao.add']}"
+                                                                action="#{comissaoController.prepareCreateComissaoAcelerador}"/>
+                                        </sec:ifAnyGranted>
+                                    </rich:panelMenuGroup>
+                                </sec:ifAnyGranted>
+
+                                <!-- Comissao Acelerador DN -->
+                                <sec:ifAnyGranted roles="BUS.COMMISSION:ED">
+                                    <rich:panelMenuItem id="menuComissaoResearchDn"
+                                                        label="#{bundle['_nls.menu.comissao.comissao_acelerador.approval']}"
+                                                        action="#{comissaoController.prepareSearchDn}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                    </rich:panelMenuGroup>
+                </sec:ifAnyGranted>
+
+                <sec:ifAnyGranted roles="BOF.CLIENT_ENTITY:VW, BOF.CLIENT_ENTITY:ED, BOF.CLIENT_ENTITY:DE,
+										 BOF.CLIENT_ENTITY:CR, BOF.COMPANY:DE, BOF.COMPANY:CR, BOF.COMPANY:ED,
+										 BOF.COMPANY:VW, BOF.TAXES:VW, BOF.TAXES:ED, BOF.TAXES:CR, BOF.TAXES:DE,
+										 BOF.CLOSING_DATE:VW, BOF.CLOSING_DATE:ED, BOF.COST_CENTER.TRAVEL_BUDGET:ED,
+										 BOF.COST_CENTER:DE, BOF.COST_CENTER:ED, BOF.COST_CENTER:VW,
+										 BOF.SUB_BUDGET_AREA:VW, BOF.SUB_BUDGET_AREA:CR, BOF.SUB_BUDGET_AREA:ED,
+										 BOF.PROJECT_ACTIVATION:VW, BOF.INTEGRATE_REVENUE:VW, BOF.RESOURCE_POSITION:ED,
+										 BOF.RESOURCE_POSITION:VW, BOF.LOB:VW, BOF.LOB:CR, BOF.LOB:ED, BOF.LOB:DE,
+										 BOF.EXCHANGE_RATES:VW,  BOF.EXCHANGE_RATES:DE, BOF.EXCHANGE_RATES:CR,
+										  BOF.INVOICING:ED,BOF.INVOICING:VW,BOF.INVOICING:CR,
+										 BOF.INVOICING:DE, BOF.PROFIT_CENTER_TYPE:CR,
+										 BOF.PROFIT_CENTER_TYPE:VW, BOF.PROFIT_CENTER_TYPE:ED, BOF.PROFIT_CENTER_TYPE:DE,
+										 BOF.CLOSING_DRE:VW, BOF.INVOICE_PARAMETERS:CR, BOF.INVOICE_PARAMETERS:VW,
+										 BOF.INVOICE_PARAMETERS:ED, BOF.INVOICE_PARAMETERS:DE, BOF.INVOICE_PAYMENT:VW,
+										 BOF.PAYROLL_EVENTS:VW,BOF.INDUSTRY:VW, BOF.INDUSTRY:DE, BOF.INDUSTRY:ED,
+										 BOF.INDUSTRY:CR, BOF.CITY_BASE:VW, BOF.CITY_BASE:CR, BOF.CITY_BASE:ED, BOF.CITY_BASE:DE,
+										 BOF.CITY_BASE_CO:VW, BOF.CITY_BASE_CO:CR, BOF.CITY_BASE_CO:ED, BOF.CITY_BASE_CO:DE">
+
+                    <rich:panelMenuGroup id="menuBackOffice" label="#{bundle['_nls.menu.back_office']}" expanded="true">
+                        <!-- Menu BackOffice -->
+                        <sec:ifAnyGranted roles="BOF.CLIENT_ENTITY:VW, BOF.CLIENT_ENTITY:ED,
+										 		 BOF.CLIENT_ENTITY:DE, BOF.CLIENT_ENTITY:CR">
+                            <!-- Cliente Sub-Menu -->
+                            <rich:panelMenuGroup id="menuCliente" label="#{bundle['_nls.menu.cliente']}">
+                                <sec:ifAnyGranted roles="BOF.CLIENT_ENTITY:VW, BOF.CLIENT_ENTITY:ED,
+										 		 		 BOF.CLIENT_ENTITY:DE">
+                                    <rich:panelMenuItem id="menuClienteResearch"
+                                                        label="#{bundle['_nls.menu.cliente.research']}"
+                                                        action="#{clienteController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BOF.CLIENT_ENTITY:CR">
+                                    <rich:panelMenuItem id="menuClienteAdd"
+                                                        label="#{bundle['_nls.menu.cliente.add']}"
+                                                        action="#{clienteController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.COMPANY:DE, BOF.COMPANY:CR, BOF.COMPANY:ED, BOF.COMPANY:VW">
+                            <!-- Company Sub-Menu -->
+                            <rich:panelMenuGroup id="menuEmpresa" label="#{bundle['_nls.menu.empresa']}">
+                                <sec:ifAnyGranted roles="BOF.COMPANY:DE, BOF.COMPANY:ED, BOF.COMPANY:VW">
+                                    <rich:panelMenuItem id="menuEmpresaResearch"
+                                                        label="#{bundle['_nls.menu.empresa.research']}"
+                                                        action="#{empresaController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BOF.COMPANY:CR">
+                                    <rich:panelMenuItem id="menuEmpresaAdd"
+                                                        label="#{bundle['_nls.menu.empresa.add']}"
+                                                        action="#{empresaController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted
+                                roles="BOF.CITY_BASE:DE, BOF.CITY_BASE:CR, BOF.CITY_BASE:ED, BOF.CITY_BASE:VW,
+                                BOF.CITY_BASE_CO:VW, BOF.CITY_BASE_CO:CR, BOF.CITY_BASE_CO:ED, BOF.CITY_BASE_CO:DE">
+                            <!-- City Sub-Menu -->
+                            <rich:panelMenuGroup id="menuCidade" label="#{bundle['_nls.menu.city']}">
+                                <sec:ifAnyGranted
+                                        roles="BOF.CITY_BASE:DE, BOF.CITY_BASE:CR, BOF.CITY_BASE:ED, BOF.CITY_BASE:VW">
+                                    <rich:panelMenuGroup id="menuCidadeBase"
+                                                         label="#{bundle['_nls.menu.city.base']}">
+                                        <sec:ifAnyGranted roles="BOF.CITY_BASE:DE, BOF.CITY_BASE:ED, BOF.CITY_BASE:VW">
+                                            <rich:panelMenuItem id="menuCidadeBaseSearch"
+                                                                label="#{bundle['_nls.menu.city.base.search']}"
+                                                                action="#{cidadeBaseController.prepareSearch}"/>
+                                        </sec:ifAnyGranted>
+                                        <sec:ifAnyGranted roles="BOF.CITY_BASE:CR">
+                                            <rich:panelMenuItem id="menuCidadeBaseAdd"
+                                                                label="#{bundle['_nls.menu.city.base.add']}"
+                                                                action="#{cidadeBaseController.prepareCreate}"/>
+                                        </sec:ifAnyGranted>
+
+                                    </rich:panelMenuGroup>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted
+                                        roles="BOF.CITY_BASE_CO:VW, BOF.CITY_BASE_CO:CR, BOF.CITY_BASE_CO:ED, BOF.CITY_BASE_CO:DE">
+                                    <rich:panelMenuGroup id="menuCidadeBaseFilial"
+                                                         label="#{bundle['_nls.menu.city.company_base_city']}">
+                                        <sec:ifAnyGranted roles="BOF.CITY_BASE_CO:VW, BOF.CITY_BASE_CO:ED, BOF.CITY_BASE_CO:DE">
+                                            <rich:panelMenuItem id="menuCidadeBaseFilialSearch"
+                                                                label="#{bundle['_nls.menu.city.company_base_city.search']}"
+                                                                action="#{cidadeBaseFilialController.prepareSearch}"/>
+                                        </sec:ifAnyGranted>
+
+                                        <sec:ifAnyGranted roles="BOF.CITY_BASE_CO:CR">
+                                            <rich:panelMenuItem id="menuCidadeBaseFilialAdd"
+                                                                label="#{bundle['_nls.menu.city.company_base_city.add']}"
+                                                                action="#{cidadeBaseFilialController.prepareCreate}"/>
+                                        </sec:ifAnyGranted>
+                                    </rich:panelMenuGroup>
+                                </sec:ifAnyGranted>
+
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.INDUSTRY:DE, BOF.INDUSTRY:CR, BOF.INDUSTRY:ED, BOF.INDUSTRY:VW">
+                            <!-- Industry Type Sub-Menu -->
+                            <rich:panelMenuGroup id="menuIndustryType" label="#{bundle['_nls.menu.industry.type']}">
+                                <sec:ifAnyGranted roles="BOF.INDUSTRY:DE, BOF.INDUSTRY:ED, BOF.INDUSTRY:VW">
+                                    <rich:panelMenuItem id="menuIndustryTypeResearch"
+                                                        label="#{bundle['_nls.menu.industry.type.research']}"
+                                                        action="#{industryTypeController.prepareResearch}" />
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BOF.INDUSTRY:CR">
+                                    <rich:panelMenuItem id="menuIndustryTypeAdd"
+                                                        label="#{bundle['_nls.menu.industry.type.add']}"
+                                                        action="#{industryTypeController.prepareCreate}" />
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+                        <sec:ifAnyGranted roles="BOF.BM_DN:VW, BOF.BM_DN:ED">
+                            <!-- BM DN Sub-Menu -->
+                            <rich:panelMenuGroup id="menuBmDn"
+                                                 label="#{bundle['_nls.menu.bmdn']}">
+                                <sec:ifAnyGranted roles="BOF.BM_DN:VW, BOF.BM_DN:ED, BOF.BM_DN:DE">
+                                    <rich:panelMenuItem id="menuBmDnSearch"
+                                                        label="#{bundle['_nls.menu.bmdn.search']}"
+                                                        action="#{bmDnController.prepareResearch}" />
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BOF.BM_DN:CR">
+                                    <rich:panelMenuItem id="menuBmDnAdd"
+                                                        label="#{bundle['_nls.menu.bmdn.add']}"
+                                                        action="#{bmDnController.prepareCreate}" />
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.TAXES:VW, BOF.TAXES:ED, BOF.TAXES:CR, BOF.TAXES:DE">
+
+                            <!-- Taxa Imposto Sub-Menu -->
+                            <rich:panelMenuGroup id="menuTaxaImposto"
+                                                 label="#{bundle['_nls.menu.taxa_imposto']}">
+
+                                <sec:ifAnyGranted roles="BOF.TAXES:VW, BOF.TAXES:ED, BOF.TAXES:DE">
+                                    <rich:panelMenuItem id="menuTaxaImpostoSearch"
+                                                        label="#{bundle['_nls.menu.taxa_imposto.search']}"
+                                                        action="#{taxaImpostoController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BOF.TAXES:CR">
+                                    <rich:panelMenuItem id="menuTaxaImpostoAdd"
+                                                        label="#{bundle['_nls.menu.taxa_imposto.add']}"
+                                                        action="#{taxaImpostoController.prepareAdd}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.CLOSING_DATE:VW, BOF.CLOSING_DATE:ED">
+
+                            <!-- Closing Date Sub-Menu (Fechamento) -->
+                            <rich:panelMenuItem id="menuModuloManage"
+                                                label="#{bundle['_nls.menu.modulo.manage']}"
+                                                action="#{moduloController.prepareUpdate}"/>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.PROFIT_CENTER_TYPE:CR, BOF.PROFIT_CENTER_TYPE:VW,
+												 BOF.PROFIT_CENTER_TYPE:ED, BOF.PROFIT_CENTER_TYPE:DE">
+
+                            <!-- NaturezaCentroLucro Sub-Menu -->
+                            <rich:panelMenuGroup id="menuNaturezaCentroLucro"
+                                                 label="#{bundle['_nls.menu.natureza_centro_lucro']}">
+
+                                <sec:ifAnyGranted roles="BOF.PROFIT_CENTER_TYPE:VW, BOF.PROFIT_CENTER_TYPE:ED,
+														 BOF.PROFIT_CENTER_TYPE:DE">
+                                    <rich:panelMenuItem id="menuNaturezaCentroLucroResearch"
+                                                        label="#{bundle['_nls.menu.natureza_centro_lucro.research']}"
+                                                        action="#{naturezaCentroLucroController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BOF.PROFIT_CENTER_TYPE:CR">
+                                    <rich:panelMenuItem id="menuNaturezaCentroLucroAdd"
+                                                        label="#{bundle['_nls.menu.natureza_centro_lucro.add']}"
+                                                        action="#{naturezaCentroLucroController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+
+                            </rich:panelMenuGroup>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted
+                                roles="BOF.SUB_BUDGET_AREA:VW, BOF.SUB_BUDGET_AREA:CR, BOF.SUB_BUDGET_AREA:ED">
+
+                            <!-- SubAreaOrcamentaria Sub-Menu -->
+                            <rich:panelMenuGroup id="menuSubAreaOrcamentaria"
+                                                 label="#{bundle['_nls.menu.sub_area_orcamentaria']}">
+
+                                <sec:ifAnyGranted roles="BOF.SUB_BUDGET_AREA:VW, BOF.SUB_BUDGET_AREA:ED">
+                                    <rich:panelMenuItem id="menuSubAreaOrcamentariaResearch"
+                                                        label="#{bundle['_nls.menu.sub_area_orcamentaria.research']}"
+                                                        action="#{subAreaOrcamentariaController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BOF.SUB_BUDGET_AREA:CR">
+                                    <rich:panelMenuItem id="menuSubAreaOrcamentariaAdd"
+                                                        label="#{bundle['_nls.menu.sub_area_orcamentaria.add']}"
+                                                        action="#{subAreaOrcamentariaController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.COST_CENTER.TRAVEL_BUDGET:ED, BOF.COST_CENTER:DE,
+												 BOF.COST_CENTER:ED, BOF.COST_CENTER:VW">
+                            <!-- GrupoCusto Sub-Menu -->
+                            <rich:panelMenuGroup id="menuGrupoCusto" label="#{bundle['_nls.menu.grupo_custo']}">
+                                <rich:panelMenuItem id="menuGrupoCustoResearch"
+                                                    label="#{bundle['_nls.menu.grupo_custo.research']}"
+                                                    action="#{grupoCustoController.prepareSearch}"/>
+                                <sec:ifAnyGranted roles="BOF.COST_CENTER:ED">
+                                    <rich:panelMenuItem id="menuCostCenterSearch"
+                                                        label="#{bundle['_nls.menu.cost_center_activation']}"
+                                                        action="#{costCenterController.preparePendingSearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BOF.COST_CENTER.HIER:CR, BOF.COST_CENTER.HIER:DE,
+												 BOF.COST_CENTER.HIER:ED, BOF.COST_CENTER.HIER:VW">
+                                    <rich:panelMenuGroup id="menuCostCenterHierarchy"
+                                                         label="#{bundle['_nls.menu.cost_center_hierarchy']}">
+                                        <rich:panelMenuItem id="menuCostCenterHierarchySearch"
+                                                            label="#{bundle['_nls.menu.cost_center_hierarchy.search']}"
+                                                            action="#{costCenterHierarchyController.prepareSearch}"/>
+                                        <sec:ifAnyGranted roles="BOF.COST_CENTER.HIER:CR">
+                                            <rich:panelMenuItem id="menuCostCenterHierarchyAdd"
+                                                                label="#{bundle['_nls.menu.cost_center_hierarchy.add']}"
+                                                                action="#{costCenterHierarchyController.prepareCreate}"/>
+                                        </sec:ifAnyGranted>
+                                    </rich:panelMenuGroup>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.LOB:VW, BOF.LOB:CR, BOF.LOB:ED, BOF.LOB:DE">
+
+                            <!--  Pratica Sub-Menu -->
+                            <rich:panelMenuGroup id="menuPratica"
+                                                 label="#{bundle['_nls.menu.pratica']}">
+
+                                <sec:ifAnyGranted roles="BOF.LOB:VW, BOF.LOB:ED, BOF.LOB:DE">
+                                    <rich:panelMenuItem id="menuPraticaResearch"
+                                                        label="#{bundle['_nls.menu.pratica.research']}"
+                                                        action="#{praticaController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BOF.LOB:CR">
+                                    <rich:panelMenuItem id="menuPraticaAdd"
+                                                        label="#{bundle['_nls.menu.pratica.add']}"
+                                                        action="#{praticaController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.PROJECT_ACTIVATION:VW">
+                            <!--  Ativacao do Projeto Sub-Menu -->
+                            <rich:panelMenuItem id="menuAtivarProjeto"
+                                                label="#{bundle['_nls.menu.contrato_pratica.active.project']}"
+                                                action="#{activeProjectController.prepareActivate}"/>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.INTEGRATE_REVENUE:VW, BOF.INTEGRATE_REVENUE:ED">
+                            <!-- Integracao Receita Sub-Menu -->
+                            <rich:panelMenuItem id="menuIntegrarReceita"
+                                                label="#{bundle['_nls.menu.receita_integracao']}"
+                                                action="#{integrateRevenueController.prepareIntegrate}"/>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.INVOICING:ED,BOF.INVOICING:VW,BOF.INVOICING:CR,BOF.INVOICING:DE">
+                            <!-- Configuração Integracao Receita Agendada Sub-Menu -->
+                            <rich:panelMenuItem id="menuConfiguracaoIntegracaoAgendadaReceitas"
+                                                label="#{bundle['_nls.menu.receita_agendamento_configuracao']}"
+                                                action="#{integrateRevenueScheduledConfigController.prepareIntegrateScheduledConfig}"/>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.RESOURCE_POSITION:ED, BOF.RESOURCE_POSITION:VW">
+                            <!-- PapelAlocacao Menu -->
+                            <rich:panelMenuGroup id="menuBasePapelAlocacao"
+                                                 label="#{bundle['_nls.menu.base_papel_alocacao']}">
+                                <!-- PapelAlocacao Sub-Menu -->
+                                <rich:panelMenuItem id="menuBasePapelAlocacaoResearch"
+                                                    label="#{bundle['_nls.menu.cotacao_moeda.research']}"
+                                                    action="#{basePapelAlocacaoController.prepareResearch}"/>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.INVOICING:ED,BOF.INVOICING:VW,BOF.INVOICING:CR,BOF.INVOICING:DE">
+
+                            <!-- Integracao Receita Sub-Menu -->
+                            <rich:panelMenuItem id="menuFaturamento"
+                                                label="#{bundle['_nls.menu.fatura.faturamento']}"
+                                                action="#{faturaController.prepareSearchFinancial}"/>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="ROLE_PMS_ADMIN,ROLE_PMS_FINANCIAL">
+
+                            <!-- Fator Reajuste Sub-Menu -->
+                            <rich:panelMenuItem id="menuFatorReajuste"
+                                                label="#{bundle['_nls.menu.fator_reajuste']}"
+                                                action="#{fatorReajusteController.prepareManage}"/>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.EXCHANGE_RATES:VW, BOF.EXCHANGE_RATES:DE, BOF.EXCHANGE_RATES:CR">
+                            <!-- CotacaoMoeda Menu -->
+                            <rich:panelMenuGroup id="menuCotacaoMoeda" label="#{bundle['_nls.menu.cotacao_moeda']}">
+                                <!-- CotacaoMoeda Sub-Menu -->
+                                <rich:panelMenuItem id="menuCotacaoMoedaResearch"
+                                                    label="#{bundle['_nls.menu.cotacao_moeda.research']}"
+                                                    action="#{cotacaoMoedaMediaController.prepareResearch}"/>
+
+                                <sec:ifAnyGranted roles="BOF.EXCHANGE_RATES:CR">
+                                <rich:panelMenuItem id="menuCotacaoMoedaCopy"
+                                                    label="#{bundle['_nls.menu.cotacao_moeda.replace']}"
+                                                    action="#{cotacaoMoedaMediaController.prepareCopy}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="BOF.EXCHANGE_RATES:DE">
+                                    <rich:panelMenuItem id="menuCotacaoMoedaDelete"
+                                                    label="#{bundle['_nls.menu.cotacao_moeda.delete']}"
+                                                    action="#{cotacaoMoedaMediaController.prepareDelete}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.INVOICE_PARAMETERS:CR, BOF.INVOICE_PARAMETERS:VW,
+											     BOF.INVOICE_PARAMETERS:ED, BOF.INVOICE_PARAMETERS:DE">
+
+                            <!-- IntegFaturaParametro Menu -->
+                            <rich:panelMenuGroup id="menuIntegFaturaParametro"
+                                                 label="#{bundle['_nls.menu.integ_fatura_parametro']}">
+
+                                <!-- IntegFaturaParametro Sub-Menu -->
+                                <sec:ifAnyGranted roles="BOF.INVOICE_PARAMETERS:VW, BOF.INVOICE_PARAMETERS:ED,
+														 BOF.INVOICE_PARAMETERS:DE">
+                                    <rich:panelMenuItem id="menuIntegFaturaParametroResearch"
+                                                        label="#{bundle['_nls.menu.integ_fatura_parametro.research']}"
+                                                        action="#{integFaturaParametroController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="BOF.INVOICE_PARAMETERS:CR">
+                                    <rich:panelMenuItem id="menuIntegFaturaParametroAdd"
+                                                        label="#{bundle['_nls.menu.integ_fatura_parametro.add']}"
+                                                        action="#{integFaturaParametroController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="ROLE_PMS_ADMIN,ROLE_PMS_FINANCIAL">
+
+                            <!-- CustoInfraBase Sub-Menu -->
+                            <rich:panelMenuItem id="menuCustoInfraBase"
+                                                label="#{bundle['_nls.menu.custo_infra_base']}"
+                                                action="#{custoInfraBaseController.prepareResearch}"/>
+
+                        </sec:ifAnyGranted>
+
+                        <!-- Closing Sub-Menu -->
+                        <sec:ifAnyGranted roles="BOF.CLOSING_DRE:VW">
+                            <rich:panelMenuGroup id="menuClosing"
+                                                 label="#{bundle['_nls.menu.fechamento']}">
+
+                                <!-- New DRE -->
+                                <rich:panelMenuItem id="menuNewDRE"
+                                                    label="#{bundle['_nls.menu.dre_processos_fechamento']}"
+                                                    action="#{dreProcessosController.prepareResearch}"/>
+
+                                <!-- DRE By Login -->
+                                <rich:panelMenuItem id="menuDREByLogin"
+                                                    label="#{bundle['_nls.menu.dre_processos_fechamento_by_login']}"
+                                                    action="#{dreProcessosByLoginController.prepareResearch}"/>
+
+                                <!-- URReviewFechamento Sub-Menu -->
+                                <rich:panelMenuItem id="menuURReviewFechamento"
+                                                    label="#{bundle['_nls.menu.ur_review_fechamento']}"
+                                                    action="#{estratificacaoUrController.prepareProcess}"/>
+
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="ROLE_PMS_ADMIN,ROLE_PMS_FINANCIAL">
+
+                            <!-- Hedge Sub-Menu -->
+                            <rich:panelMenuGroup id="menuHedge"
+                                                 label="#{bundle['_nls.menu.hedge']}">
+
+                                <rich:panelMenuItem id="menuHedgeResearch"
+                                                    label="#{bundle['_nls.menu.hedge.research']}"
+                                                    action="#{hedgeController.prepareResearchHedge}"/>
+                                <rich:panelMenuItem id="menuHedgeAdd"
+                                                    label="#{bundle['_nls.menu.hedge.add']}"
+                                                    action="#{hedgeController.prepareCreateHedge}"/>
+
+                            </rich:panelMenuGroup>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.INVOICE_PAYMENT:VW">
+
+                            <!-- DreLogFechamento Sub-Menu -->
+                            <rich:panelMenuItem id="menuPagamentoFatura"
+                                                label="#{bundle['_nls.menu.fatura.pagamento']}"
+                                                action="#{faturaController.prepareFindItemFaturaByFilter}"/>
+
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="BOF.PAYROLL_EVENTS:VW">
+
+                            <!-- Payroll Events Menu -->
+                            <rich:panelMenuItem id="menuPayrollEvent"
+                                                label="#{bundle['_nls.menu.payroll.events']}"
+                                                action="#{payrollEventController.preparePayrollEvents}"/>
+
+                        </sec:ifAnyGranted>
+
+                    </rich:panelMenuGroup>
+
+                </sec:ifAnyGranted>
+
+                <sec:ifAnyGranted roles="FIN.COST_CENTER_EXPENSES:VW, FIN.COST_CENTER_EXPENSES:ED">
+                    <!-- Financial -->
+                    <rich:panelMenuGroup id="menuFinancial"
+                                         label="#{bundle['_nls.menu.financial']}" expanded="true">
+
+                        <rich:panelMenuGroup id="menuDespesa"
+                                             label="#{bundle['_nls.menu.despesa']}">
+
+                            <sec:ifAnyGranted roles="FIN.COST_CENTER_EXPENSES:VW">
+                                <rich:panelMenuItem id="menuDespesaResearch"
+                                                    label="#{bundle['_nls.menu.despesa.research']}"
+                                                    action="#{despesaController.prepareSearch}"/>
+                            </sec:ifAnyGranted>
+
+                            <sec:ifAnyGranted roles="FIN.COST_CENTER_EXPENSES:VW, FIN.COST_CENTER_EXPENSES:ED">
+                                <rich:panelMenuItem id="menuDespesaAdd"
+                                                    label="#{bundle['_nls.menu.despesa.add']}"
+                                                    action="#{despesaController.prepareCreate}" rendered="false"/>
+                            </sec:ifAnyGranted>
+
+                            <sec:ifAnyGranted roles="FIN.COST_CENTER_EXPENSES:ED">
+                                <rich:panelMenuItem id="menuDespesaUpload"
+                                                    label="#{bundle['_nls.menu.despesa.upload']}"
+                                                    action="#{despesaController.prepareUpload}"/>
+                            </sec:ifAnyGranted>
+
+                        </rich:panelMenuGroup>
+
+                    </rich:panelMenuGroup>
+                </sec:ifAnyGranted>
+
+                <sec:ifAnyGranted
+                        roles="ICB.IT_RESOURCE:VW, ICB.IT_RESOURCE:CR, ICB.IT_RESOURCE:DE, ICB.IT_RESOURCE:ED,
+                        ICB.SOFTWARE:VW, ICB.SOFTWARE:CR, ICB.SOFTWARE:ED, ICB.HARDWARE:VW,  ICB.HARDWARE:CR, ICB.HARDWARE:DE, ICB.HARDWARE:ED, ICB.INTEGRATE_LICENSES:VW">
+                    <!-- Menu TI -->
+                    <rich:panelMenuGroup id="menuTI" label="#{bundle['_nls.menu.ti']}"
+                                         expanded="true">
+
+                        <!-- TiRecurso Sub-Menu -->
+                        <sec:ifAnyGranted roles="ICB.IT_RESOURCE:VW, ICB.IT_RESOURCE:CR, ICB.IT_RESOURCE:DE, ICB.IT_RESOURCE:ED ">
+                            <rich:panelMenuGroup id="menuTiRecurso"
+                                                 label="#{bundle['_nls.menu.ti_recurso']}">
+
+                                <sec:ifAnyGranted roles="ICB.IT_RESOURCE:VW, ICB.IT_RESOURCE:DE, ICB.IT_RESOURCE:ED">
+                                    <rich:panelMenuItem id="menuTiRecursoResearch"
+                                                        label="#{bundle['_nls.menu.ti_recurso.research']}"
+                                                        action="#{tiRecursoController.prepareResearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="ICB.IT_RESOURCE:CR">
+                                    <rich:panelMenuItem id="menuTIRecursoAdd"
+                                                        label="#{bundle['_nls.menu.ti_recurso.add']}"
+                                                        action="#{tiRecursoController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <!-- Chargeback Software Sub-Menu -->
+                        <sec:ifAnyGranted roles="ICB.SOFTWARE:VW, ICB.SOFTWARE:CR, ICB.SOFTWARE:ED">
+                            <rich:panelMenuGroup id="menuSoftware"
+                                                 label="#{bundle['_nls.menu.chargeback.software']}">
+
+                                <sec:ifAnyGranted roles="ICB.SOFTWARE:VW, ICB.SOFTWARE:ED">
+                                    <rich:panelMenuItem id="menuSoftwareSearchSoftwareUser"
+                                                        label="#{bundle['_nls.menu.chargeback.software.search.user']}"
+                                                        action="#{chargebackController.prepareChbackPessSearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="ICB.SOFTWARE:VW, ICB.SOFTWARE:ED">
+                                    <rich:panelMenuItem id="menuSoftwareSearchSoftwareProject"
+                                                        label="#{bundle['_nls.menu.chargeback.software.search.project']}"
+                                                        action="#{chargebackController.prepareChbackPessSearchProject}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="ICB.SOFTWARE:CR">
+                                    <rich:panelMenuItem id="menuSoftwareAdd"
+                                                        label="#{bundle['_nls.menu.chargeback.software.add']}"
+                                                        action="#{chargebackController.prepareChbackPessCreate}"/>
+                                    <rich:panelMenuItem id="menuSoftwareAddByContract"
+                                                        label="#{bundle['_nls.menu.chargeback.software.add.contract']}"
+                                                        action="#{chargebackController.prepareChbackPessCreateByContract}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <!-- Chargeback Hardware Sub-Menu -->
+                        <sec:ifAnyGranted roles="ICB.HARDWARE:VW, ICB.HARDWARE:CR, ICB.HARDWARE:DE, ICB.HARDWARE:ED">
+                            <rich:panelMenuGroup id="menuHardware"
+                                                 label="#{bundle['_nls.menu.chargeback.hardware']}">
+                                <rich:panelMenuItem id="menuHardwareTiRecurso"
+                                                    label="#{bundle['_nls.menu.chargeback.hardware.ti_recurso']}"
+                                                    action="#{chargebackController.prepareManagePerResource}"/>
+                                <rich:panelMenuItem id="menuHardwareContratoPratica"
+                                                    label="#{bundle['_nls.menu.chargeback.hardware.contrato_pratica']}"
+                                                    action="#{chargebackController.prepareManagePerContract}"/>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <!-- Chargeback Integrate Licenses -->
+                        <sec:ifAnyGranted roles="ICB.INTEGRATE_LICENSES:VW">
+                            <rich:panelMenuItem id="menuIntegrateLicenses"
+                                                label="#{bundle['_nls.menu.integrate.licenses']}"
+                                                action="#{integrarLicencaSoftwareController.prepareIntegrate}"/>
+                        </sec:ifAnyGranted>
+
+                    </rich:panelMenuGroup>
+                </sec:ifAnyGranted>
+
+                <sec:ifAnyGranted roles="PER.ON_DUTY_HOURS_BY_VALUE:VW, PER.ON_DUTY_HOURS_BY_VALUE:CR
+										PER.ON_DUTY_HOURS_BY_VALUE:ED, PER.ON_DUTY_HOURS_BY_VALUE:DE, PER.LEAVE_OF_ABSENCE:VW
+										PER.OVERTIME_BY_VALUE:VW, PER.OVERTIME_BY_VALUE:CR, PER.OVERTIME_BY_VALUE:ED,
+										PER.OVERTIME_BY_VALUE:DE, PER.RESOURCE:VW, PER.RESOURCE:ED, PER.COMMISSION:VW,
+										PER.TCE:CR, PER.TCE:VW, PER.TCE:ED, PER.CONTRACT_TYPE:VW, PER.CONTRACT_TYPE:ED,
+										PER.CONTRACT_TYPE:CR, PER.CONTRACT_TYPE:DE">
+                    <!-- DP -->
+                    <rich:panelMenuGroup id="menuDP" label="#{bundle['_nls.menu.dp']}"
+                                         expanded="true">
+
+                        <sec:ifAnyGranted roles="PER.LEAVE_OF_ABSENCE:VW">
+                            <!-- AlocacaoOverhead Sub-Menu -->
+                            <rich:panelMenuGroup id="menuAlocacaoOverhead"
+                                                 label="#{bundle['_nls.menu.alocacao_overhead']}">
+
+                                <rich:panelMenuItem id="menuAlocacaoOverheadResearch"
+                                                    label="#{bundle['_nls.menu.alocacao_overhead.research']}"
+                                                    action="#{alocacaoOverheadController.prepareResearch}"/>
+
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="PER.ON_DUTY_HOURS_BY_VALUE:VW, PER.ON_DUTY_HOURS_BY_VALUE:CR,
+												PER.ON_DUTY_HOURS_BY_VALUE:ED, PER.ON_DUTY_HOURS_BY_VALUE:DE">
+                            <!-- Plantao Por Valor -->
+                            <rich:panelMenuGroup id="menuPlantaoByValue"
+                                                 label="#{bundle['_nls.menu.plantao.by.value']}">
+                                <sec:ifAnyGranted roles="PER.ON_DUTY_HOURS_BY_VALUE:VW">
+                                    <rich:panelMenuItem id="menuPlantaoSearchByValue"
+                                                        label="#{bundle['_nls.menu.plantao.by.value.search']}"
+                                                        action="#{apropriacaoPlantaoController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="PER.ON_DUTY_HOURS_BY_VALUE:CR">
+                                    <rich:panelMenuItem id="menuPlantaoAddByValue"
+                                                        label="#{bundle['_nls.menu.plantao.by.value.add']}"
+                                                        action="#{apropriacaoPlantaoController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="PER.ON_DUTY_HOURS_BY_VALUE:ED">
+                                    <rich:panelMenuItem id="menuPlantaoUploadByValue"
+                                                        label="#{bundle['_nls.menu.plantao.upload.by.value']}"
+                                                        action="#{apropriacaoPlantaoController.prepareUpload}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <!-- Horas Extras Por Valor -->
+                        <sec:ifAnyGranted roles="PER.OVERTIME_BY_VALUE:VW, PER.OVERTIME_BY_VALUE:CR,
+												PER.OVERTIME_BY_VALUE:ED, PER.OVERTIME_BY_VALUE:DE">
+
+                            <rich:panelMenuGroup id="menuHorasExtrasByValue"
+                                                 label="#{bundle['_nls.menu.horas_extras.by.value']}">
+
+                                <sec:ifAnyGranted roles="PER.OVERTIME_BY_VALUE:VW">
+                                    <rich:panelMenuItem id="menuHorasExtrasSearchByValue"
+                                                        label="#{bundle['_nls.menu.horas_extras.by.value.search']}"
+                                                        action="#{apropriacaoHoraExtraController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="PER.OVERTIME_BY_VALUE:CR">
+                                    <rich:panelMenuItem id="menuHorasExtrasAddByValue"
+                                                        label="#{bundle['_nls.menu.horas_extras.by.value.add']}"
+                                                        action="#{apropriacaoHoraExtraController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+
+                                <sec:ifAnyGranted roles="PER.OVERTIME_BY_VALUE:ED">
+                                    <rich:panelMenuItem id="menuHorasExtrasUploadByValue"
+                                                        label="#{bundle['_nls.menu.horas_extras.upload.by.value']}"
+                                                        action="#{apropriacaoHoraExtraController.prepareUpload}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+                        <!-- Pessoa Sub-Menu -->
+                        <sec:ifAnyGranted roles="PER.RESOURCE:VW, PER.RESOURCE:ED">
+                            <rich:panelMenuItem id="menuPessoa"
+                                                label="#{bundle['_nls.menu.pessoa']}"
+                                                action="#{pessoaController.prepareSearch}"/>
+                        </sec:ifAnyGranted>
+
+                        <sec:ifAnyGranted roles="PER.COMMISSION:VW">
+                            <!-- Comissao Sub-Menu -->
+                            <rich:panelMenuItem id="menuComissaoDP"
+                                                label="#{bundle['_nls.menu.comissao']}"
+                                                action="#{comissaoController.prepareSearchDp}"/>
+                        </sec:ifAnyGranted>
+
+                        <!-- Tipo de Contrato Sub-Menu -->
+                        <sec:ifAnyGranted roles="PER.CONTRACT_TYPE:VW, PER.CONTRACT_TYPE:ED, PER.CONTRACT_TYPE:CR,
+												PER.CONTRACT_TYPE:DE">
+                            <rich:panelMenuItem id="tipoContrato"
+                                                label="#{bundle['_nls.menu.tipo_contrato']}"
+                                                action="#{tipoContratoController.prepareManage}"/>
+                        </sec:ifAnyGranted>
+
+                        <!-- Composicao TCE -->
+                        <sec:ifAnyGranted roles="PER.TCE:CR, PER.TCE:VW, PER.TCE:ED">
+                            <rich:panelMenuGroup id="menuComposicaoTce"
+                                                 label="#{bundle['_nls.menu.composicao_tce']}">
+                                <sec:ifAnyGranted roles="PER.TCE:VW">
+                                    <rich:panelMenuItem id="menuComposicaoTceSearch"
+                                                        label="#{bundle['_nls.menu.composicao_tce.search']}"
+                                                        action="#{composicaoTceController.prepareSearch}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="PER.TCE:CR">
+                                    <rich:panelMenuItem id="menuComposicaoTceAdd"
+                                                        label="#{bundle['_nls.menu.composicao_tce.add']}"
+                                                        action="#{composicaoTceController.prepareCreate}"/>
+                                </sec:ifAnyGranted>
+                                <sec:ifAnyGranted roles="PER.TCE:ED">
+                                    <rich:panelMenuItem id="menuComposicaoTceSync"
+                                                        label="#{bundle['_nls.menu.composicao_tce.sync']}"
+                                                        action="#{composicaoTceController.prepareSync}"/>
+                                </sec:ifAnyGranted>
+                            </rich:panelMenuGroup>
+                        </sec:ifAnyGranted>
+
+
+                    </rich:panelMenuGroup>
+
+                </sec:ifAnyGranted>
+
+            </rich:panelMenu>
+        </h:form>
+
+        <rich:spacer height="30"/>
+    </h:panelGrid>
+</ui:composition>
+
+</html>

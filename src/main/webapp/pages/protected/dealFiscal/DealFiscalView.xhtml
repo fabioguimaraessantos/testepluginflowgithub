@@ -1,0 +1,450 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition>
+
+    <h:panelGrid columns="1" width="100%">
+        <a4j:outputPanel id="tabDealFiscalPanel">
+            <h:form styleClass="noMargin" id="tabDealFiscalForm"
+                    rendered="#{msaController.bean.isCreate or msaController.bean.isUpdate}">
+                <h:panelGrid columns="2">
+                    <h:outputText
+                            value="#{bundle['_nls.msa.deal_fiscal.cliente.label']}*: "
+                            for="cliente" styleClass="labelGeneric" />
+                    <h:panelGrid columns="9" border="0" cellspacing="0" cellpadding="0">
+                        <a4j:region>
+                            <h:outputText id="nomeCliente"
+                                          value="#{msaController.bean.toDealFiscal.cliente.nomeCliente}" />
+                        </a4j:region>
+                        <rich:spacer width="15" height="15"/>
+
+                        <h:outputText
+                                value="#{bundle['_nls.msa.deal_fiscal.cliente.nm_cliente.label']}"
+                                styleClass="labelGeneric" />
+                        <rich:spacer width="5" />
+                        <h:outputText id="codigoMnemonicoCliente"
+                                      value="#{msaController.bean.toDealFiscal.cliente.nomeCliente}" />
+
+                        <rich:spacer width="15" height="15"/>
+
+
+                        <h:outputText
+                                value="#{bundle['_nls.msa.deal_fiscal.cliente.cd_cnpj.label']}"
+                                styleClass="labelGeneric" />
+                        <rich:spacer width="15" height="15"/>
+
+                        <h:outputText id="codigoCnpjCliente"
+                                      value="#{msaController.bean.toDealFiscal.cliente.codigoCnpj}" />
+
+                    </h:panelGrid>
+
+                    <h:outputText
+                            value="#{bundle['_nls.msa.deal_fiscal.empresa.label']}*: "
+                            for="nomeEmpresa" styleClass="labelGeneric" />
+                    <h:panelGrid columns="5" border="0" cellspacing="0" cellpadding="0">
+                        <a4j:region>
+
+                            <h:outputText id="nomeEmpresa"
+                                          value="#{msaController.bean.toDealFiscal.empresa.nomeEmpresa}" />
+                        </a4j:region>
+
+                        <rich:spacer width="15" height="15"/>
+
+                        <h:outputText
+                                value="#{bundle['_nls.msa.deal_fiscal.empresa.cd_mnemonico.label']}"
+                                styleClass="labelGeneric" />
+                        <rich:spacer width="5" height="5"/>
+                        <h:outputText id="codigoMnemonicoEmpresa"
+                                      value="#{msaController.bean.toDealFiscal.empresa.codigoMnemonico}" />
+                    </h:panelGrid>
+
+                    <h:outputText
+                            value="#{bundle['_nls.deal.indicador_entrega.label']}*: "
+                            for="indicadorEntrega" styleClass="labelGeneric" />
+                    <h:panelGrid columns="5" border="0" cellspacing="0" cellpadding="0">
+                        <a4j:region>
+                            <h:outputText id="indicadorEntrega"
+                                          value="#{msaController.bean.toDealFiscal.indicadorEntrega}" />
+                        </a4j:region>
+                    </h:panelGrid>
+
+                    <h:outputText
+                            value="#{bundle['_nls.deal.service_type.title.label']}*: "
+                            for="serviceType" styleClass="labelGeneric" />
+                    <h:panelGrid columns="5" border="0" cellspacing="0" cellpadding="0">
+                        <a4j:region>
+                            <h:outputText id="serviceType"
+                                          value="#{msaController.bean.tipoServicoSelected}" />
+                        </a4j:region>
+                        <rich:spacer width="15" height="15"/>
+
+                        <h:outputText
+                                value="#{bundle['_nls.msa.deal_fiscal.empresa.cd_mnemonico.label']}"
+                                styleClass="labelGeneric" />
+                        <rich:spacer width="5" />
+                        <h:outputText id="codigoMnemonicoTipoServico"
+                                      value="#{msaController.bean.toDealFiscal.tipoServico.siglaTipoServico}" />
+                    </h:panelGrid>
+
+                    <h:outputText value="#{bundle['_nls.deal.nome_deal.label']}"
+                                  styleClass="labelGeneric" />
+                    <h:outputText id="nomeDealFiscal"
+                                  value="#{msaController.bean.toDealFiscal.nomeDealFiscal}" />
+
+                    <h:outputText
+                            value="#{bundle['_nls.deal.indicador_tipo.label']}*: "
+                            for="indicadorTipo" styleClass="labelGeneric" />
+                    <h:outputText id="indicadorTipo"
+                                  value="#{msaController.bean.toDealFiscal.indicadorTipo}"
+                                  converter="TipoFaturamentoConverter"/>
+
+                    <h:outputText value="#{bundle['_nls.deal.moeda.label']}*: "
+                                  for="nomeMoeda" styleClass="labelGeneric" />
+
+                    <h:outputText id="nomeMoeda"
+                                  value="#{msaController.bean.toDealFiscal.moeda.nomeMoeda}"/>
+                </h:panelGrid>
+
+                <rich:spacer height="5" styleClass="noMargin" />
+
+                <rich:panel style="padding: 0; width: 630px;" >
+                    <f:facet name="header">#{bundle['_nls.deal.nome_payment_conditions.label']}</f:facet>
+                    <rich:dataTable value="#{msaController.bean.paymentConditionsDealFiscal}"
+                                    var="item" id="tabPaymentConditions" width="100%">
+
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.deal.nome_payment_condition.label']}" />
+                            </f:facet>
+
+                            <h:outputText value="#{item.paymentConditionName}" />
+                        </rich:column>
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.deal.start_date_payment_condition.label']}" />
+                            </f:facet>
+
+                            <h:outputText value="#{item.initialDate}" >
+                                <f:convertDateTime pattern="dd/MMM/yyyy" />
+                            </h:outputText>
+                        </rich:column>
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.deal.end_date_payment_condition.label']}" />
+                            </f:facet>
+
+                            <h:outputText value="#{item.finalDate}" >
+                                <f:convertDateTime pattern="dd/MMM/yyyy" />
+                            </h:outputText>
+                        </rich:column>
+                    </rich:dataTable>
+
+                    <rich:spacer height="5" />
+                    <rich:spacer height="5" />
+
+                    <h:panelGrid columns="5">
+                        <h:outputText
+                                value="#{bundle['_nls.deal.nome_payment_condition.label']}: "
+                                for="name" styleClass="labelGeneric" />
+                        <h:outputText id="name"
+                                      value="#{msaController.bean.paymentConditionName}"/>
+                    </h:panelGrid>
+
+                </rich:panel>
+
+                <rich:spacer height="5" styleClass="noMargin"
+                             rendered="#{msaController.bean.isUpdate}" />
+
+                <rich:panel style="padding: 0; width: 630px;">
+                    <f:facet name="header">#{bundle['_nls.deal.nome_emp_intercomp.label']}</f:facet>
+                    <rich:dataTable value="#{msaController.bean.historicosPercentuaisIntercomp}"
+                                    var="item" id="tabHistoricosPercentuaisIntercomp" width="100%">
+
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.msa.deal_fiscal.empresa.nm_empresa.label']}" />
+                            </f:facet>
+
+                            <h:outputText value="#{item.empresaIntercomp.nomeEmpresa}" />
+                        </rich:column>
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.msa.deal_fiscal.percentual.intercompany.label']}" />
+                            </f:facet>
+
+                            <h:outputText value="#{item.percentualIntercompany}" />
+                        </rich:column>
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.deal.nome_emp_intercomp_intermediate.label']}" />
+                            </f:facet>
+                            <h:outputText value="#{item.empresaIntercompIntermediate.nomeEmpresa}" />
+                        </rich:column>
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.deal.percentual_intercompany_intermediate.label']}" />
+                            </f:facet>
+
+                            <h:outputText value="#{item.percentualIntermediate}" />
+                        </rich:column>
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.msa.deal_fiscal.data.inicio.intercompany.label']}" />
+                            </f:facet>
+
+                            <h:outputText value="#{item.dataInicio}" >
+                                <f:convertDateTime pattern="dd/MMM/yyyy" />
+                            </h:outputText>
+                        </rich:column>
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText
+                                        value="#{bundle['_nls.msa.deal_fiscal.data.fim.intercompany.label']}" />
+                            </f:facet>
+
+                            <h:outputText value="#{item.dataFim}">
+                                <f:convertDateTime pattern="dd/MMM/yyyy" />
+                            </h:outputText>
+                        </rich:column>
+                        <rich:column style="text-align: center;" width="50px">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle['_nls.actions.label']}" />
+                            </f:facet>
+                        </rich:column>
+                    </rich:dataTable>
+                    <h:panelGrid columns="2">
+                        <h:outputText
+                                value="Already exists Revenue integrated, then is not possible edit inter-company parameters !"
+                                styleClass="colorRed" rendered="#{msaController.bean.hasRevenue}" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <h:outputText
+                                value="#{bundle['_nls.deal.indicador_intercompany.label']} "
+                                for="indicadorIntercompany" styleClass="labelGeneric" />
+                        <a4j:region>
+                            <h:selectOneRadio id="indicadorIntercompanyOld"
+                                              disabled="true"
+                                              readonly="true"
+                                              label="#{bundle['_nls.deal.indicador_intercompany.label']}"
+                                              immediate="true"
+                                              valueChangeListener="#{msaController.changeValueIndicadorIntercompany}"
+                                              value="#{msaController.bean.toDealFiscal.indicadorIntercompany}">
+                                <f:selectItem
+                                        itemLabel="#{bundle['_nls.deal.indicador_intercompany.no.label']}"
+                                        itemValue="#{false}" />
+                                <f:selectItem
+                                        itemLabel="#{bundle['_nls.deal.indicador_intercompany.yes.label']}"
+                                        itemValue="#{true}" />
+                                <a4j:support event="onchange" limitToList="true"
+                                             reRender="nomeEmpresaInterComp,percentualIntercompany,nomeEmpresaInterCompIntermediate,percentualIntercompanyIntermediate" />
+                            </h:selectOneRadio>
+
+                            <script>
+					</script>
+
+                        </a4j:region>
+                    </h:panelGrid>
+
+
+                    <h:panelGrid columns="5">
+                        <h:outputText
+                                value="#{bundle['_nls.tabela_preco.inicio_vigencia.label']}: "
+                                for="mesInicioVigencia" styleClass="labelGeneric" />
+                        <rich:spacer width="24" />
+                        <h:outputText  id="mesInicioVigencia"  value="#{msaController.bean.mesInicioVigencia}" />
+                        <h:outputText value="/"></h:outputText>
+                        <h:outputText  id="anoInicioVigencia"  value="#{msaController.bean.anoInicioVigencia}" />
+                    </h:panelGrid>
+
+                    <rich:spacer height="5" />
+                    <rich:spacer height="5" />
+
+                    <h:panelGrid columns="5">
+                        <h:outputText
+                                value="#{bundle['_nls.deal.nome_emp_intercomp.label']}: "
+                                for="nomeEmpresaInterComp" styleClass="labelGeneric" />
+                        <h:outputText  id="nomeEmpresaInterComp"  value="#{msaController.bean.nomeEmpresaIntercomp}" />
+
+                        <h:outputText
+                                value="#{bundle['_nls.deal.percentual_intercompany.label']}: "
+                                styleClass="labelGeneric" style="padding: 5px;" />
+                        <h:outputText  id="percentualIntercompany"  value="#{msaController.bean.percentualIntercompany}" />
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="6">
+                        <h:outputText
+                                value="#{bundle['_nls.deal.nome_emp_intercomp_intermediate.label']}: "
+                                for="nomeEmpresaInterCompIntermediate" styleClass="labelGeneric" />
+                        <rich:spacer width="9" />
+                        <h:outputText  id="nomeEmpresaInterCompIntermediate"  value="#{msaController.bean.nomeEmpresaIntercompIntermediate}" />
+                        <h:outputText
+                                value="#{bundle['_nls.deal.percentual_intercompany_intermediate.label']}: "
+                                styleClass="labelGeneric" style="padding: 6px;" />
+                        <rich:spacer width="7" />
+                        <h:outputText  id="percentualIntercompanyIntermediate"  value="#{msaController.bean.percentualIntercompanyIntermediate}" />
+                    </h:panelGrid>
+
+                </rich:panel>
+
+
+                <rich:spacer height="5" styleClass="noMargin"
+                             rendered="#{msaController.bean.isUpdate}" />
+
+                <rich:panel style="padding: 0; width: 560px;"
+                            rendered="#{msaController.bean.isUpdate}">
+                    <f:facet name="header">#{bundle['_nls.deal.service_type.title.label']}</f:facet>
+                    <table>
+                        <tr align="center">
+                            <td></td>
+                            <td><h:outputText styleClass="labelGeneric"
+                                              value="#{bundle['_nls.deal.service_type.avaliable.label']}" /></td>
+                            <td width="90"></td>
+                            <td><h:outputText styleClass="labelGeneric"
+                                              value="#{bundle['_nls.deal.service_type.selected.label']}" /></td>
+                        </tr>
+                        <tr align="center">
+                            <td colspan="4" align="center"><rich:pickList
+                                    targetCaptionLabel="AAAA" targetListWidth="150"
+                                    sourceListWidth="150"
+                                    value="#{msaController.bean.tipoServicoListSelected}"
+                                    disabled="true"
+                                    style="progid:DXImageTransform.Microsoft.Alpha(opacity=60);
+									opacity: 0.6; -moz-opacity: 0.6; -khtml-opacity: 0.6;">
+                                <f:selectItems
+                                        value="#{msaController.bean.tipoServicoListPickList}" />
+                            </rich:pickList></td>
+                        </tr>
+                    </table>
+                </rich:panel>
+
+                <rich:spacer height="20" styleClass="noMargin" />
+
+
+                <rich:spacer width="5" />
+
+                <a4j:commandButton action="#{msaController.cancelDealFiscal}"
+                                   value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric"
+                                   reRender="tabDealFiscalForm,tabDealFiscalTable,errorMsgId,tabDealFiscalPanel"
+                                   immediate="true" />
+            </h:form>
+
+        </a4j:outputPanel>
+
+        <rich:spacer height="5" styleClass="noMargin"
+                     rendered="#{!msaController.bean.isCreate and !msaController.bean.isUpdate}" />
+
+        <h:form styleClass="noMargin">
+            <a4j:region>
+
+                <!-- CheckBox Activy Only -->
+                <h:panelGrid columns="2">
+                    <h:selectBooleanCheckbox
+                            value="#{msaController.bean.flagCheckBoxDealFiscalList}">
+                        <a4j:support event="onclick"
+                                     action="#{msaController.filterCheckBoxListDealFiscal}"
+                                     reRender="tabDealFiscalTable" />
+                    </h:selectBooleanCheckbox>
+                    <h:outputText value="#{bundle['_nls.deal.active_only']}" />
+                </h:panelGrid>
+
+                <rich:dataTable value="#{msaController.bean.dealFiscalList}"
+                                var="item" id="tabDealFiscalTable" width="100%">
+                    <rich:column style="text-align: center;" width="50px">
+                        <f:facet name="header">
+                            <h:outputText
+                                    value="#{bundle['_nls.msa.deal_fiscal.cd_deal_fiscal.label']}" />
+                        </f:facet>
+
+                        <h:outputText value="#{item.codigoDealFiscal}" />
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText
+                                    value="#{bundle['_nls.msa.deal_fiscal.nm_deal_fiscal.label']}" />
+                        </f:facet>
+
+                        <h:outputText value="#{item.nomeDealFiscal}" />
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText
+                                    value="#{bundle['_nls.msa.deal_fiscal.empresa.nm_empresa.label']}" />
+                        </f:facet>
+
+                        <h:outputText value="#{item.empresa.nomeEmpresa}" />
+                    </rich:column>
+
+                    <rich:column style="text-align: center;">
+                        <f:facet name="header">
+                            <h:outputText
+                                    value="#{bundle['_nls.msa.deal_fiscal.moeda.nm_moeda.label']}" />
+                        </f:facet>
+
+                        <h:outputText value="#{item.moeda.nomeMoeda}" />
+                    </rich:column>
+
+                    <rich:column style="text-align: center;">
+                        <f:facet name="header">
+                            <h:outputText
+                                    value="#{bundle['_nls.msa.deal_fiscal.in_tipo.label']}" />
+                        </f:facet>
+
+                        <h:outputText value="#{item.indicadorTipo}"
+                                      converter="TipoFaturamentoConverter" />
+                    </rich:column>
+
+                    <rich:column style="text-align: center;" width="50px">
+                        <f:facet name="header">
+                            <h:outputText
+                                    value="#{bundle['_nls.msa.deal_fiscal.in_status.label']}" />
+                        </f:facet>
+
+                        <h:outputText value="#{item.indicadorStatus}"
+                                          converter="ActiveInactiveConverter" />
+
+                    </rich:column>
+
+                    <rich:column style="text-align: center;" width="50px">
+                        <f:facet name="header">
+                            <h:outputText value="#{bundle['_nls.actions.label']}" />
+                        </f:facet>
+
+                        <a4j:commandLink ajaxSingle="true" id="viewlink"
+                                         action="#{msaController.prepareUpdateDealFiscal}"
+                                         reRender="tabDealFiscalTable,tabDealFiscalPanel">
+                            <h:graphicImage value="/images/icons/view.png" style="border:0" />
+                            <f:setPropertyActionListener value="#{item.codigoDealFiscal}"
+                                                         target="#{msaController.bean.currentDealFiscalId}" />
+                        </a4j:commandLink>
+                        <rich:toolTip for="viewlink" value="#{bundle['_nls.hint.view']}" />
+
+                    </rich:column>
+
+                    <f:facet name="footer">
+                        <h:outputText value="#{bundle['_nls.msg.no_registered_item']}"
+                                      rendered="#{empty msaController.bean.to.dealFiscals}"
+                                      style="font-style: italic;" />
+                    </f:facet>
+                </rich:dataTable>
+            </a4j:region>
+        </h:form>
+    </h:panelGrid>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core">
+
+<ui:composition>
+
+	<h:panelGrid columns="4" cellpadding="0" cellspacing="0">
+
+		<h:outputText
+			value="BRL:* "
+			for="dutyHoursValue" styleClass="labelGeneric" />
+
+		<rich:spacer width="5px" />
+
+		<h:inputText onkeyup="valorZero(this);"
+			value="#{receitaController.bean.receitadutyhours}"
+			id="dutyHoursValue" required="true" size="8" immediate="true">
+			<rich:jQuery selector="#dutyHoursValue"
+				query="setMask('#{bundle['jquery.monetary.pattern']}')"
+				timing="onload" />
+			<f:convertNumber locale="#{bundle['locale.en_us']}"
+				pattern="#{systemProperties['pattern.number']}" />
+		</h:inputText>
+
+		<rich:spacer height="25px" />
+
+		<h:outputText
+			value="Hours: "
+			for="dutyhours" styleClass="labelGeneric" />
+		<rich:spacer width="5px" />
+		<h:inputText id="dutyhours" size="8"
+		 	validator="#{xssValidator.validate}" label="Hours "
+			value="#{receitaController.bean.receitadutyhours}" />
+		
+	</h:panelGrid>
+</ui:composition>
+</html>

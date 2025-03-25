@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+    <ui:define name="titleForm">
+        #{bundle['_nls.menu.chargeback.software']} &gt; #{bundle['_nls.menu.chargeback.software.edit']}
+    </ui:define>
+
+    <ui:define name="bodyForm">
+        <rich:spacer height="0" width="560" styleClass="noMargin" />
+        <h:form styleClass="noMargin">
+            <a4j:keepAlive beanName="chargebackBean" />
+            <a4j:keepAlive beanName="integrarLicencaSoftwareBean" />
+
+            <h:panelGrid columns="1">
+                <ui:include
+                        src="/pages/protected/chargebackPessoa/ChbackPessFormEditByContract.xhtml" />
+
+                <f:facet name="footer">
+                    <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                        <a4j:commandButton value="#{bundle['_nls.button.save']}"
+                                           styleClass="buttonGeneric"
+                                           action="#{chargebackController.updateLicencaProjeto}" />
+                        <rich:spacer height="5" width="5" />
+                        <a4j:commandButton value="#{bundle['_nls.button.cancel']}"
+                                           styleClass="buttonGeneric"
+                                           action="#{chargebackController.cancelChbackPessByContract}" />
+                    </h:panelGrid>
+                </f:facet>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
+
+</html>

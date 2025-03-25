@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition>
+
+	<h:outputText
+		value="#{bundle['_nls.grupo_custo.nome_grupo_custo.label']}*:"
+		for="nomeGrupoCusto" styleClass="labelGeneric"></h:outputText>
+	<h:inputText id="nomeGrupoCusto" required="true" size="70"
+		maxlength="99"
+		label="#{bundle['_nls.grupo_custo.nome_grupo_custo.label']}"
+		value="#{grupoCustoController.bean.to.nomeGrupoCusto}">
+		<f:validateLength
+			minimum="#{systemProperties['form.input.length.minimum']}"
+			maximum="99" />
+	</h:inputText>
+
+	<h:outputText
+		value="#{bundle['_nls.grupo_custo.sigla_grupo_custo.label']}*:"
+		for="siglaPratica" styleClass="labelGeneric"></h:outputText>
+	<h:inputText id="siglaPratica" required="true" size="70" maxlength="99"
+		label="#{bundle['_nls.grupo_custo.sigla_grupo_custo.label']}"
+		value="#{grupoCustoController.bean.to.siglaGrupoCusto}">
+		<f:validateLength
+			minimum="#{systemProperties['form.input.length.minimum']}"
+			maximum="10" />
+	</h:inputText>
+
+	<h:outputText for="area" styleClass="labelGeneric"
+		value="#{bundle['_nls.grupo_custo.area.label']}*:"></h:outputText>
+	<rich:comboBox required="true" id="area"
+		label="#{bundle['_nls.grupo_custo.area.label']}"
+		defaultLabel="#{bundle['_nls.comboBox.default.label']}"
+		value="#{grupoCustoController.bean.areaCombo.selected}"
+		suggestionValues="#{grupoCustoController.bean.areaCombo.list}"
+		directInputSuggestions="true" style="padding:2px;">
+		<pms:validateComboBox map="#{grupoCustoController.bean.areaCombo.map}" />
+	</rich:comboBox>
+
+	<h:outputText for="approver" styleClass="labelGeneric"
+		value="#{bundle['_nls.contrato_pratica.cost_center.approver.label']}*:">
+	</h:outputText>	
+	
+	<h:panelGroup>
+		<rich:toolTip for="approverInfo">#{bundle['_nls.contrato_pratica.cost_center.approver.tooltip']}</rich:toolTip>
+		<rich:comboBox id="approver"
+			label="#{bundle['_nls.contrato_pratica.cost_center.approver.label']}"
+			value="#{grupoCustoController.bean.approverCombo.selected}"
+			suggestionValues="#{grupoCustoController.bean.approverCombo.list}"
+			defaultLabel="#{bundle['_nls.comboBox.default.label']}"
+			required="true" directInputSuggestions="true" style="padding:2px;float:left;">
+			<pms:validateComboBox
+				map="#{grupoCustoController.bean.approverCombo.map}" />
+		</rich:comboBox>
+		<h:graphicImage id="approverInfo" value="/images/icons/info.gif" 
+			style="border:0;padding:5px;" />
+	</h:panelGroup>
+
+	<h:outputText for="managerApprover" styleClass="labelGeneric"
+		value="#{bundle['_nls.contrato_pratica.cost_center.approver_manager.label']}*:">
+	</h:outputText>
+	
+	<h:panelGroup>	
+		<rich:toolTip for="approverMgrInfo">#{bundle['_nls.contrato_pratica.cost_center.approver_manager.tooltip']}</rich:toolTip>
+		<rich:comboBox id="managerApprover"
+			label="#{bundle['_nls.contrato_pratica.cost_center.approver_manager.label']}"
+			value="#{grupoCustoController.bean.managerApproverCombo.selected}"
+			suggestionValues="#{grupoCustoController.bean.managerApproverCombo.list}"
+			defaultLabel="#{bundle['_nls.comboBox.default.label']}"
+			required="true" directInputSuggestions="true" style="padding:2px;float:left;">
+			<pms:validateComboBox
+				map="#{grupoCustoController.bean.managerApproverCombo.map}" />
+		</rich:comboBox>
+		<h:graphicImage id="approverMgrInfo" value="/images/icons/info.gif" 
+			style="border:0;padding:5px;" />
+	</h:panelGroup>
+
+	<h:outputText
+		value="#{bundle['_nls.grupo_custo.indicador_ativo.label']}:"
+		for="indicadorAtivo" styleClass="labelGeneric"
+		rendered="#{grupoCustoController.bean.isUpdate}"></h:outputText>
+	<rich:comboBox id="indicadorAtivo" required="true"
+		enableManualInput="false"
+		label="#{bundle['_nls.grupo_custo.indicador_ativo.label']}"
+		value="#{grupoCustoController.bean.to.indicadorAtivo}"
+		converter="ActiveInactiveConverter"
+		rendered="#{grupoCustoController.bean.isUpdate}">
+
+		<f:selectItem itemValue="A" />
+		<f:selectItem itemValue="I" />
+	</rich:comboBox>
+
+	<rich:spacer height="5" />
+	<rich:spacer height="5" />
+
+</ui:composition>
+
+</html>

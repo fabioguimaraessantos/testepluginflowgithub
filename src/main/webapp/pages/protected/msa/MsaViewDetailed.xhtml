@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+    <ui:define name="titleForm">
+        #{bundle['_nls.menu.msa']} &gt; #{bundle['_nls.menu.msa.view']}
+    </ui:define>
+
+    <ui:define name="bodyForm">
+        <a4j:keepAlive beanName="msaBean" />
+        <rich:spacer height="0" width="560" styleClass="noMargin" />
+        <h:form id = "jsfForm1" styleClass="noMargin">
+            <h:panelGrid columns="2">
+
+                <a4j:keepAlive beanName="msaBean" />
+
+                <h:outputText  styleClass="labelGeneric"
+                              value="#{bundle['_nls.msa.nome_msa.label']}:"/>
+                <h:outputText value="#{msaController.bean.to.nomeMsa}"/>
+
+                <h:outputText value="#{bundle['_nls.msa.cliente_msa.label']}:" styleClass="labelGeneric" />
+                <h:outputText value="#{msaController.bean.to.cliente.nomeCliente}"/>
+
+                <h:outputText value="#{bundle['_nls.msa.industry_type_msa.label']}:" styleClass="labelGeneric"></h:outputText>
+                <h:outputLabel value="#{empty msaController.bean.industrySelect.entity ? '' :  msaController.bean.industrySelect.entity.name}" />
+
+                <h:outputText value="#{bundle['_nls.msa.bmdn_msa.label']}:" styleClass="labelGeneric" />
+                <h:outputText value="#{empty msaController.bean.bmDnSelect.entity ? '' :  msaController.bean.bmDnSelect.entity.name}"/>
+
+                <h:outputText value="#{bundle['_nls.msa.status_msa.label']}:"
+                              styleClass="labelGeneric" />
+                <h:outputText value="#{msaController.bean.to.indicadorStatus}"  converter="StageMsaConverter"/>
+
+
+                <h:outputText value="#{bundle['_nls.msa.tipo_fatura']}:"
+                              styleClass="labelGeneric" />
+                <h:outputText value="#{msaController.bean.to.indicadorTipoFatura}"  converter="TipoFaturamentoMsaTBConverter"/>
+
+                <rich:spacer height="5" />
+                <rich:spacer height="5" />
+
+            </h:panelGrid>
+
+            <h:panelGrid columns="2">
+                <h:selectBooleanCheckbox value="#{msaController.bean.indicadorReembolsavel}" disabled="true"/>
+                <h:outputText value="#{bundle['_nls.travel.budget.label.reembolso']}: "
+                              styleClass="labelGeneric"   />
+            </h:panelGrid>
+
+            <rich:spacer height="10px" />
+
+            <h:form>
+
+                    <h:panelGrid columns="2">
+                        <h:selectBooleanCheckbox  value="#{msaController.bean.flagCalculateBusinessDay}" disabled="true"/>
+                        <h:outputText value="Revenue Calculated from Business Calendar Days ?"  styleClass="labelGeneric" />
+                    </h:panelGrid>
+
+                    <rich:spacer height="10px" />
+
+                    <h:panelGrid  columns="2">
+                        <h:selectBooleanCheckbox id="roundupDaily" styleClass="disabled2" value="#{msaController.bean.flagRoundUp}" disabled="true"/>
+                        <h:outputText value="Round Up the Daily ?" styleClass="labelGeneric" />
+                    </h:panelGrid>
+
+            </h:form>
+
+            <h:panelGrid columns="2">
+                <f:facet name="footer">
+                    <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                        <a4j:commandButton value="#{bundle['_nls.button.back']}"
+                                           styleClass="buttonGeneric" action="#{msaController.backMsa}" />
+                    </h:panelGrid>
+                </f:facet>
+            </h:panelGrid>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<rich:modalPanel id="addItemHrsFatDealPanel" autosized="true" width="310">    
+   	<f:facet name="header">
+   		<h:outputText value="#{bundle['_nls.menu.item_hrs_fat_deal']} &gt; #{bundle['_nls.menu.item_hrs_fat_deal.add']}" style="padding-right:15px;" />
+   	</f:facet>
+    <f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/images/icons/close.gif" styleClass="hidelink" id="hidelink2" />
+				<rich:componentControl for="addItemHrsFatDealPanel" attachTo="hidelink2" operation="hide" event="onclick" />
+			</h:panelGroup>
+    </f:facet>	
+    <rich:messages errorClass="msgError" warnClass="msgWarng" infoClass="msgSuccess" 
+		     layout="table" ajaxRendered="true">
+	</rich:messages>
+	<h:form styleClass="noMargin">
+		<h:panelGrid columns="2">
+			<ui:include src="/pages/protected/itemHrsFatDeal/ItemHrsFatDealForm.xhtml" />
+			
+			<f:facet name="footer">
+				<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+					<a4j:commandButton value="#{bundle['_nls.button.save']}" 
+							action="#{horasFaturadasDealController.addItemHrsFatDeal}"
+							oncomplete="if (#{facesContext.maximumSeverity!=null}) #{rich:component('addItemHrsFatDealPanel')}.show(); "
+							styleClass="buttonGeneric" 
+							reRender="addItemHrsFatDealPanel,itemHrsFatDealTable"
+							limitToList="true"/>
+					<rich:spacer height="5" width="5" />
+					<a4j:commandButton value="#{bundle['_nls.button.cancel']}" styleClass="buttonGeneric"
+							actionListener="#{messageControlBean.showMessages}" 
+							oncomplete="#{rich:component('addItemHrsFatDealPanel')}.hide();return false;"
+							limitToList="true" />
+				</h:panelGrid>
+			</f:facet>
+		</h:panelGrid>
+	</h:form>
+
+</rich:modalPanel>
+
+</html>

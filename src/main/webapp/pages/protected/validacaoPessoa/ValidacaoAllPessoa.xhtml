@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:pms="http://pms.cit.com.br">
+
+<ui:composition template="/WEB-INF/templates/formLayout.xhtml">
+
+	<ui:define name="titleForm">
+	        #{bundle['_nls.menu.dre_log_fechamento']} &gt; #{bundle['_nls.menu.dre_log_fechamento.validate']}
+	   	</ui:define>
+
+	<ui:define name="bodyForm">
+		<rich:spacer height="0" width="560" styleClass="noMargin" />
+
+		<h:form>
+			<a4j:keepAlive beanName="dreLogFechamentoBean" />
+
+			<table width="100%">
+				<thead>
+					<tr>
+						<td colspan="2" align="left"><h:outputText
+							value="#{bundle['_nls.dre_fechamento.validate_pessoa.title']} "
+							styleClass="labelGeneric" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><rich:spacer height="5" /></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td align="left" colspan="2"><h:panelGrid columns="5">
+							<h:outputText for="dataMes" styleClass="labelGeneric"
+								value="#{bundle['_nls.dre_log_fechamento.data_mes.label']}*: " />
+
+							<rich:spacer height="5" />
+
+							<h:panelGrid columns="5" cellpadding="0" cellspacing="0">
+								<rich:comboBox id="mesInicio" enableManualInput="false"
+									value="#{dreLogFechamentoController.bean.monthBeg}"
+									label="#{bundle['_nls.mes.label']}"
+									defaultLabel="#{bundle['_nls.mes.label']}"
+									suggestionValues="#{dateBean.monthList}" width="55"
+									required="true">
+								</rich:comboBox>
+
+								<rich:spacer height="5" width="5" />
+								<h:outputText value="/" styleClass="labelGeneric"></h:outputText>
+								<rich:spacer height="5" width="5" />
+
+								<rich:comboBox id="anoInicio" enableManualInput="false"
+									value="#{dreLogFechamentoController.bean.yearBeg}"
+									label="#{bundle['_nls.ano.label']}"
+									defaultLabel="#{bundle['_nls.ano.label']}"
+									suggestionValues="#{dateBean.yearList}" width="55"
+									required="true">
+								</rich:comboBox>
+							</h:panelGrid>
+
+							<rich:spacer width="20" />
+
+							<a4j:commandButton value="#{bundle['_nls.button.ok']}"
+								action="#{dreLogFechamentoController.validateAll}"
+								styleClass="buttonGeneric" />
+							<rich:spacer height="5" width="10" />
+						</h:panelGrid> <a4j:commandButton value="testar job Follow Mapa"
+							action="#{compareMapaAlocSnapshotsJob.compareMapaAlocSnapshots}"
+							styleClass="buttonSpecific"
+							rendered="#{facesContext.externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME'] == 'alisson' or facesContext.externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME'] == 'cmantovani'}" />
+						<a4j:commandButton value="testar job SoftwareLicense"
+							action="#{softwareLicenseJob.softwareLicense}"
+							styleClass="buttonSpecific"
+							rendered="#{facesContext.externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME'] == 'alisson' or facesContext.externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME'] == 'peter'}" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>
