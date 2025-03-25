@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{dd/MM/yyyy HH\:mm\:ss} %-5p %c{1}\t%m%n"/>
+        </Console>
+        <File name="F" append="false" fileName="target/pms.log">
+            <!--            dev: target/pms.log | hom e prod: ../logs/pms.log-->
+            <PatternLayout pattern="%d{dd/MM/yyyy HH:mm:ss} %-5p %c{1} - %m%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.apache.log4j.xml" level="debug">
+            <AppenderRef ref="F"/>
+        </Logger>
+        <Logger name="org.apache.log4j.xml" level="info"/>
+        <Root level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>
