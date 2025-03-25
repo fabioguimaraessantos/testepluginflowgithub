@@ -1,0 +1,39 @@
+pipelines:
+  pull-requests:
+    feature/*:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-code-review
+    hotfix/*:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-code-review
+  custom:
+    flow-projects:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-project
+
+    flow-mna:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-mna
+
+    flow-hotfix:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-hotfix
+
+    flow-heart:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-heart-project
+
+    flow-arch:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-arch
+
+    flow-rollback:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-rollback
+
+    flow-deploy-main-to:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-deploy-main-to
+
+    flow-sonar:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-sonar
+    flow-deploy-feature-hotfix-dev:
+      import: 
+        cit-devops-pipeline-flow-java-app:non-consul:export-flow-deploy-feature-hotfix-dev
+  branches:
+    release:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-merge-release
+
+    main:
+      import: cit-devops-pipeline-flow-java-app:non-consul:export-flow-merge-main

@@ -1,0 +1,135 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${APP_NAME}-config
+  namespace: ${NAMESPACE}
+data:
+  CONSUL_AGENT: ${CONSUL_AGENT}
+  CONSUL_CONFIG_PREFIX: ${CONSUL_CONFIG_PREFIX}
+  CONSUL_TOKEN: ${CONSUL_TOKEN}
+  CONSUL_PORT: ${CONSUL_PORT}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${APP_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    stack: legacy
+    app: ${APP_NAME}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      stack: legacy
+      app: ${APP_NAME}
+  template:
+    metadata:
+      labels:
+        stack: legacy
+        app: ${APP_NAME}
+    spec:
+      containers:
+        - name: primary
+          image: ${APP_IMAGE}
+          ports:
+            - containerPort: 58080
+          envFrom:
+            - configMapRef:
+                name: ${APP_NAME}-config
+          env:
+            - name: MGMT_URI_GATEWAY_API
+              value: http://localhost:9000/
+          readinessProbe:
+            httpGet:
+              path: /pms/pages/public/health-check.jsf
+              port: 58080
+            initialDelaySeconds: 300
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /pms/pages/public/health-check.jsf
+              port: 58080
+            initialDelaySeconds: 300
+            periodSeconds: 30
+            failureThreshold: 3
+            timeoutSeconds: 15
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "2000Mi"
+            limits:
+              cpu: "1200m"
+              memory: "8000Mi"
+        - name: proxy
+          image: southamerica-east1-docker.pkg.dev/${GCP_PROJECT}/gke-registry/${APP_NAME}-proxy
+          ports:
+            - containerPort: 9000
+          env:
+            - name: GCP_SA_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret-manager-encoded-key
+                  key: encoded-key
+                  optional: true
+          envFrom:
+            - configMapRef:
+                name: ${APP_NAME}-config
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "300Mi"
+            limits:
+              cpu: "1000m"
+              memory: "500Mi"
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ${APP_NAME}-service
+  namespace: ${NAMESPACE}
+  labels:
+    stack: legacy
+    app: ${APP_NAME}
+spec:
+  selector:
+    stack: legacy
+    app: ${APP_NAME}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 58080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/preserve-host: "true"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/no-cache: "true"
+    nginx.ingress.kubernetes.io/no-store: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/rewrite-target: /pms/$2
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: ${APP_NAME}-ingress
+  namespace: ${NAMESPACE}
+spec:
+  rules:
+  - host: ${HOST}
+    http:
+      paths:
+      - backend:
+          service:
+            name: ${APP_NAME}-service
+            port:
+              number: 80
+        path: /pms(/|$)(.*)
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - ${HOST}
+    secretName: ssl-cert-ciandt
+
